@@ -21,7 +21,7 @@ fun bar(@borrow  x : T)   // foo is not allowed to finalize `x`
 
 A pending objects cannot be mentioned after it was finalized or passed as a `@pending` argument. Functions that create or obtain a pending objects, can only pass it around as pending or borrowed arguments, futhermore each possible execution path must either finalize the object or passe it as a pending argument.
 
-However, this requirements are not sufficient to ensure correctness because of capturing: a reference to a pending object could be captured as an element in some list, inside of some field some object, or as a variable inside a closure which could be run as a separate job. We have to ensure that these jobs are finished and these objects either finalized or inaccessible before we finalize the object.
+However, this requirements are not sufficient to ensure correctness because of capturing: a reference to a pending object could be captured as an element in some list, inside of some field some object, or as a variable inside a closure which could be run as a separate job. We have to ensure that these jobs are finished and these objects either finalized or inaccessible before we finalize the object. Before we introduce the type-based capture checking mechanism that can ensure this, let us consider another use case requiring capture checking.
 
 Capture Checking
 ----------------
