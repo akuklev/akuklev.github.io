@@ -40,24 +40,35 @@ fun bar(@dedicated x : X)      // `x` is required to be a unique reference to th
 
 If `x` was created locally, obtained as a `dedicated` argument or a `dedicated` return value, and had not been not captured nor passed outside (except as an `@inplace`-argument), we can be sure it is a unique reference and therefore pass it as `dedicated` argument or return as a `dedicated` return value.
 
+Let us also introduce the interface `Inplace` to mark classes and interfaces of objects not intended to be captured or exposed, for instance the contexts for type-safe builders. A variable of an inplace type can be used only inplace unless cast to a parent type that does not yet inherit from `Inplace`, e.g. `Any`. A variable can be permanently cast into an inplace type only if it is `@dedicated`, otherwise it can be cast for a single method invocation only `(x as T).someMethodOfT()`.
 
+With inplace types, we can introduce type-level state machines. For instance, we can make a type-safe builder for HTML that requires exactly one head and exactly one body after it:
+```kotlin
+class HTML @GotoState<HtmlAwaitingHead> constructor() {} : TagWithText("html") {}
 
+interface HtmlAwaitingHead : HTML
+  @GotoState<HtmlAwaitingBody>
+  fun head(f : Head.()-> Unit) = initTag(Head(), init)
+}
 
+interface HtmlAwaitingBody {
+  @Finalizing
+  fun body(f : Body.()-> Unit) = initTag(Body(), init)
+}
 
-Let us introduce several annotations . 
-Let us introduce the annotations `@Finalizes` and `@Pending`
+fun html(init : (@dedicated HtmlAwaitingHead).() -> Unit) : HTML {
+    val html = HTML()
+    html.init()
+    return html
+}
 
-We propose introducing several new annotations and interfaces to ensure correctness statically:
+...
+
+  html {
+    head { ... }
+    body { ... }
+  }
 ```
-fun foo(@dedicated x : X)   // `x` is required to be a unique reference to the object
-
-fun foo(@inplace x : X)     // `x` can be only used inside `foo` while `foo` is executed,
-                            // `x` cannot be captured or passed outside
-
-fun foo(@pending block : (T)-> R)   // `block` must be invoked at least once
-fun foo(@once block : (T)-> R)      // `block` must be invoked exactly once: implies both @pending and @inplace
-```
-
 
 Capture Checking
 ----------------
