@@ -23,28 +23,20 @@ A pending objects cannot be mentioned after it was finalized or passed as a `@pe
 
 However, this requirements are not sufficient to ensure correctness because of capturing: a reference to a pending object could be captured as an element in some list, inside of some field some object, or as a variable inside a closure which could be run as a separate job. We have to ensure that these jobs are finished and these objects either finalized or inaccessible before we finalize the object. Before we introduce the type-based capture checking mechanism that can ensure this, let us consider another use case requiring capture checking.
 
-Capture Checking
-----------------
-
-
-
-
 Inplace objects
 ---------------
 
-
-Stati
-Sometimes it is desirable to pass an object as argument without allowing to capture or expose it:
-```
+Often it is desirable to pass an object without allowing to capture or expose it, so let's introduce the following annotation:
+```kotlin
 fun foo(@inplace x : X)     // `x` can be only used inside `foo` while `foo` is executed,
                             // `x` cannot be captured or passed as non-inplace argument
 ```
 
-To control proliferation of references, 
-
-fun foo(@dedicated x : X)   // `x` is required to be a unique reference to the object
-
-
+With this annotation we can control reference uniqueness. Let us introduce the following annotation: 
+```kotlin
+fun bar(@dedicated x : X)      // `x` is required to be a unique reference to the object it refers to
+@dedicated fun baz(...) : Y    // return value is guaranteed to be a unique reference
+```
 
 If `x` was created locally, obtained as a `dedicated` argument or a `dedicated` return value, and had not been not captured nor passed outside (except as an `@inplace`-argument), we can be sure it is a unique reference and therefore pass it as `dedicated` argument or return as a `dedicated` return value.
 
@@ -65,6 +57,14 @@ fun foo(@inplace x : X)     // `x` can be only used inside `foo` while `foo` is 
 fun foo(@pending block : (T)-> R)   // `block` must be invoked at least once
 fun foo(@once block : (T)-> R)      // `block` must be invoked exactly once: implies both @pending and @inplace
 ```
+
+
+Capture Checking
+----------------
+
+
+
+
 
 
 
