@@ -46,12 +46,12 @@ With inplace types, we can introduce type-level state machines. For instance, we
 ```kotlin
 class HTML @GotoState<HtmlAwaitingHead> constructor() {} : TagWithText("html") {}
 
-interface HtmlAwaitingHead : HTML
+interface HtmlAwaitingHead : HTML, Inplace {
   @GotoState<HtmlAwaitingBody>
   fun head(f : Head.()-> Unit) = initTag(Head(), init)
 }
 
-interface HtmlAwaitingBody {
+interface HtmlAwaitingBody : HTML, Inplace {
   @Finalizing
   fun body(f : Body.()-> Unit) = initTag(Body(), init)
 }
