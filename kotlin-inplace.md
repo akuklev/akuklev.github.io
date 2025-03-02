@@ -105,7 +105,9 @@ fun <reified cs : &CoroutineScope> foo(j : cs.Job)
 Inplace objects
 ---------------
 
-Often it is desirable to pass an object without allowing to capture or expose it, so let's introduce the following annotation:
+Using the outlined approach to accessability management, we can implement the approach proposed in [Linearity and Uniqueness: An Entente Cordiale](https://link.springer.com/chapter/10.1007/978-3-030-99336-8_13) combining it with ideas by Lionel Parreaux.
+
+It is often desirable to pass an object without allowing to capture or expose it, so let's introduce the following annotation:
 ```kotlin
 fun foo(@inplace x : X)     // `x` can be only used inside `foo` while `foo` is executed
 ```
@@ -181,3 +183,20 @@ fun <lt : &Lifetime> foo(v : lt.Var<Int>)
 we can enjoy the same level of lifetime-polymorphism as in Rust.
 
 Our implementation only supports immutable objects, but using annotations we can actually implment lifetimes as they work in Rust, and beyond. To deal with inplace objects `t : T` implementing type-level state machine functionality, we will actually need Lifetimes `<T : Inplace> new(@dedicated t : T)` that provide read-write references giving access to the real `t` (`useRw(@once block : (@dedicated T)-> R) : R)`) and “read-only“ references giving access to `t` cast to the nearest ancestor not inheriting `Inplace`.
+
+General capture checking
+------------------------
+
+Currently we have only proposed controlling capture of `@inplace`, `@borrow`'ed, and `@pending` objects, but it is possible to control capture in general. For any type `T` let `@pure T` denote values of the type `T` that do not capture or refer to any objects except for pure data (values of primitive types, strings, pure functions, data and value classes recursively containing only pure data).
+
+Now let `@pure(x,...,z)` mean “pure except for x,...,z”, where the arguments are objects: these may be local objects or the whole local scope `this`, as well as global objects such as `System`, or particular methods and/or fields of such objects e.g. `@Pure(Logger, System::println, this)`. Capture checking and effect polymoprhism can be modelled after Scala3, see https://docs.scala-lang.org/scala3/reference/experimental/cc.html.
+
+Additionally, we one could to allow negation as first proposed by Lionel Parreaux:
+```kotlin
+class Buffer<T> {
+  ...
+  fun <R> iterate(block : @pure(~this) (Iterator<T>)-> R) : R
+}
+```
+- here we allow `block` to access everything except for the Buffer it is being called on.
+
