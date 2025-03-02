@@ -1,4 +1,4 @@
-Pending objects, Inplace objects 
+Pending objects, Inplace objects
 ================================
 
 As many other languages, Kotlin employs RAII pattern to deal with resources, thus some objects may hold resources or block threads and have to be finalized. The first step to ensure correctness dealing with such objects, is to mark them by inheriting from `Pending` interface and mark the `@Finalizing` members by the respective annotation:
@@ -26,11 +26,11 @@ However, this requirements are not sufficient to ensure correctness because a re
 Structured accessibility
 ------------------------
 
-In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available. If we also allow abstract inner type members in interfaces and abstract classes as in Scala, we can use these to ensure that `@borrow`ed objects are never exposed beyond the scope they were borrowed into.
- 
- To ensure that `@borrow`ed and `@inplace` objects are never exposed beyond the class/function/coroutine they were passed to, we only allow them to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine. The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
+In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available. If we also allow abstract inner type members in interfaces and abstract classes as in Scala, we can use these to ensure that `@borrow`'ed objects are never exposed beyond the scope they were borrowed into by imposing the following to restrictions:
+- `@borrow`'ed objects are only allowed to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine.
+- The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
 
-To allow capturing `@borrow`ed and `@inplace` objects to be captured inside containers such as `List<T>`, we propose automatically generating “internalized” versions `this.List<T>` of all types on demand.
+The first restruction prevents to capture `@borrow`'ed objects inside generic containers such as `List<T>`, while the second restriction means we cannot capture `@borrow`'ed inside closures `f : (X)-> Y`, because their non-inner parent type provides the `invoke` method which has access to captured `@borrow`'ed objects. To address both restrictions we propose automatically generating “internalized” versions `this.List<T>` and `this.((X)-> Y)` of all types on demand.
 
 
 
