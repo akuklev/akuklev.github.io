@@ -128,4 +128,10 @@ class Lifetime {
 }
 ```
 
-Using `new`, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes. Variables created by `new` can be “opened” either in read-only or in read-write mode, but not at the same time since `Var : Inplace`. Opening in read-only mode acquires a `@borrow`'ed read-only reference, which can be shared between multiple concurrently running jobs, but is guaranteed to become inaccessible before the scope of the block that acquired read-only reference closes, and read-write access can be granted. Opening in `read-write mode` acquires an `Inplace` reference, so that all reads and writes must be linearly ordered. And again, this reference is guaranteed to become inaccessible before the variable can be reopened in read-only mode.
+Using `new`, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes. Variables created by `new` can be “opened” either in read-only or in read-write mode, but not at the same time since `Var : Inplace`. Opening in read-only mode acquires a `@borrow`'ed read-only reference, which can be shared between multiple concurrently running jobs, but is guaranteed to become inaccessible before the scope of the block that acquired read-only reference closes, and read-write access can be granted. Opening in `read-write mode` acquires an `Inplace` reference, so that all reads and writes must be linearly ordered. And again, this reference is guaranteed to become inaccessible before the variable can be reopened in read-only mode. Using the already presented syntax
+```kotlin
+fun <lt : &Lifetime> foo(v : lt.Var<Int>)
+```
+we can enjoy the same level of lifetime-polymorphism as in Rust.
+
+Our implementation only supports immutable objects, but using annotations we can actually implment lifetimes as they work in Rust, and beyond. To deal with inplace objects `t : T` implementing type-level state machine functionality, we will actually need Lifetimes `<T : Inplace> new(@dedicated t : T)` that provide read-write references giving access to the real `t` (`useRw(@once block : (@dedicated T)-> R) : R)`) and “read-only“ references giving access to `t` cast to the nearest ancestor not inheriting `Inplace`.
