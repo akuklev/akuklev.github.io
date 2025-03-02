@@ -59,8 +59,12 @@ fun <reified cs : &CoroutineScope> foo(j : cs.Job)
 Emulating Rust lifetimes
 ------------------------
 
-In analogy to coroutine scopes, we can introduce managed lifetimes. A simplified version
+In Kotlin, objects are normally only removed by GC after they are inaccessible, but using introduced machinery we can enforce inaccessibility outside of a specific scope. In analogy to coroutine scopes, we can introduce managed lifetimes. A simplified version which does distinguish between mutable and immutable references, is c class with only one method closely reassembling `CoroutineScope.launch(block)`, namely
+```kotlin
+fun <T> Lifetime.new(@dedicated t : T) : this.Ref<T>
+```
 
+With this method, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes.
 
 Inplace objects
 ---------------
