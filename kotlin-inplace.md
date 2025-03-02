@@ -56,8 +56,6 @@ In case, we'll need `cs` to be used not just in type signatures, but also as an 
 fun <reified cs : &CoroutineScope> foo(j : cs.Job)
 ```
 
-
-
 Inplace objects
 ---------------
 
@@ -109,36 +107,25 @@ fun html(init : (@dedicated HtmlAwaitingHead).() -> Unit) : HTML {
 Emulating Rust lifetimes
 ------------------------
 
-In Kotlin, objects are normally only removed by GC after they are inaccessible, but using introduced machinery we can enforce inaccessibility outside of a specific scope. In analogy to coroutine scopes, we can introduce managed lifetimes. A simplified version which does distinguish between mutable and immutable references, is c class with only one method closely reassembling `CoroutineScope.launch(block)`, namely
+In Kotlin, objects are normally only removed by GC after they are inaccessible, but using introduced machinery we can enforce inaccessibility outside of a specific scope. In analogy to coroutine scopes, we can introduce managed lifetimes with `Lifetime.new` closely reassembling `CoroutineScope.launch`, namely
 ```kotlin
-fun <T> Lifetime.new(@dedicated t : T) : this.Ref<T>
-```
+class Lifetime {
+  fun <T : Immutable> new(t : T) : this.Var<T>
 
-With this method, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes.
+  interface Ref<T : Immutable> {
+    fun get() : T
+  }
 
-------------------
+  interface MutRef<T : Immutable> : Inplace {
+    fun get() : T
+    fun set(t : T)
+  }
 
-
-
-
-
-
-
-Let us introduce several annotations to provide additional static guarantees for correct usage of resources:
-```
-inline fun <T : Discardable?, R> T.use(@once block: (@inplace T) -> R) : R
-
-inline fun <T : Discardable?, R> with(ressource : T, @once block: (@inplace T).() -> R) : R
-```
-
-
-Kotlin relies on closures to deal with ressources:
-```kotlin
-FileInputStream("filename").use {
-  ...
+  class Var<T : Immutable> : Inplace {
+    inline fun useRo(@once block : (@borrow this.Ref<T>)-> R) : R {...}
+    inline fun useRw(@once block : (this.MutRef<T>)-> R) : R {...}
+  }
 }
-
-fun foo(@dedicated x : X)   // Foo can be only called if x can be guaranteed to be a 
 ```
 
-However, 
+Using `new`, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes. Variables created by `new` can be “opened” either in `read-only` or in `read-write` mode, but never at the same time.
