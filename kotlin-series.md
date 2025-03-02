@@ -1,4 +1,4 @@
-In course of the last two years, I've outlined a number of proposals for Kotlin regarding better type safety for coroutines, resource handling and DSLs, better expressiveness, and a syntactic facelift to reach into areas where Python currently dominates:
+In course of the last two years, I've outlined a number of proposals for Kotlin regarding better type safety for coroutines, resource handling and DSLs, better expressiveness, and a syntactic facelift to reach into areas where Python and Lean currently dominate:
 
 - [Structured resource management](kotlin_objects.pdf) (4 pages): Like many languages, Kotlin uses scope-based resource management. We outline how to improve resource management in Kotlin, ultimately revealing the common structure underlying structured concurrency in Kotlin and lifetime-based borrow checking in Rust.
 - [Controlling purity](kotlin_purity.pdf) (1 page): In many cases, high-order functions such as `sortWith(comparator)` only have meaningful behaviour if their arguments are pure functions. Type-level control over the purity of functions and data is essential to prevent nonsensical behaviour and dangerous vulnerabilities.
