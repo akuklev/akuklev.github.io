@@ -30,7 +30,12 @@ In Kotlin, we can define inner classes inside classes and functions/coroutines. 
 - `@borrow`'ed objects are only allowed to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine.
 - The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
 
-The first restruction prevents to capture `@borrow`'ed objects inside generic containers such as `List<T>`, while the second restriction means we cannot capture `@borrow`'ed inside closures `f : (Xs)-> Y`, because their non-inner parent type provides the `invoke` method which has access to captured `@borrow`'ed objects. To address both restrictions we propose automatically generating “internalized” versions `this.List<T>` and `this.((Xs)-> Y)` of all types on demand, with `Any` being their only non-inner supertype.
+The first restruction prevents to capture `@borrow`'ed objects inside generic containers such as `List<T>`, while the second restriction means we cannot capture `@borrow`'ed inside closures `f : (Xs)-> Y`, because their non-inner parent type provides the `invoke` method which has access to captured `@borrow`'ed objects. To address both restrictions we propose automatically generating “internalized” versions `this.List<T>` and `this.((Xs)-> Y)` of all types on demand, with `Any` being their only non-inner supertype. We propose to use explicit type annotations to create internalized versions of outer types:
+```
+val l : this.MutableList<(Int)-> Int> = emptyList()
+l.append(f) // here we can append a closure that captures a borrowed argument,
+            // which would be impossible for `l` of the type `MutableList<(Int)-> Int>`
+```
 
 Structured accessability requires an adjustment to structural concurrency. Namely, we can only launch coroutines `f : this.(suspend (Xs)-> Y)` capturing borrowed objects only inside coroutine scopes `cs : CoroutineScope` 
 
