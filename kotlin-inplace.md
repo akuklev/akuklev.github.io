@@ -23,10 +23,15 @@ A pending objects cannot be mentioned after it was finalized or passed as a `@pe
 
 However, this requirements are not sufficient to ensure correctness because a reference to a pending or borrowed object could be captured as an element in some list, inside of some field some object, or as a variable inside a closure which could be run as a separate job. We have to ensure that these jobs are finished and these objects either finalized or inaccessible before we finalize the object.
 
+Capturing pending objects
+-------------------------
+
+We propose allowing the `@pending` annotations for fields inside classes inherited from `Pending`, which are required to be finalized by all methods marked as `@Finalizing`. Objects from fields not marked this way are not allowed to be finalized. `@pending` objects `x` are only allowed to be captured inside other `@pending` objects `y` which must be explicitly finalized before `x`, unless `x` is stored inside a `@pending` field in which case it is automatically finalized when `y` is finalized. Dealing with borrowed objects requires more infrastructure.
+
 Structured accessibility
 ------------------------
 
-In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available. If we also allow abstract inner type members in interfaces and abstract classes as in Scala, we can use these to ensure that `@borrow`'ed objects are never exposed beyond the scope they were borrowed into by imposing the following to restrictions:
+In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available. If we also allow abstract inner type members in interfaces and abstract classes as in Scala, we can use these to ensure that `@borrow`'ed objects are never exposed beyond the scope they were borrowed into by imposing the following restrictions:
 - `@borrow`'ed objects are only allowed to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine.
 - The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
 
@@ -51,10 +56,10 @@ In case, we'll need `cs` to be used not just in type signatures, but also as an 
 fun <reified cs : &CoroutineScope> foo(j : cs.Job)
 ```
 
-Emergent Rust lifetimes
------------------------
+Emulating Rust lifetimes
+------------------------
 
-Now we can emulate
+In analogy to coroutine scopes, we can introduce managed lifetimes. A simplified version
 
 
 Inplace objects
