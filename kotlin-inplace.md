@@ -47,7 +47,7 @@ return readText(Charsets.UTF_8)
 Pending objects
 ---------------
 
-As many other languages, Kotlin employs RAII pattern to deal with resources, thus some objects may hold resources or block threads and have to be finalized. The first step to ensure correctness dealing with such objects, is to mark them by inheriting from `Pending` interface and mark the `@Finalizing` members by the respective annotation:
+Objects that may hold resources or block threads have to be timely finalized. The first step to ensure correctness dealing with such objects, is to mark them by inheriting from `Pending` interface and mark the `@Finalizing` members by the respective annotation:
 ```kotlin
 class SomeResource : Pending {
   ...
@@ -74,8 +74,8 @@ Capturing pending objects
 
 We propose allowing the `@pending` annotations for fields inside classes inherited from `Pending`, which are required to be finalized by all methods marked as `@Finalizing`. Objects from fields not marked this way are not allowed to be finalized. `@pending` objects `x` are only allowed to be captured inside other `@pending` objects `y` which must be explicitly finalized before `x`, unless `x` is stored inside a `@pending` field in which case it is automatically finalized when `y` is finalized. Dealing with borrowed objects requires more infrastructure.
 
-Structured accessibility
-------------------------
+Type-based accessibility management
+-----------------------------------
 
 In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available. If we also allow abstract inner type members in interfaces and abstract classes as in Scala, we can use these to ensure that `@borrow`'ed objects are never exposed beyond the scope they were borrowed into by imposing the following restrictions:
 - `@borrow`'ed objects are only allowed to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine.
@@ -88,8 +88,8 @@ l.append(f) // here we can append a closure that captures a borrowed argument,
             // which would be impossible for `l` of the type `MutableList<(Int)-> Int>`
 ```
 
-Structured accessability and structured concurrency
----------------------------------------------------
+(More) structured concurrency
+-----------------------------
 
 Structured accessability requires an adjustment to structural concurrency. Namely, we can only launch coroutines `f : this.(suspend (Xs)-> Y)` capturing borrowed objects only inside coroutine scopes `cs : this.CoroutineScope`, and the type of the resulting jobs should be not just `Job`, but `cs.Job`.
 
@@ -150,8 +150,8 @@ fun html(init : (@dedicated HtmlAwaitingHead).() -> Unit) : HTML {
   }
 ```
 
-Emulating Rust lifetimes
-------------------------
+Rust-style lifetimes
+--------------------
 
 In Kotlin, objects are normally only removed by GC after they are inaccessible, but using introduced machinery we can enforce inaccessibility outside of a specific scope. In analogy to coroutine scopes, we can introduce managed lifetimes with `Lifetime.new` closely reassembling `CoroutineScope.launch`, namely
 ```kotlin
