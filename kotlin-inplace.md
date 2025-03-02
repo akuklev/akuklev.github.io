@@ -21,7 +21,18 @@ fun bar(@borrow  x : T)   // foo is not allowed to finalize `x`
 
 A pending objects cannot be mentioned after it was finalized or passed as a `@pending` argument. Functions that create or obtain a pending objects, can only pass it around as pending or borrowed arguments, futhermore each possible execution path must either finalize the object or passe it as a pending argument.
 
-However, this requirements are not sufficient to ensure correctness because of capturing: a reference to a pending object could be captured as an element in some list, inside of some field some object, or as a variable inside a closure which could be run as a separate job. We have to ensure that these jobs are finished and these objects either finalized or inaccessible before we finalize the object. Before we introduce the type-based capture checking mechanism that can ensure this, let us consider another use case requiring capture checking.
+However, this requirements are not sufficient to ensure correctness because a reference to a pending or borrowed object could be captured as an element in some list, inside of some field some object, or as a variable inside a closure which could be run as a separate job. We have to ensure that these jobs are finished and these objects either finalized or inaccessible before we finalize the object.
+
+Structured accessibility
+------------------------
+
+In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available. If we also allow abstract inner type members in interfaces and abstract classes as in Scala, we can use these to ensure that `@borrow`ed objects are never exposed beyond the scope they were borrowed into.
+ 
+ To ensure that `@borrow`ed and `@inplace` objects are never exposed beyond the class/function/coroutine they were passed to, we only allow them to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine. The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
+
+To allow capturing `@borrow`ed and `@inplace` objects to be captured inside containers such as `List<T>`, we propose automatically generating “internalized” versions `this.List<T>` of all types on demand.
+
+
 
 Inplace objects
 ---------------
@@ -69,20 +80,6 @@ fun html(init : (@dedicated HtmlAwaitingHead).() -> Unit) : HTML {
     body { ... }
   }
 ```
-
-Structured accessibility
-------------------------
-
-In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available.
-
-
-In Scala we can also define abstract inner type members inside abstract classes and interfaces, which we'll need for robust inner class-based capture checking.
-
-
- 
- To ensure that `@borrow`ed and `@inplace` objects are never exposed beyond the class/function/coroutine they were passed to, we only allow them to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine. The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
-
-To allow capturing `@borrow`ed and `@inplace` objects to be captured inside containers such as `List<T>`, we propose automatically generating “internalized” versions `this.List<T>` of all types on demand.
 
 
 
