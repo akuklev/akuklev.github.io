@@ -37,7 +37,16 @@ l.append(f) // here we can append a closure that captures a borrowed argument,
             // which would be impossible for `l` of the type `MutableList<(Int)-> Int>`
 ```
 
-Structured accessability requires an adjustment to structural concurrency. Namely, we can only launch coroutines `f : this.(suspend (Xs)-> Y)` capturing borrowed objects only inside coroutine scopes `cs : CoroutineScope` 
+Structured accessability requires an adjustment to structural concurrency. Namely, we can only launch coroutines `f : this.(suspend (Xs)-> Y)` capturing borrowed objects only inside coroutine scopes `cs : this.CoroutineScope`, and the type of the resulting jobs should be not just `Job`, but `cs.Job`.
+
+To deal with any `Job`s inside any coroutine scopes polymoprhically (and in simular such situations), we need special syntax:
+```kotlin
+fun <cs : &CoroutineScope> foo(j : cs.Job)
+```
+In case, we'll need `cs` to be used not just in type signatures, but also as an objects, we should also allow
+```kotlin
+fun <reified cs : &CoroutineScope> foo(j : cs.Job)
+```
 
 
 
