@@ -63,10 +63,10 @@ Inplace objects
 
 Often it is desirable to pass an object without allowing to capture or expose it, so let's introduce the following annotation:
 ```kotlin
-fun foo(@inplace x : X)     // `x` can be only used inside `foo` while `foo` is executed,
-                            // `x` passed as non-inplace argument, and can only be captured
-                            // inside objects of types i cannot be captured or 
+fun foo(@inplace x : X)     // `x` can be only used inside `foo` while `foo` is executed
 ```
+
+This means, `x` can be only passed to non-inline functions as `@inplace` argument and either not captured at all, or disappear from the context after being captured, which means it can be captured at most once. We only allow it to be captured into an `@inplace`-annotated field, and with same restrictions as if it was `@borrow`'ed, to guarantee it cannot be ever exposed beyond the scope of `foo`.
 
 With this annotation we can control reference uniqueness. Let us introduce the following annotation: 
 ```kotlin
@@ -78,7 +78,7 @@ If `x` was created locally, obtained as a `dedicated` argument or a `dedicated` 
 
 Let us also introduce the interface `Inplace` to mark classes and interfaces of objects not intended to be captured or exposed, for instance the contexts for type-safe builders. A variable of an inplace type can be used only inplace unless cast to a parent type that does not yet inherit from `Inplace`, e.g. `Any`. A variable can be permanently cast into an inplace type only if it is `@dedicated`, otherwise it can be cast for a single method invocation only `(x as T).someMethodOfT()`.
 
-With inplace types, we can introduce type-level state machines. For instance, we can make a type-safe builder for HTML that requires exactly one head and exactly one body after it:
+Since calls to methods of `Inplace`-interfaces of `@dedicated` objects are linearly ordered, with inplace types, we can introduce type-level state machines. For instance, we can make a type-safe builder for HTML that requires exactly one head and exactly one body after it:
 ```kotlin
 class HTML @GotoState<HtmlAwaitingHead> constructor() {} : TagWithText("html") {}
 
@@ -105,8 +105,6 @@ fun html(init : (@dedicated HtmlAwaitingHead).() -> Unit) : HTML {
     body { ... }
   }
 ```
-
-
 
 Emulating Rust lifetimes
 ------------------------
