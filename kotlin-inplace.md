@@ -56,15 +56,7 @@ In case, we'll need `cs` to be used not just in type signatures, but also as an 
 fun <reified cs : &CoroutineScope> foo(j : cs.Job)
 ```
 
-Emulating Rust lifetimes
-------------------------
 
-In Kotlin, objects are normally only removed by GC after they are inaccessible, but using introduced machinery we can enforce inaccessibility outside of a specific scope. In analogy to coroutine scopes, we can introduce managed lifetimes. A simplified version which does distinguish between mutable and immutable references, is c class with only one method closely reassembling `CoroutineScope.launch(block)`, namely
-```kotlin
-fun <T> Lifetime.new(@dedicated t : T) : this.Ref<T>
-```
-
-With this method, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes.
 
 Inplace objects
 ---------------
@@ -72,7 +64,8 @@ Inplace objects
 Often it is desirable to pass an object without allowing to capture or expose it, so let's introduce the following annotation:
 ```kotlin
 fun foo(@inplace x : X)     // `x` can be only used inside `foo` while `foo` is executed,
-                            // `x` cannot be captured or passed as non-inplace argument
+                            // `x` passed as non-inplace argument, and can only be captured
+                            // inside objects of types i cannot be captured or 
 ```
 
 With this annotation we can control reference uniqueness. Let us introduce the following annotation: 
@@ -114,6 +107,16 @@ fun html(init : (@dedicated HtmlAwaitingHead).() -> Unit) : HTML {
 ```
 
 
+
+Emulating Rust lifetimes
+------------------------
+
+In Kotlin, objects are normally only removed by GC after they are inaccessible, but using introduced machinery we can enforce inaccessibility outside of a specific scope. In analogy to coroutine scopes, we can introduce managed lifetimes. A simplified version which does distinguish between mutable and immutable references, is c class with only one method closely reassembling `CoroutineScope.launch(block)`, namely
+```kotlin
+fun <T> Lifetime.new(@dedicated t : T) : this.Ref<T>
+```
+
+With this method, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes.
 
 ------------------
 
