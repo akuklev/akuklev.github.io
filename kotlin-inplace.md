@@ -37,6 +37,9 @@ l.append(f) // here we can append a closure that captures a borrowed argument,
             // which would be impossible for `l` of the type `MutableList<(Int)-> Int>`
 ```
 
+Structured accessability and structured concurrency
+---------------------------------------------------
+
 Structured accessability requires an adjustment to structural concurrency. Namely, we can only launch coroutines `f : this.(suspend (Xs)-> Y)` capturing borrowed objects only inside coroutine scopes `cs : this.CoroutineScope`, and the type of the resulting jobs should be not just `Job`, but `cs.Job`.
 
 To deal with any `Job`s inside any coroutine scopes polymoprhically (and in simular such situations), we need special syntax:
@@ -48,6 +51,10 @@ In case, we'll need `cs` to be used not just in type signatures, but also as an 
 fun <reified cs : &CoroutineScope> foo(j : cs.Job)
 ```
 
+Emergent Rust lifetimes
+-----------------------
+
+Now we can emulate
 
 
 Inplace objects
