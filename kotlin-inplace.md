@@ -70,11 +70,19 @@ fun html(init : (@dedicated HtmlAwaitingHead).() -> Unit) : HTML {
   }
 ```
 
-Capture Checking and emergent Rustacean lifetimes
--------------------------------------------------
+Structured accessibility
+------------------------
 
-In Kotlin, we can define inner classes inside other classes and inside functions/coroutines. In Scala we can also define abstract inner type members inside abstract classes and interfaces. Unless cast into a non-inner parent type such as `Any`, values of those types can be only exposed into the contexts where the host object inner types belong to is accessible. To ensure that `@borrow`ed and `@inplace` objects are never exposed beyond the class/function/coroutine they were passed to, we only allow them to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine. The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
+In Kotlin, we can define inner classes inside classes and functions/coroutines. Unless cast into a non-inner parent type such as `Any`, values of those types cannot be exposed beyond the scope where their host objects are available.
 
+
+In Scala we can also define abstract inner type members inside abstract classes and interfaces, which we'll need for robust inner class-based capture checking.
+
+
+ 
+ To ensure that `@borrow`ed and `@inplace` objects are never exposed beyond the class/function/coroutine they were passed to, we only allow them to be captured inside objects of inner types defined inside the class/function/coroutine or inner types of objects created inside this class/function/coroutine. The non-inner parent types of those types must provide no access to captured objects. As a simple-to-check overapproximation we might allow only `Any`.
+
+To allow capturing `@borrow`ed and `@inplace` objects to be captured inside containers such as `List<T>`, we propose automatically generating “internalized” versions `this.List<T>` of all types on demand.
 
 
 
