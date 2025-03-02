@@ -1,5 +1,51 @@
-Pending objects, Inplace objects
-================================
+Structured resource management
+==============================
+
+Like many other languages, Kotlin uses scope-based resource management. In this memo, we outline how to improve a wide range of aspects of resource management, ultimately embracing the lifetime-based approach pioneered in Rust as a special case.
+
+Syntactic improvements
+----------------------
+
+Currently, acquisition of every resource introduces a new indentation level in Kotlin, which may lead to code like this:
+```kotlin
+localStorage.withState(TrustedPluginsStateKey) {
+  withDockIdentity { dockIdentity ->
+    withContext(mockDockExit() + mockDockApi() + mockDockPaths(testClass.name)) {
+      withFusAllowedStateFlow {
+        withSelectedThemeState {
+          withSpaceTokensStorage {
+            withRemoteClientAndKernel(..args) {
+              withTestFrontend(..args) {
+                ...
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+We propose to introduce a special operator `try`, which allows to acquire multiple resources in one stroke. By default, resources will be passed as context, but if required they can be named using `as` operator. With operator either accepts a block of code in braces, or takes all the code till the end of scope as such a block:
+
+```kotlin
+try(localStorage.State(TrustedPluginsStateKey), DockIdentity as dockIdentity,
+    Context(mockDockExit() + mockDockApi(di) + mockDockPaths(testClass.name)),
+    FusAllowedStateFlow, withSelectedThemeState, withSpaceTokensStorage,
+    RemoteClientAndKernel(..args), TestFrontend(..args)) {
+  ...
+}
+```
+
+Furthermore, if no opening brace follows after `try(..)`, the rest of the scope should be treated as block argument, allowing to acquire resources with no indentation at all:
+```kotlin
+try(FileInputStream(FILENAME))
+return readText(Charsets.UTF_8)
+```
+
+Pending objects
+---------------
 
 As many other languages, Kotlin employs RAII pattern to deal with resources, thus some objects may hold resources or block threads and have to be finalized. The first step to ensure correctness dealing with such objects, is to mark them by inheriting from `Pending` interface and mark the `@Finalizing` members by the respective annotation:
 ```kotlin
