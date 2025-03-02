@@ -200,3 +200,7 @@ class Buffer<T> {
 ```
 - here we allow `block` to access everything except for the Buffer it is being called on.
 
+Conclusion
+----------
+
+The combination of the above mechanisms provides the most comprehensive resource handling correctness guarantees of any general-purpose programming language currently available.
