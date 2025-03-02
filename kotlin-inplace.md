@@ -123,9 +123,9 @@ class Lifetime {
 
   class Var<T : Immutable> : Inplace {
     inline fun useRo(@once block : (@borrow this.Ref<T>)-> R) : R {...}
-    inline fun useRw(@once block : (this.MutRef<T>)-> R) : R {...}
+    inline fun useRw(@once block : (@dedicated this.MutRef<T>)-> R) : R {...}
   }
 }
 ```
 
-Using `new`, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes. Variables created by `new` can be “opened” either in `read-only` or in `read-write` mode, but never at the same time.
+Using `new`, we can create scoped objects `t : T` which can be only accessed as long as the lifetime is accessible and safely disposed after the scope closes. Variables created by `new` can be “opened” either in read-only or in read-write mode, but not at the same time since `Var : Inplace`. Opening in read-only mode acquires a `@borrow`'ed read-only reference, which can be shared between multiple concurrently running jobs, but is guaranteed to become inaccessible before the scope of the block that acquired read-only reference closes, and read-write access can be granted. Opening in `read-write mode` acquires an `Inplace` reference, so that all reads and writes must be linearly ordered. And again, this reference is guaranteed to become inaccessible before the variable can be reopened in read-only mode.
