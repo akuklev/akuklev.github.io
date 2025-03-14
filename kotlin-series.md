@@ -1,4 +1,4 @@
-In course of the last two years, I've been developing ideas on possible evolution of Kotlin.
+In course of the last two years, I've been developing ambitious ideas on Kotlin evolution.
 
 Practical enhancements for Kotlin:
 - [Structured lifecycle management](kotlin_objects.pdf) (8 pages): Kotlin uses scope-based resource management, but lacks mechanisms to ensure that disposable resources are properly finalized and never accessed thereafter, and that exclusive resources are only used exclusively. We propose mechanisms to control object lifecycle and accessibility at the type level, ultimately revealing the common structure underlying structured concurrency in Kotlin and lifetime-based borrow checking in Rust. In conclusion, we propose a generalization of Rustacean lifetimes to handle stateful passive objects, and a generalization of Kotlinesque structured concurrency to handle stateful active objects, i.e., stateful coroutines and actors.
