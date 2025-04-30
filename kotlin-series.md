@@ -6,7 +6,7 @@ The next two enhance the type system, improving static safety and making the lan
 - As soon as liquid types become mature, we'll propose introducing them into the language on top of the above extnesions for lightweight correctness verification.
 
 These ones help reducing boilerplate and increasing expressivity:
-- [Applicatin startup and dependency injection]() (?? pages): ...
+- [Startup and dependency injection]() (?? pages): ...
 - [Safe type providers](kotlin_meta.pdf) (2 pages): We propose introducing a safe form of type providers – compile-time functions that synthesize interfaces and type aliases – to greatly improve type-safety of libraries and APIs, enable very sophisticated type-safe domain-specific languages (DSLs) such as embedded SQL.
 - [Declarative Kotlin](kotlin_declarative.pdf) (2 pages): We outline a roadmap for seamless integration of declarative programming capabilities embracing the full power of Verse Calculus (roughly “Haskell + Prolog”) and beyond.
 - [Distributed Kotlin]() (?? pages): An implementation of typesafe actor model with join-calculus-based complex event processing.
