@@ -9,7 +9,7 @@ These ones help reducing boilerplate and increasing expressivity:
 - [Applicatin startup and dependency injection]() (?? pages): ...
 - [Safe type providers](kotlin_meta.pdf) (2 pages): We propose introducing a safe form of type providers – compile-time functions that synthesize interfaces and type aliases – to greatly improve type-safety of libraries and APIs, enable very sophisticated type-safe domain-specific languages (DSLs) such as embedded SQL.
 - [Declarative Kotlin](kotlin_declarative.pdf) (2 pages): We outline a roadmap for seamless integration of declarative programming capabilities embracing the full power of Verse Calculus (roughly “Haskell + Prolog”) and beyond.
-- [Declarative actor-based concurrency]() (?? pages): An implementation of typesafe actor model with join-calculus-based complex event processing.
+- [Distributed Kotlin]() (?? pages): An implementation of typesafe actor model with join-calculus-based complex event processing.
 
 
 Lastly, we propose semantic and syntactic extensions to reach into areas where Python and Lean currently dominate:
