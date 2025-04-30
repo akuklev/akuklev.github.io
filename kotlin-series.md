@@ -3,7 +3,7 @@ In course of the last two years, I've been exploring evolution avenues for Kotli
 These ones enhance the type system, improving static safety and making the language throughout amenable to formal reasoning using both theorem provers and model checking based automated and semi-automated verification:
 - [Resources, lifecycles, and structured concurrency](kotlin_objects.pdf) (8 pages): Kotlin relies on scope-based resource management, but lacks mechanisms to enforce scope confinement, guarantee lifecycle safety, and rule out conflicting actions statically. We devise a mechanism addressing these issues in a manner compatible with structured concurrency and localized capturing in general. Our model can be seen as a generalization of Rust approach.
 - [Purity and explicit effects](kotlin_purity.pdf) (1 page): In many cases, high-order functions such as `sortWith(comparator)` only have meaningful behaviour if their arguments are pure functions. Type-level control over the purity of functions and data is essential to prevent nonsensical behaviour and dangerous vulnerabilities.
-- When liquid types become mature, we'll propose introducing them on top of the above extnesions for semi-automated verification.
+- Certified Kotlin: When liquid types become mature, we'll propose introducing them on top of the above extnesions for semi-automated verification.
 
 These ones help reducing boilerplate and increasing expressivity:
 - [Startup and dependency injection]() (?? pages): ...
