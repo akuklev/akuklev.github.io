@@ -9,7 +9,7 @@ These ones help reducing boilerplate and increasing expressivity:
 - [Startup and dependency injection](kotlin_startup.pdf) (1 page): Application startup often requires initialisation of external services and components possibly configurable via command-line arguments. We propose a number of minor language extensions to achieve this with zero boilerplate.
 - [Safe type providers](kotlin_meta.pdf) (2 pages): We propose introducing a safe form of type providers – compile-time functions that synthesize interfaces and type aliases – to greatly improve type-safety of libraries and APIs, enable very sophisticated type-safe domain-specific languages (DSLs) such as embedded SQL.
 - [Declarative Kotlin](kotlin_declarative.pdf) (2 pages): We outline a roadmap for seamless integration of declarative programming capabilities embracing the full power of Verse Calculus (roughly “Haskell + Prolog”) and beyond.
-- [Distributed Kotlin]() (?? pages): An implementation of typesafe actor model with join-calculus-based complex event processing.
+- [Distributed Kotlin](kotlin_distributed.pdf) (?? pages): An implementation of typesafe actor model with join-calculus-based complex event processing.
 
 
 Lastly, we propose semantic and syntactic extensions to reach into areas where Python and Lean currently dominate:
