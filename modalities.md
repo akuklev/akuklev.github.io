@@ -104,3 +104,10 @@ Such “eval“ operator gives the “all” operator of Verse Calculus, while �
 # Future work: Canonicity for the □-fragment, productivity for the ◇-fragment
 
 The former means that the “stream” `eval(prgm : □◇P)` is productive and dense in the spectrum `◇P` with respect to the topology given by positively semi-decidable predicates.
+
+Check if we can show that types with verifiable equality are formally subcountable:
+```
+∀(T : *) verifiable(T) → ◇(ℕ ⇀ □T)
+```
+
+Check if we can also show that types with falsifiable equality are formally completely separable.
