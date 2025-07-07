@@ -26,6 +26,8 @@ We call it _higher categorical_, because instances of these structures, i.a. mod
   - A vast expansion of the computational power by allowing all classically provable algorithms;
   - Reflective universes, resulting in a type-theoretic counterpart of M. Shulman's “Set theory for category theory” ZMC/𝕊, and making the underlying type theory eminently suitable for performing constructions widely used in modern algebraic geometry.
 
+We intend to develop a self-justfying finitistic core theory ([Bounded Inductive Construction Calculus](/BICC)) and use it to prove soundness (typechecking decidability, canonicity, normalization, conservativity over ZMC/𝕊 and thus its relative consistency).
+
 A sound theoretical foundation still needs to be put into shape. In a series of short proposals ([Literate Kotlin](kotlin_literate.pdf), [Declarative Kotlin](kotlin_declarative.pdf), [Academic Kotlin](kotlin_academic.pdf), a few pages each) we develop a versatile syntax designed for excellent readability, conciseness, and typographic perfection. It is based on Kotlin, Python, Agda, and Lean, with elements of Scala and Fortress. 
 It's the culmination of over two decades of meticulous collection and evaluation of ideas, carefully assembled into a coherent system.
 
