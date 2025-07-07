@@ -51,39 +51,8 @@ We hope to generalize the completion operator V from hereditary universes to ter
 
 Since every proof t : Prfⁿ is finite, it can be carried out already inside the finite partial model Vⁿ of our theory. Checking a proof inside a finite model is a case of a query evaluation on a finite domain, so it should be possible to define the level-polymorphic function evalⁿ : ∀(t : Prfⁿ) → Conclusion(prf), yielding the Hilbert-style consistency eval : ∀(t : Prfᵗ) → Conclusion(prf).
 
-# Applications of Bounded Inductive Construction Calculus
+# Aspired Applications
 
-Assuming Bounded Inductive Construction Calculus can be established, can play the role of a trusted finitistic core theory to carry out metamathematical proofs. We hope in most cases bi-interpretability and conservativity proofs can be carried out unconditionally. Some interpretability proofs would require the assumption that the target theory is consistent.
+We want to develop Bounded Inductive Construction Calculus to be a trusted finitistic core theory to carry out metamathematical proofs. It seems, in most cases bi-interpretability and conservativity proofs can be carried out unconditionally. We intend to develop a logic-free formalization for the finitary set theory H˂ʷ and its intuitionistic variant CH˂ʷ and show their bi-interpretability with BICC. Then we intend to develop its extensions CH˂ᶿ for computable ordinals θ to gauge consistency strength of predicative theories, e.g. show bi-interpretability of Peano Arithmetic with CH˂ᵋ⁰ and thus its consistency modulo ε₀-induction. Consistency of impredicative theories is measured relative to set theories with some higher infinity axioms (existence of universes with given closure properties), so we hope to develop appropriate extensions of H˂ʷ with a fixed number, a countable hierarchy, or an ordinal-indexed hierarchy of universes with given properties to use for bi-intepretability proofs with impredicative theories. We strongly hope to be able to also provide Dialectica/realizability interpretations including classical (Krivine) realizability.
 
-Consistency proofs for theories stronger that BICC are neccessarily conditional. The same applies to normalization-and-canonicity proofs for type theories stronger than BICC, and sometimes also for typechecking decidability of these theories.
-
-For non-predicative theories, such proofs depend on the existence of some set-theoretic model, e.g.
-```
-def condition := (∃(M : V) M ⊧ZFω)
-canonicityCCobs : condition → (∀(t : BooleanTermCCobs) Bool)
-```
-Here, we can evaluate a boolean term of Observational Calculus of Constructions, given there is a model of ZF set theory with a countable hierarchy of universes. The predicate ( ⊧ZF) is definable in BICC for the type of pure sets V, but we need to have existential quantifier that works without specifying the level upfront. We can also hopefully prove polymoprhic proofs, i.e. show if we restrict the number of universes to `n` in CCobs, we only need the same number of universes in the set-theoretic model:
-```
-canonicityCCobsR(n : ℕ) : (∃(M : V) M ⊧ZF(i)) → (∀(t : BooleanTermCCobsR(i)) Bool)
-```
-
-Since we can measure how many universes a particular term uses, we can also require the respective model:
-```
-canonicityCCobsD :  (∀(t : BooleanTermCCobs) (∃(M : V) M ⊧ZF(Complexity(t))) → Bool
-```
-
-Providing Dialectica/realizability interpretations also seems possible using the same machinery.
-
-In case of predicative theories, the golden standard is given by Gentzen-style (cut elimination) consistency proofs. In this case, the inductive type of proof terms Prf comes with a linear order (≺). Consistency depends on the assumption that this well-order is wellfounded; that is, for every `p : Prf`, the number of `q ≺ p` is bounded:
-```
-def condition := ∀(p : Prf) ∃(n : ℕ) Covers(n, { q : Prf | q ≺ p })
-consistency : condition → ∀(prf : Prf) Conclusion(prf)
-```
-
-In this case it we can also move the condition past quantifier and just require that it holds for a particular proof:
-```
-def condition := ∀(p : Prf) ∃(n : ℕ) Covers(n, { q : Prf | q ≺ p })
-consistencyR : ∀(prf : Prf) condition(prf) → Conclusion(prf)
-```
-
-Finally, Artemov-style consistency (also known as selector consistency, close related to Dialectica style consistency) also seems expressable within such a system.
+We intend to use BICC to prove consistency, canonicity, normalization, and decidability of typechecking for various variants of HCCC relative to apporpriate theories, as well as conservativity of two basic variants of HCCC relative to ZFC, TG, and ZMC/S respectively.
