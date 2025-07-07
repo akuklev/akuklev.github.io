@@ -1,13 +1,13 @@
 WIP: Bounded Inductive Construction Calculus
-======================================
+============================================
 
-Assume that we have a type theory that features an impredicative universe of propositions Prop, dependent function types ∀(x : X) Y(x), inductive types sufficiently general that they can be used for direct syntactical encodings of well-formed proofs carried out in a given formal system. Let Prf be the inductive type of of its own proofs together with a function Conclusion : Prf → Prop. Hilbert-style consistency proof is a dependent function
+Assume that we have a type theory that features an impredicative universe of propositions Prop, dependent function types ∀(x : X) Y(x), inductive types sufficiently general that they can be used for direct syntactical encodings of well-formed proofs carried out in a given formal system. Let Prf be the inductive type of of its own proofs together with a function Conclusion : Prf → Prop. Hilbert-style consistency proof is the proposition
+```
+  ∀(prf : Prf) ¬¬Conclusion(prf)
+```
+That is, we can prove that conclusion of every proof is not false. Classically it is equivalent to its constructively stronger form, a dependent function
 ```
   eval : ∀(prf : Prf) Conclusion(prf)
-```
-type of which is definitionally equivalent to
-```
-  ∀(prf : Prf) Conclusion(prf) ≠ false
 ```
 
 Gödel's second incompleteness theorem seems to rule out theories that can prove their own Hilbert-style consistency, but the recently developed Finitary set theory H˂ʷ [Pakhomov19] uses a loophole of Gödel's result and proves its own consistency. Yet, the proof cannot be verified in its entirety because the syntactical encoding of the very proofs (“Gödel numbering”) lies outside of the scope of set theoretic language. We want to address this shortcoming by developing a type-theoretic counterpart of the finitary type theory.
@@ -50,3 +50,40 @@ i.e. essentially we have `t : Jᵗ`.
 We hope to generalize the completion operator V from hereditary universes to terms of arbitrary inductive types so that Vᵗ is precisely the finitary hereditary universe where all bounded inductive types Jᵗ can be modelled.
 
 Since every proof t : Prfⁿ is finite, it can be carried out already inside the finite partial model Vⁿ of our theory. Checking a proof inside a finite model is a case of a query evaluation on a finite domain, so it should be possible to define the level-polymorphic function evalⁿ : ∀(t : Prfⁿ) → Conclusion(prf), yielding the Hilbert-style consistency eval : ∀(t : Prfᵗ) → Conclusion(prf).
+
+# Applications of Bounded Inductive Construction Calculus
+
+Assuming Bounded Inductive Construction Calculus can be established, can play the role of a trusted finitistic core theory to carry out metamathematical proofs. We hope in most cases bi-interpretability and conservativity proofs can be carried out unconditionally. Some interpretability proofs would require the assumption that the target theory is consistent.
+
+Consistency proofs for theories stronger that BICC are neccessarily conditional. The same applies to normalization-and-canonicity proofs for type theories stronger than BICC, and sometimes also for typechecking decidability of these theories.
+
+For non-predicative theories, such proofs depend on the existence of some set-theoretic model, e.g.
+```
+def condition := (∃(M : V) M ⊧ZFω)
+canonicityCCobs : condition → (∀(t : BooleanTermCCobs) Bool)
+```
+Here, we can evaluate a boolean term of Observational Calculus of Constructions, given there is a model of ZF set theory with a countable hierarchy of universes. The predicate ( ⊧ZF) is definable in BICC for the type of pure sets V, but we need to have existential quantifier that works without specifying the level upfront. We can also hopefully prove polymoprhic proofs, i.e. show if we restrict the number of universes to `n` in CCobs, we only need the same number of universes in the set-theoretic model:
+```
+canonicityCCobsR(n : ℕ) : (∃(M : V) M ⊧ZF(i)) → (∀(t : BooleanTermCCobsR(i)) Bool)
+```
+
+Since we can measure how many universes a particular term uses, we can also require the respective model:
+```
+canonicityCCobsD :  (∀(t : BooleanTermCCobs) (∃(M : V) M ⊧ZF(Complexity(t))) → Bool
+```
+
+Providing Dialectica/realizability interpretations also seems possible using the same machinery.
+
+In case of predicative theories, the golden standard is given by Gentzen-style (cut elimination) consistency proofs. In this case, the inductive type of proof terms Prf comes with a linear order (≺). Consistency depends on the assumption that this well-order is wellfounded; that is, for every `p : Prf`, the number of `q ≺ p` is bounded:
+```
+def condition := ∀(p : Prf) ∃(n : ℕ) Covers(n, { q : Prf | q ≺ p })
+consistency : condition → ∀(prf : Prf) Conclusion(prf)
+```
+
+In this case it we can also move the condition past quantifier and just require that it holds for a particular proof:
+```
+def condition := ∀(p : Prf) ∃(n : ℕ) Covers(n, { q : Prf | q ≺ p })
+consistencyR : ∀(prf : Prf) condition(prf) → Conclusion(prf)
+```
+
+Finally, Artemov-style consistency (also known as selector consistency, close related to Dialectica style consistency) also seems expressable within such a system.
