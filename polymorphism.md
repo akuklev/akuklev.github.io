@@ -140,11 +140,10 @@ We have just shown that the only closed-form inhabitant of the type `∀(T : *) 
 
 # Further work: Classical reasoning and functional logic programming
 
-In a [related draft](https://akuklev.github.io/modalities) we argue that it is also possible to introduce a modality dual to □, namely the S4-possibility modality mapping each type `T` to a spectrum `◇T` of its formal inhabitants, i.e. inhabitants that can “non-constructively shown to exist” using choice operator and double negation elimination as its special case. This modality allows classical (non-constructive) reasoning within resulting type theory under the ◇-modality without compromizing computational properties of the type theory elsewhere.
-
-By establishing a set-theoretic interpretation of types under ◇-modality, we will show admissibility of the computational Markov principle allowing to evaluate Turing-complete computations given a closed-form classical proof of their non-divergence:
+In a [related draft](https://akuklev.github.io/modalities) we argue that it is also possible to introduce a modality dual to □, namely the S4-possibility modality mapping each type `T` to a spectrum `◇T` of its formal inhabitants, i.e. inhabitants that can “non-constructively shown to exist” using choice operator (similar to Lean4 proof assistant) and double negation elimination as its special case. This modality allows classical (non-constructive) reasoning within ◇-fragment without compromizing computational properties of the underlying type theory such as canonicity, normalization and decidability of type checking, as well as its compatibility with univalence. It remains this way even if we allow non-constructive proofs to escape the ◇-fragment vie computational Markov principle:
 ```
  c : Computation<T>   nonDivergence : □◇(c ≠ ⊥)
 ————————————————————————————————————————————————————
           eval(c, nonDivergence) : T
 ```
+It allows to evaluate Turing-complete computations given a closed-form classical proof of their non-divergence, vastly increasing computational power of the underlying type theory.
