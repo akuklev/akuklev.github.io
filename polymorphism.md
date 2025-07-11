@@ -40,11 +40,11 @@ In the first rule we can allow a context containing only closed-form inhabitants
 
 Now we can clearly see that it is indeed the S4 neccesity modality. But in this form it does not work well with dependent types. To proceed we need to make our type theory {0, ω}-graded, that we'll allow to mark some variales in contexts as computationally irrelevant using zero subscript above the colon. It will allow us to introduce parametric quantifiers `∀<x : X> T(x)` (note angle brackets instead of parens):
 ```
- Γ ⊢ X : *     Γ, x : X ⊢ Y(x) : *
+ Γ ⊢ X : U     Γ, x : X ⊢ Y(x) : U
 ––––––––————–––––––––––—————————————
-   Γ ⊢ ∀<x : Y> Y(x) : *
+   Γ ⊢ ∀<x : Y> Y(x) : U
 
- Γ ⊢ X : *   Г, x :° X ⊢ y : Y(X)
+ Γ ⊢ X : U   Г, x :° X ⊢ y : Y(X)
 –––––––––––––––––––––––––—————————————
  Г ⊢ { x :° X ↦ Y(X) }: ∀<x : Y> Y(x) 
 ```
@@ -108,7 +108,7 @@ structure ℕ-Mod<T : U>
 
 Every inductive type also has a Church encoding Iᶜ, for example
 ```
-ℕᶜ := ∀(T : U) ℕ-Mod<T> → T
+ℕᶜ := ∀<T : U> ℕ-Mod<T> → T
 0ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.base }
 1ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.step m.base }
 2ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.step (m.step m.base) }
@@ -132,11 +132,11 @@ These operators can be used for instance to derive the classical “theorem for 
 def m : 𝟙-Modᵈ 𝟙-objᵁ {id : 𝟙ᵁ ↦ (id ≃ { x ↦ x } }
   point: refl
 
-Theorem ∀(id : □∀(T : *) T → T) id ≃ { x ↦ x }
+Theorem ∀(id : □∀<T : U> T → T) id ≃ { x ↦ x }
   𝟙-par(m)
 ```
 
-We have just shown that the only closed-form inhabitant of the type `∀(T : *) T → T` is `{ x ↦ x }`.
+We have just shown that the only closed-form inhabitant of the type `∀<T : U> T → T` is `{ x ↦ x }`.
 
 # Further work: Classical reasoning and functional logic programming
 
