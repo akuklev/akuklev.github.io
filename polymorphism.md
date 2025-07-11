@@ -38,7 +38,7 @@ In the first rule we can allow a context containing only closed-form inhabitants
  □Г, Δ ⊢ x : □X
 ```     
 
-Now we can clearly see that it is indeed the S4 neccesity modality. But in this form it does not work well with dependent types. To proceed we need to make our type theory {0, ω}-graded, that we'll allow to mark some variales in contexts as computationally irrelevant using zero subscript above the colon. It will allow us to introduce parametric quantifiers `∀<x : X> T(x)` (note angle brackets instead of parens):
+Now we can clearly see that it is indeed the S4 neccesity modality. But in this form it does not work well with dependent types. To proceed we need to make our type theory {0, ω}-graded, that is we'll allow to mark some variales in contexts as computationally irrelevant using zero subscript above the colon. It will allow introducing parametric quantifiers `∀<x : X> T(x)` (note angle brackets instead of parens):
 ```
  Γ ⊢ X : U     Γ, x : X ⊢ Y(x) : U
 ––––––––————–––––––––––—————————————
@@ -49,16 +49,16 @@ Now we can clearly see that it is indeed the S4 neccesity modality. But in this 
  Г ⊢ { x :° X ↦ Y(X) }: ∀<x : Y> Y(x) 
 ```
 
-But more importantly, it allows adjust the rules for the □-modality to work well with dependent types. In the introduction rule we allow irrelevant variables, while in the elimination rule we state that a closed-form element can only depend on non-closed elements of the context irrelevantly:
+But more importantly, it allows to adjust the rules for the □-modality to work well with dependent types. In the introduction rule we allow irrelevant variables, while in the elimination rule we state that a closed-form element can only depend on non-closed elements of the context irrelevantly:
 ```
    □Г, Δ° ⊢ x : X                  Г ⊢ x : □X(t)
 –––––––––––––––———–——(□Intro)     ——————————————–—(□Elim)
  □Г, Δ°, Σ ⊢ x : □X                Г° ⊢ x : X(t)
 
-(We use the notation `□Γ` and `Γ⁰` to □ or ⁰ to each element of the context Γ.)
+(We use the notation □Γ and Γ° to apply □/° to each element of Γ.)
 ```
 
-Now let us define the universe-shifting operator ( ⁺) for all types. Its action on the other types will be defined on case-by-case basis for all type formers (i.e. coinductively). It shifts the universe levels in types built using universes, e.g. `(U → U)⁺` should be `(U⁺ → U⁺)`, while doing nothing for types inside the base universe as they cannot involve universes in their definitions:
+Now let us define the universe-shifting operator ( ⁺) for all types. Its action on the types will be defined on case-by-case basis for all type formers (i.e. coinductively). It shifts the universe levels in types built using universes, e.g. `(U → U)⁺` should be `(U⁺ → U⁺)`, while doing nothing for types inside the base universe as they cannot involve universes in their definitions:
 ```
  Γ ⊢ T : U
 ––––––––—–——
@@ -75,7 +75,7 @@ Now we can finally write down the cummulativity rules: all closed-form typeforme
      Γ ⊢ F : K⁺ → U⁺               Γ ⊢ F : K⁺ → U⁺⁺               Γ ⊢ F : K⁺ → U⁺⁺⁺
 ```
 
-This rule guarantees that closed-form type definitions such as `𝟙 : U`, `(ℕ → 𝔹) : U`, `List<T : U> : U`, `GroupStructureOn(T : U)`, CatStructureOn(Ob : U, Hom : Ob → Ob → U), and `GroupHomomorphism((X : U) × GroupStructureOn(X) × (Y : U) × GroupStructureOn(Y))` become applicable to types from all universes above `U`. 
+This rule guarantees that closed-form type definitions such as `𝟙 : U`, `(ℕ → 𝔹) : U`, `List<T : U> : U`, `GroupStructureOn(T : U)`, `CatStructureOn(Ob : U, Hom : Ob → Ob → U)`, and `GroupHomomorphism((X : U) × GroupStructureOn(X) × (Y : U) × GroupStructureOn(Y))` become applicable to types from all universes above `U`. 
 
 We can also write down polymorphic lifting rule: polymorphic proofs/definitions are automatically applicable in all higher universes. 
 ```
