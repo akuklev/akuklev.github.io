@@ -1,5 +1,5 @@
-Polymorphism via □-modality
-===========================
+Modal Approach to Polymorphism and Relational Paramatricity
+===========================================================
 
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
@@ -136,7 +136,7 @@ Theorem ∀(id : □∀(T : *) T → T) id ≃ { x ↦ x }
   𝟙-par(m)
 ```
 
-We have just proven that the only closed-form inhabitant of the type `∀(T : *) T → T` is `{ x ↦ x }`.
+We have just shown that the only closed-form inhabitant of the type `∀(T : *) T → T` is `{ x ↦ x }`.
 
 # Further work: Classical reasoning and functional logic programming
 
