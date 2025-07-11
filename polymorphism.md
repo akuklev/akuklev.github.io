@@ -4,8 +4,6 @@ Polymorphism via □-modality
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
 
-# Modal approach to polymorphism
-
 Our starting point will be the a type theory with a countable hierarchy of universes introduced by the following infinite family of rules:
 ```
 ––––––––————     ––––––––——————     ––––––––—————————     ···
