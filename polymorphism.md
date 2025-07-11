@@ -117,23 +117,23 @@ Every inductive type also has a Church encoding Iᶜ, for example
 
 Church encoded form of the inductive type forms an instance of the type class I-Mod:
 ```
-instance ℕ-objᶜ : ℕ-Mod(ℕᶜ)
+instance ℕᶜ : ℕ-Mod<ℕᶜ>
   base: 0ᶜ
   next: ( ⁺)ᶜ
 ```
 
 Unary parametricity is given by the following rule for each inductive type:
 ```
-I-par : (n : □Iᶜ) → (R : I-Modᵈ<I-objᶜ>) → (R n)
+I-par : (n : □Iᶜ) → (R : I-Modᵈ Iᶜ) → (R n)
 ```
 
 These operators can be used for instance to derive the classical “theorem for free” for the unit type:
 ```
-def m : 𝟙-Modᵈ 𝟙-objᵁ {id : 𝟙ᵁ ↦ (id ≃ { x ↦ x } }
+def m : 𝟙-Modᵈ 𝟙ᶜ {id : 𝟙ᶜ ↦ (id ≃ { x ↦ x } }
   point: refl
 
 Theorem ∀(id : □∀<T : U> T → T) id ≃ { x ↦ x }
-  𝟙-par(m)
+  𝟙-par id m
 ```
 
 We have just shown that the only closed-form inhabitant of the type `∀<T : U> T → T` is `{ x ↦ x }`.
