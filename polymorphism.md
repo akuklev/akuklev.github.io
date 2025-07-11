@@ -45,15 +45,15 @@ Now we can clearly see that it is indeed the S4 neccesity modality. But in this 
    Γ ⊢ ∀<x : Y> Y(x) : *
 
  Γ ⊢ X : *   Г, x :° X ⊢ y : Y(X)
-––––––––––––––––––––––––—————————————
- Г ⊢ (x :° X ↦ Y(X)) : ∀<x : Y> Y(x) 
+–––––––––––––––––––––––––—————————————
+ Г ⊢ { x :° X ↦ Y(X) }: ∀<x : Y> Y(x) 
 ```
 
 But more importantly, it allows adjust the rules for the □-modality to work well with dependent types. In the introduction rule we allow irrelevant variables, while in the elimination rule we state that a closed-form element can only depend on non-closed elements of the context irrelevantly:
 ```
-   □Г, Δ⁰ ⊢ x : X                  Г ⊢ x : □X(t)
+   □Г, Δ° ⊢ x : X                  Г ⊢ x : □X(t)
 –––––––––––––––———–——(□Intro)     ——————————————–—(□Elim)
- □Г, Δ⁰, Σ ⊢ x : □X                Г° ⊢ x : X(t)
+ □Г, Δ°, Σ ⊢ x : □X                Г° ⊢ x : X(t)
 
 (We use the notation `□Γ` and `Γ⁰` to □ or ⁰ to each element of the context Γ.)
 ```
@@ -93,4 +93,58 @@ With the rule above, it automatically applies also to groups in any universe U.
 
 We have just achieved that closed-form typeformer definitions and closed-form proofs that depend on types irrelevantly automatically become fully polymorphic without mentioning universe levels explicitly in any way.
 
-Note that the coinductively defined operator ( ⁺) is very similar to the coinductively defined operator ( ᵈ) in Displayed Type Theory, which allows to derive the polymoprhic displayed category of all groups `CatStructureOnᵈ GroupStructureOn GroupHomomorphism` from already defined type polymorphic type classes above. Given a proof of, say, Yoneda's lemma, for U-small categories we actually want it to be applicable not only for categories of arbitrary size, but also for arbitrary displayed categories, which now can be achieved using a simple generalization of the polymorphic lifting rule.
+Note that the coinductively defined operator ( ⁺) is very similar to the coinductively defined operator ( ᵈ) in Displayed Type Theory, which allows to derive the displayed category of all groups `CatStructureOnᵈ GroupStructureOn GroupHomomorphism` from already defined type polymorphic type classes above. Given a proof of, say, Yoneda's lemma, for U-small categories we actually want it to be applicable not only for categories of arbitrary size, but also for arbitrary displayed categories, which now can be achieved using a simple generalization of the polymorphic lifting rule. Ultimately we want to exhibit a type theory (cf. https://akuklev.github.io/reedy-types) where the Yoneda's lemma can be stated and proven for ω-categories and will automatically apply to the ω-category of all ω-categories.
+
+# Unary parametricity
+
+It is worth mentioning that □-modality together with ( ᵈ) operator from Displayed Type Theory allows □-internal parametric reasoning. 
+
+Indeed, every inductive type `I` comes with a typeclass `I-Mod<T : U>` of I-structures. For example, for natural numbers we have
+```
+structure ℕ-Mod<T : U>
+  base : T
+  next : T → T
+```
+
+Every inductive type also has a Church encoding Iᶜ, for example
+```
+ℕᶜ := ∀(T : U) ℕ-Mod<T> → T
+0ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.base }
+1ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.step m.base }
+2ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.step (m.step m.base) }
+...
+```
+
+Church encoded form of the inductive type forms an instance of the type class I-Mod:
+```
+instance ℕ-objᶜ : ℕ-Mod(ℕᶜ)
+  base: 0ᶜ
+  next: ( ⁺)ᶜ
+```
+
+Unary parametricity is given by the following rule for each inductive type:
+```
+I-par : (n : □Iᶜ) → (R : I-Modᵈ<I-objᶜ>) → (R n)
+```
+
+These operators can be used for instance to derive the classical “theorem for free” for the unit type:
+```
+def m : 𝟙-Modᵈ 𝟙-objᵁ {id : 𝟙ᵁ ↦ (id ≃ { x ↦ x } }
+  point: refl
+
+Theorem ∀(id : □∀(T : *) T → T) id ≃ { x ↦ x }
+  𝟙-par(m)
+```
+
+We have just proven that the only closed-form inhabitant of the type `∀(T : *) T → T` is `{ x ↦ x }`.
+
+# Further work: Classical reasoning and functional logic programming
+
+In a [related draft](https://akuklev.github.io/modalities) we argue that it is also possible to introduce a modality dual to □, namely the S4-possibility modality mapping each type `T` to a spectrum `◇T` of its formal inhabitants, i.e. inhabitants that can “non-constructively shown to exist” using choice operator and double negation elimination as its special case. This modality allows classical (non-constructive) reasoning within resulting type theory under the ◇-modality without compromizing computational properties of the type theory elsewhere.
+
+By establishing a set-theoretic interpretation of types under ◇-modality, we will show admissibility of the computational Markov principle allowing to evaluate Turing-complete computations given a closed-form classical proof of their non-divergence:
+```
+ c : Computation<T>   nonDivergence : □◇(c ≠ ⊥)
+————————————————————————————————————————————————————
+          eval(c, nonDivergence) : T
+```
