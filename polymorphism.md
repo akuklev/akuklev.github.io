@@ -91,8 +91,7 @@ def id : ∀<T : U> T → T
 ```
 is not only inhabitant of `Endo<T : U>`, but also an inhabitant of `Endo<T : U⁺>`, `Endo<T : U⁺⁺>`, etc.
 
-```
-Polymorphism allows defining mathematical structures (“typeclasses”) without size issues, e.g. 
+Polymorphism allows defining mathematical structures (“typeclasses”) without size restrictions, e.g. 
 ```
 structure Monoid<M : U> : U by M
   unit : M
@@ -140,7 +139,7 @@ cayleyEmbedding : ∀<M : Monoid> MonoidHomomorphism<M, Endo(M)>
 
 With the inhabitant cummulativity rule, it automatically applies also to monoids in any universe U. We have just achieved that closed-form typeformer definitions and closed-form proofs that depend on types irrelevantly automatically become fully polymorphic without mentioning universe levels explicitly in any way.
 
-Note that the coinductively defined operator ( ⁺) reminds of another coinductively defined operator on types, namely the ( ᵈ) operator in [Displayed Type Theory](https://arxiv.org/abs/2311.18781), which allows to derive the displayed category of monoids `Categoryᵈ<Monoid, MonoidHomomorphism>(...)` from the type classes mentioned above. Given a proof of, say, Yoneda's lemma, for U-small categories we actually want it to be applicable not only for categories of arbitrary size, but also for arbitrary displayed categories, which now can be achieved using a simple generalization of the cumulativity rule above. Ultimately we want to exhibit a type theory (cf. https://akuklev.github.io/reedy-types) where the Yoneda's lemma can be stated (and proven) for ω-categories and will automatically apply to the ω-category of all ω-categories.
+Note that the coinductively defined operator ( ⁺) reminds of another coinductively defined operator on types, namely the ( ᵈ) operator in [Displayed Type Theory](https://arxiv.org/abs/2311.18781), which allows to derive the displayed category of monoids `Categoryᵈ<Monoid, MonoidHomomorphism>(...)` from the type classes mentioned above. Given a proof of, say, Yoneda's lemma, for U-small categories we actually want it to be applicable not only for categories of arbitrary size, but also for arbitrary displayed categories, which now can be achieved using a simple generalization of the cumulativity rule above. Ultimately we want to achieve a type theory (cf. https://akuklev.github.io/reedy-types) where the Yoneda's lemma can be stated (and proven) for ω-categories and will automatically also apply to the displayed ω-category of all ω-categories.
 
 # Unary parametricity
 
