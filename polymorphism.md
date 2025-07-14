@@ -68,14 +68,39 @@ Now let us define the universe-shifting operator ( ⁺) for all types. Its actio
  (∀(x : Y) Y(x))⁺  ↦ ∀(x : Y⁺) × (Y(x))⁺    
 ```
 
-Now we can finally write down the cummulativity rules: all closed-form typeformers defined for some universe are also applicable to all higher universes:
+Now we can finally write down the cummulativity rules that do not only ensure that closed-form types (e.g. `𝟙 : U`, `(ℕ → 𝔹) : U`) also live in all universes above the one they were defined for, but also that all closed-form typeformers defined for some universe are also applicable to all universes above:
 ```
  Γ, K : U⁺ ⊢ F : □(K → U)      Γ, K : U⁺⁺ ⊢ F : □(K → U⁺)     Γ, K : U⁺⁺⁺ ⊢ F : □(K → U⁺⁺)      
 ——————————————————————————    ————————————————————————————    ——————————————————————————————   ···
      Γ ⊢ F : K⁺ → U⁺               Γ ⊢ F : K⁺ → U⁺⁺               Γ ⊢ F : K⁺ → U⁺⁺⁺
 ```
 
-This rule guarantees that closed-form type definitions such as `𝟙 : U`, `(ℕ → 𝔹) : U`, `List<T : U> : U`, `GroupStructureOn(T : U)`, `CatStructureOn(Ob : U, Hom : Ob → Ob → U)`, and `GroupHomomorphism((X : U) × GroupStructureOn(X) × (Y : U) × GroupStructureOn(Y))` become applicable to types from all universes above `U`. 
+This rule makes closed-form typeformers polymorphic, i.e. once we define a type-former such as `List<T : U> : U`, `Endo<T : U> := T → T` for some universe in an empty context, it automatically becomes applicable to all higher universes. It also allows defining mathematical structures (“typeclasses”), e.g. 
+```
+structure Monoid<M : U> : U by M
+  unit : M
+  compose(x y : M) : M
+  ...axioms
+
+structure Monad<F : U → U> by F
+  unit<T>(x : T) : F<T>
+  compose<X, Y>(x : F<X>, y : X → F<Y>) : F<Y>
+  ...axioms
+
+structure Category<Ob : U, Mor<X Y : Ob> : U>
+  unit(O : Ob) → Mor<O, O>
+  compose<X, Y, Z>(f : Mor<X, Y>, g : Mor<Y, Z>) : Mor<X, Z>
+  ...axioms
+
+structure MonoidHomomorphism<X Y : Group> : (X → Y) by apply
+  apply : X → Y
+  ...axioms
+
+structure Categoryᵈ<Ob : U → U, Mor<X Y : Ob> : U
+  ...
+
+def CategoryOfMonoids = Categoryᵈ<Monoid, MonoidHomomorphism>(...)
+```
 
 We can also write down polymorphic lifting rule: polymorphic proofs/definitions are automatically applicable in all higher universes. 
 ```
@@ -84,16 +109,16 @@ We can also write down polymorphic lifting rule: polymorphic proofs/definitions 
             Γ ⊢ c : ∀<T : K⁺> F(T)
 ```
 
-For example, assume we have proven the Cayley's embedding theorem for U-small groups:
+For example, assume we have proven the Cayley's embedding theorem for U-small monoids:
 ```
-cayleyEmbedding : ∀<G : U> ∀(g : GroupStructureOn<G>) GroupHomomorphism((G, g), sym(G))
+cayleyEmbedding : ∀<M : U> ∀(m : Monoid<M>) MonoidHomomorphism<M, Endo(M)>
 ```
 
 With the rule above, it automatically applies also to groups in any universe U.
 
 We have just achieved that closed-form typeformer definitions and closed-form proofs that depend on types irrelevantly automatically become fully polymorphic without mentioning universe levels explicitly in any way.
 
-Note that the coinductively defined operator ( ⁺) is reminds of another coinductively defined operator on types, namely the ( ᵈ) operator in [Displayed Type Theory](https://arxiv.org/abs/2311.18781), which allows to derive the displayed category of all groups `CatStructureOnᵈ GroupStructureOn GroupHomomorphism` from the type classes mentioned above. Given a proof of, say, Yoneda's lemma, for U-small categories we actually want it to be applicable not only for categories of arbitrary size, but also for arbitrary displayed categories, which now can be achieved using a simple generalization of the lifting rule above. Ultimately we want to exhibit a type theory (cf. https://akuklev.github.io/reedy-types) where the Yoneda's lemma can be stated (and proven) for ω-categories and will automatically apply to the ω-category of all ω-categories.
+Note that the coinductively defined operator ( ⁺) is reminds of another coinductively defined operator on types, namely the ( ᵈ) operator in [Displayed Type Theory](https://arxiv.org/abs/2311.18781), which allows to derive the displayed category of monoids `Categoryᵈ<Monoid, MonoidHomomorphism>(...)` from the type classes mentioned above. Given a proof of, say, Yoneda's lemma, for U-small categories we actually want it to be applicable not only for categories of arbitrary size, but also for arbitrary displayed categories, which now can be achieved using a simple generalization of the lifting rule above. Ultimately we want to exhibit a type theory (cf. https://akuklev.github.io/reedy-types) where the Yoneda's lemma can be stated (and proven) for ω-categories and will automatically apply to the ω-category of all ω-categories.
 
 # Unary parametricity
 
