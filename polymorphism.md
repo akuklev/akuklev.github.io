@@ -210,7 +210,7 @@ def m : 𝟙ᴿᵈ<𝟙ᶜ> { id : 𝟙ᶜ ↦ (id ≃ { x ↦ x } }
   point: refl
 
 Theorem ∀(id : □∀<T : U> T → T) id ≃ { x ↦ x }
-  𝟙-par id m
+  id ↦ 𝟙-par id m
 ```
 
 We have just shown that the only closed-form inhabitant of the type `∀<T : U> T → T` is `{ x ↦ x }`.
