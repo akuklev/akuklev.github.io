@@ -1,5 +1,5 @@
-□Polymorphism for Martin-Löf Type Theories
-==========================================
+□Parametric Polymorphism for Agnostic Type Theories
+===================================================
 
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
@@ -143,7 +143,7 @@ Note that the coinductively defined operator ( ⁺) reminds of another coinducti
 
 # Unary parametricity
 
-We have achieved that `id := { x ↦ x }` inhabits `Endo<T>` in all universes, but we can also extend our type theory so we can show that `id` is the only closed-form inhabitant of `∀<T> Endo<T>` up to equivalence. The □-modality together with ( ᵈ) operator from Displayed Type Theory allows □-internal parametric reasoning. As opposed to type theories with non-modal internal parametricity, this approach does not contradict LEM.
+We have achieved that `id := { x ↦ x }` inhabits `Endo<T>` in all universes, but we can also extend our type theory so we can show that `id` is the only closed-form inhabitant of `∀<T> Endo<T>` up to equivalence. The □-modality together with ( ᵈ) operator from Displayed Type Theory allows □-internal parametric reasoning. As opposed to type theories with non-modal internal parametricity, this approach does not contradict LEM maintaining the underlying type theory constructively agnostic.
 
 In 1941, Alonzo Church noticed that natural numbers can be represented as polymorphic functions of the type `∀<T> (T → T) → T → T`. All other inductive types also have Church encodings, and 
 the type `∀<T> (T → T)` is the Curch encoding of the unit type 𝟙. To establish that `id` its unique closed-form inhabitant, it is enough to postulate that closed-form inhabitants of Church encoded inductive datatypes are exhausted by Church encodings. Let us see how to formulate that as rules.
@@ -215,9 +215,9 @@ Theorem ∀(id : □∀<T : U> T → T) id ≃ { x ↦ x }
 
 We have just shown that the only closed-form inhabitant of the type `∀<T : U> T → T` is `{ x ↦ x }`.
 
-# Further work: Classical reasoning and functional logic programming
+# Classical reasoning and functional logic programming
 
-In a [related draft](https://akuklev.github.io/modalities) we argue that it is also possible to introduce a modality dual to □, namely the S4-possibility modality mapping each type `T` to the spectrum `◇T` of its formal inhabitants, i.e. inhabitants that can “non-constructively shown to exist” using choice operator (as in Lean4) and double negation elimination as its special case. This modality allows classical (non-constructive) reasoning within ◇-fragment without compromizing computational properties of the underlying type theory such as canonicity, normalization and decidability of type checking, as well as its compatibility with univalence. It remains this way even if we allow non-constructive proofs to escape the ◇-fragment vie computational Markov principle:
+In a [sister paper](https://akuklev.github.io/modalities) we argue that it is also possible to introduce a modality dual to □, namely the S4-possibility modality mapping each type `T` to the spectrum `◇T` of its formal inhabitants, i.e. inhabitants that can “non-constructively shown to exist” using choice operator (as in Lean4) and double negation elimination as its special case. This modality allows classical (non-constructive) reasoning within ◇-fragment without compromizing computational properties of the underlying type theory such as canonicity, normalization and decidability of type checking, as well as its compatibility with univalence. It remains this way even if we allow non-constructive proofs to escape the ◇-fragment vie computational Markov principle:
 ```
  c : Computation<T>   nonDivergence : □◇(c ≠ ⊥)
 ————————————————————————————————————————————————————
