@@ -75,7 +75,21 @@ Now we can finally write down the cummulativity rules that do not only ensure th
      Γ ⊢ F : K⁺ → U⁺               Γ ⊢ F : K⁺ → U⁺⁺               Γ ⊢ F : K⁺ → U⁺⁺⁺
 ```
 
-This rule makes closed-form typeformers polymorphic, i.e. once we define a type-former such as `List<T : U> : U`, `Endo<T : U> := T → T` for some universe in an empty context, it automatically becomes applicable to all higher universes. It also allows defining mathematical structures (“typeclasses”), e.g. 
+This rule makes closed-form typeformers polymorphic, i.e. once we define a type-former such as `List<T : U> : U`, `Endo<T : U> := T → T` for some universe in an empty context, it automatically becomes applicable to all higher universes. Now we need the cummulativity rule for the inhabitants of polymorphic types:
+```
+ Γ, K : U⁺ ⊢ F : □(K → U)     Γ ⊢ c : □∀<T : K> F(T)
+—————————————————————————————–––––––––———————————————
+            Γ ⊢ c : ∀<T : K⁺> F(T)
+```
+
+This way,
+```
+def id : ∀<T : U> T → T
+  x ↦ x
+```
+is not only inhabitant of `Endo<T : U>`, but also an inhabitant of `Endo<T : U⁺>`, `Endo<T : U⁺⁺>`, etc.
+
+Polymorphism allows defining mathematical structures (“typeclasses”) without size issues, e.g. 
 ```
 structure Monoid<M : U> : U by M
   unit : M
@@ -92,69 +106,89 @@ structure Category<Ob : U, Mor<X Y : Ob> : U>
   compose<X, Y, Z>(f : Mor<X, Y>, g : Mor<Y, Z>) : Mor<X, Z>
   ...axioms
 
-structure MonoidHomomorphism<X Y : Group> : (X → Y) by apply
-  apply : X → Y
-  ...axioms
-
 structure Categoryᵈ<Ob : U → U, Mor<X Y : Ob> : U
   ...
 
-def CategoryOfMonoids = Categoryᵈ<Monoid, MonoidHomomorphism>(...)
+structure MonoidHomomorphism<X Y : Group> : (X → Y) by apply
+  apply : X → Y
+  ...axioms
 ```
 
-We can also write down polymorphic lifting rule: polymorphic proofs/definitions are automatically applicable in all higher universes. 
+Note polymorphic proofs and constructions are automatically applicable to all structure instances regardless of their size. For example, assume we have proven the Cayley's embedding theorem for U-small monoids:
 ```
- Γ, K : U⁺ ⊢ F : □(K → U)     Γ ⊢ c : □∀<T : K> F(T)
-—————————————————————————————–––––––––———————————————
-            Γ ⊢ c : ∀<T : K⁺> F(T)
+cayleyEmbedding : ∀<M : Monoid> MonoidHomomorphism<M, Endo(M)>
 ```
 
-For example, assume we have proven the Cayley's embedding theorem for U-small monoids:
-```
-cayleyEmbedding : ∀<M : U> ∀(m : Monoid<M>) MonoidHomomorphism<M, Endo(M)>
-```
-
-With the rule above, it automatically applies also to groups in any universe U.
-
-We have just achieved that closed-form typeformer definitions and closed-form proofs that depend on types irrelevantly automatically become fully polymorphic without mentioning universe levels explicitly in any way.
+With the inhabitant cummulativity rule, it automatically applies also to monoids in any universe U. We have just achieved that closed-form typeformer definitions and closed-form proofs that depend on types irrelevantly automatically become fully polymorphic without mentioning universe levels explicitly in any way.
 
 Note that the coinductively defined operator ( ⁺) is reminds of another coinductively defined operator on types, namely the ( ᵈ) operator in [Displayed Type Theory](https://arxiv.org/abs/2311.18781), which allows to derive the displayed category of monoids `Categoryᵈ<Monoid, MonoidHomomorphism>(...)` from the type classes mentioned above. Given a proof of, say, Yoneda's lemma, for U-small categories we actually want it to be applicable not only for categories of arbitrary size, but also for arbitrary displayed categories, which now can be achieved using a simple generalization of the lifting rule above. Ultimately we want to exhibit a type theory (cf. https://akuklev.github.io/reedy-types) where the Yoneda's lemma can be stated (and proven) for ω-categories and will automatically apply to the ω-category of all ω-categories.
 
 # Unary parametricity
 
-It is worth mentioning that □-modality together with ( ᵈ) operator from Displayed Type Theory allows □-internal parametric reasoning. 
+We have achieved that `id := { x ↦ x }` inhabits `Endo<T>` in all universes, but we can also extend our type theory so we can show that `id` is the only closed-form inhabitant of `∀<T> Endo<T>` up to equivalence. The □-modality together with ( ᵈ) operator from Displayed Type Theory allows □-internal parametric reasoning. As opposed to type theories with non-modal internal parametricity, this approach does not contradict LEM.
 
-Indeed, every inductive type `I` comes with a typeclass `I-Mod<T : U>` of I-structures. For example, for natural numbers we have
+In 1941, Alonzo Church noticed that natural numbers can be represented as polymorphic functions of the type `∀<T> (T → T) → T → T`. All other inductive types also have Church encodings, and 
+the type `∀<T> (T → T)` is the Curch encoding of the unit type 𝟙. To establish that `id` its unique closed-form inhabitant, it is enough to postulate that closed-form inhabitants of Church encoded inductive datatypes are exhausted by Church encodings. Let us see how to formulate that as rules.
+
+Every inductive type `I` comes with a typeclass `Iᴿ<T : U>` of I-structures. For example, for natural numbers we have
 ```
-structure ℕ-Mod<T : U>
+structure ℕᴿ<T : U> : U by T
   base : T
   next : T → T
 ```
 
-Every inductive type also has a Church encoding Iᶜ, for example
+An I-structure instance is precisely what we need to recursively fold an inhabitant of I. Thus, typeclasses of I-structures allow
+formulating the non-dependent elimination rule for inductive types uniformly:
 ```
-ℕᶜ := ∀<T : U> ℕ-Mod<T> → T
-0ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.base }
-1ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.step m.base }
-2ᶜ := { T :° U, m : ℕ-Mod<T> ↦ m.step (m.step m.base) }
+( )ᶜ : I → ∀<T : U> Iᴿ → T 
+```
+
+Its partial applications are known as Church encodings, e.g.
+```
+0ᶜ := { T :° U, m : ℕᴿ<T> ↦ m.base }
+1ᶜ := { T :° U, m : ℕᴿ<T> ↦ m.step m.base }
+2ᶜ := { T :° U, m : ℕᴿ<T> ↦ m.step (m.step m.base) }
 ...
 ```
 
-Church encoded form of the inductive type forms an instance of the type class I-Mod:
+Their type `Iᶜ := ∀<T : U> Iᴿ → T` is known as (Church-) impredicative encoding of the inductive type `I`.
+
+Trivially, both the original and Church-encoded inductive type form an instance of the typeclass Iᴿ:
 ```
-instance ℕᶜ : ℕ-Mod<ℕᶜ>
+instance ℕ : ℕᴿ<ℕ>
+  base: 0
+  next: ( ⁺)
+
+instance ℕᶜ : ℕᴿ<ℕᶜ>
   base: 0ᶜ
   next: ( ⁺)ᶜ
 ```
 
-Unary parametricity is given by the following rule for each inductive type:
+To postulate that that the instance ℕ is the initial model, we need to introduce the induction rule (that is, dependent elimination rule) for ℕ. Ensuring that closed-form inhabitants of ℕᶜ are exhausted by Church encodings of ℕ elements is essentially the same rule, but for the type □ℕᶜ instead of ℕ. To formulate both rules uniformly for all inductive types, let us apply the ( ᵈ) operator to the typeclass of I-models:
 ```
-I-par : (n : □Iᶜ) → (R : I-Modᵈ Iᶜ) → (R n)
+structure ℕᴿᵈ<T : U>(M : ℕᴿ<T>)<Ts : T → U> : (T → U) by Ts 
+  base : T
+  next : T → T
 ```
 
-These operators can be used for instance to derive the classical “theorem for free” for the unit type:
+Now, the dependent elimination rule I reads
 ```
-def m : 𝟙-Modᵈ 𝟙ᶜ {id : 𝟙ᶜ ↦ (id ≃ { x ↦ x } }
+I-elim(n : I) : ∀<M : Iᴿᵈ I> → M(n)
+```
+and unary parametricity is given by the following rule:
+```
+I-par(n : □Iᶜ) : ∀(R : Iᴿᵈ Iᶜ) → (R n)
+```
+
+Now let us see how it works for the unit type 𝟙. Its models are pointed types:
+```
+structure 𝟙ᴿ<T : U>
+  point : T 
+```
+
+We can use 𝟙-par to derive the classical “theorem for free” for the unit type by introducing the following instance:
+```
+def m : 𝟙ᴿᵈ<𝟙ᶜ> { id : 𝟙ᶜ ↦ (id ≃ { x ↦ x } }
   point: refl
 
 Theorem ∀(id : □∀<T : U> T → T) id ≃ { x ↦ x }
