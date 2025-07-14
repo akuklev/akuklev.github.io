@@ -13,13 +13,13 @@ If we want to make Kotlin amenable for certified programming, we want a proof la
 
 Higher Categorical Construction Calculus (HCCC) is a tentative name for a univalent computational type theory we're developing. As a proof calculus, it will be capable of classical reasoning with choice, structural induction over its own language, and higher categorical reasoning. It will enjoy decidable proof checking and will be shown to be a conservative extension of the classical set theory extended with appropriate higher infinity axioms.
 
-It's a _construction calculus_, because, besides proofs, it can express constructions such as numerical algorithms, straightedge and compass constructions, and abstract constructions such as profinite completions. In line with the tradition of the original Calculus of Constructions, it features a universal type of propositions to express structures defined by non-first-order axiomatic theories.  
+It's a _construction calculus_, because, besides proofs, it can express constructions such as numerical algorithms, straightedge and compass constructions, and abstract constructions such as profinite completions. In line with the tradition of the original [Calculus of Constructions](https://en.wikipedia.org/wiki/Calculus_of_constructions), it features a universal type of propositions to express structures defined by non-first-order axiomatic theories.  
 It is _higher categorical_, because instances of structures, i.a. models of axiomatic theories, come conveniently prepackaged in displayed ω-categories that keep track of structure-respecting correpsondences, homomorphisms, and equivalences on every level, so that all proofs and constructions can be generalized, specialized, and transferred along.
 
 We develop HCCC in steps:
 - Our starting point is is the third-generation univalent type theory [HOTT currently being developed by Shulman et al.](https://ncatlab.org/nlab/show/higher+observational+type+theory) with propositional resizing and quotient inductive-inductive definitions, including analytic real numbers ℝ and the Turing-complete computation monad `Computation<T>`. 
 - [“□Parametric Polymorphism for Agnostic Type Theories”](polymorphism): We add the parametric quantification `∀<X : T> Y` and the S4 neccesity modality mapping each proper type `T` to the set `□T` of its closed-form inhabitants. This way, the theory acquires truly polymorphic type (`List<T>`), typeclass (`Monoid<T>`), and instance (`id : ∀<T> T → T`) definitions and LEM-compatible (□-internal) parametric reasoning, so `{ x ↦ x }` can be shown to be the unique closed-form inhabitant of `∀<T> T → T`.
-- [“◇Classical Reasoning in Constructive Type Theories”](modalities): We add the S4 possibility modality mapping each proper type `T` to the spectrum `◇T` of its formal inhabitants to enable univalence-compatible (◇-internal) classical reasoning with choice without compromising favorable computational properties and decidability of proof/type checking. Additionally, we obtain a vast expansion of the computational power by allowing all classically provable algorithms and a dependently typed form of functional logic programming (see Verse calculus).
+- [“◇Classical Reasoning in Constructive Type Theories”](modalities): We add the S4 possibility modality mapping each proper type `T` to the spectrum `◇T` of its formal inhabitants to enable univalence-compatible (◇-internal) classical reasoning with choice without compromising favorable computational properties and decidability of proof/type checking. Additionally, we obtain a vast expansion of the computational power by allowing all classically provable algorithms and a dependently typed form of deterministic functional logic programming (see [Verse calculus](https://simon.peytonjones.org/verse-calculus/)), which turns out to be the partial computational interpretation of the ◇-modality.
 - [Higher Categorical Type Theory](reedy-types): We add types representing Reedy categories, presheaves on them and functors between them, resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/) computational type theory with native ω-categories which is still interpretable in an arbitrary ∞-topos. 
 - [Bounded Inductive Construction Calculus](BICC): we are developing a finitistic core theory to use for proving desired metatheoretic properties, namely typechecking decidability, canonicity, normalization, and conservativity of HCCC over M. Shulman's ZMC/𝕊 and thus its relative consistency.
 
@@ -57,8 +57,8 @@ We have not yet worked out the formal definition for the interactive extension o
 Similar to the case of guarded (co)recursion modalities, the whole system will be reducible to plain HCCC by encoding objects as parametrized relative (co)monads and interpreting expressions involving reference types via do-notation (see [Paella: algebraic effects with parameters and their handlers](https://icfp24.sigplan.org/details/hope-2024-papers/7)).
 
 
-§ What's missing?
------------------
+§ The Missing Part
+------------------
 
 There are two major areas that are not yet covered:
 - The [affine logic for biconstructive mathematics](https://arxiv.org/abs/1805.07518) on the reasoning side;
