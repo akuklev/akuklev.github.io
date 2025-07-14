@@ -208,7 +208,7 @@ We can use 𝟙-par to derive the classical “theorem for free” for the unit 
 def m : 𝟙ᴿᵈ<𝟙ᶜ> { id : 𝟙ᶜ ↦ (id ≃ { x ↦ x } }
   point: refl
 
-Theorem ∀(id : □∀<T : U> T → T) id ≃ { x ↦ x }
+theorem ∀(id : □∀<T : U> T → T) id ≃ { x ↦ x }
   id ↦ 𝟙-par id m
 ```
 
