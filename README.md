@@ -23,7 +23,7 @@ We develop HCCC in steps:
 - [Higher Categorical Type Theory](reedy-types): We add types representing Reedy categories, presheaves on them and functors between them, resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/) computational type theory with native ω-categories which is still interpretable in an arbitrary ∞-topos. 
 - [Bounded Inductive Construction Calculus](BICC): we are developing a finitistic core theory to use for proving desired metatheoretic properties, namely typechecking decidability, canonicity, normalization, and conservativity of HCCC over M. Shulman's ZMC/𝕊 and thus its relative consistency.
 
-A sound theoretical foundation still needs to be put into shape. In a series of short proposals ([Literate Kotlin](kotlin_literate.pdf), [Academic Kotlin](kotlin_academic.pdf)) we develop a versatile syntax designed for excellent readability, conciseness, and typographic perfection. Based on Kotlin, Python, Agda, Lean, Scala, and Fortress, it's a culmination of over two decades of meticulous collection and evaluation of ideas, carefully assembled into a coherent system.
+A sound theoretical foundation still needs to be put into shape. In a series of [short](kotlin_literate.pdf), [proposals](kotlin_academic.pdf) we develop a versatile syntax designed for excellent readability, conciseness, and typographic perfection. Based on Kotlin, Python, Agda, Lean, Scala, and Fortress, it's a culmination of over two decades of meticulous collection and evaluation of ideas, carefully assembled into a coherent system.
 
 § A proof language we'd enjoy using
 -----------------------------------
