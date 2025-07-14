@@ -13,7 +13,7 @@ If we want to make Kotlin amenable for certified programming, we want a proof la
 
 Higher Categorical Construction Calculus (HCCC) is a tentative name for a univalent computational type theory we're developing. As a proof calculus, it will be capable of classical reasoning with choice, structural induction over its own language, and higher categorical reasoning. It will enjoy decidable proof checking and will be shown to be a conservative extension of the classical set theory extended with appropriate higher infinity axioms.
 
-It's a _construction calculus_, because, besides proofs, it can express constructions such as numerical algorithms, straightedge and compass constructions, and abstract constructions such as profinite completions. In line with the tradition set by the original Calculus of Constructions, it features a universal type of propositions to express structures defined by non-first-order axiomatic theories.  
+It's a _construction calculus_, because, besides proofs, it can express constructions such as numerical algorithms, straightedge and compass constructions, and abstract constructions such as profinite completions. In line with the tradition of the original Calculus of Constructions, it features a universal type of propositions to express structures defined by non-first-order axiomatic theories.  
 It is _higher categorical_, because instances of structures, i.a. models of axiomatic theories, come conveniently prepackaged in displayed ω-categories that keep track of structure-respecting correpsondences, homomorphisms, and equivalences on every level, so that all proofs and constructions can be generalized, specialized, and transferred along.
 
 We develop HCCC in steps:
