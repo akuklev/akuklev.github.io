@@ -45,17 +45,13 @@ By establishing a set-theoretic interpretation of types under ◇-modality, we w
 We will show that even in presence computational of Markov principle, all closed-form functions `f : □(X → Y)` are continuous with respect to the topology given by positively semi-decidable predicates which is also the usual open-ball topology for all types constructed as Cauchy completions, and the sets of closed-form inhabitants of types with positively semi-decidable equality are formally subcountable: Check if we can show that types with verifiable equality are formally subcountable: `∀<T : *> verifiable(T) → ◇(ℕ ⇀ □T)`   
 **TODO**: Check if we can also show that types with falsifiable equality are formally completely separable.
 
-# The spectral modality ◇ and perceived entanglement
+# Interpreting classical logic within ◇
 
-# Spectral quantifiers and canonical quantifiers
-
-# The Markov principle
-
-# Unary parametricity
-
-# Interpreting classical logic
+**TODO**
 
 # Interpreting verse calculus
+
+**TODO**
 
 Verse calculus is a functional logic programming language, which implies that a finite closed “program” can be evaluated:
 ```
@@ -68,12 +64,12 @@ Where PolyComputation is a monad similar to the Computation monad, but allowing 
 
 This is the “all” operator of Verse Calculus, while εᵀ gives “one” operator.
 
+TODO: Show that the “stream” `all(prgm : □◇P)` is productive and dense in the spectrum `◇P` with respect to the topology given by positively semi-decidable predicates.
+
+# Spectral quantifiers and perceived entanglement
+
 # Embedding of the type-theoretic model of ZF-sets into ◇ by Zakharyaschev subframe canonical formulae
 
 # Set-theoretic model a la Pujet-Tabareau and conservativity via back-and-fourth argument
 
-# Normalization for the modal-free fragment and admissibility of Markov principle
-
-# Future work: Canonicity for the □-fragment, productivity for the ◇-fragment
-
-The former means that the “stream” `all(prgm : □◇P)` is productive and dense in the spectrum `◇P` with respect to the topology given by positively semi-decidable predicates.
+# Admissibility of the computational Markov principle
