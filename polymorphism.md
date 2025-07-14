@@ -1,5 +1,5 @@
-Modal Approach to Polymorphism and Paramatricity
-================================================
+Modal Approach to Polymorphism
+==============================
 
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
