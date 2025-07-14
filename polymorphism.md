@@ -1,5 +1,5 @@
-□Polymorphism for Intuitionistic Type Theories
-==============================================
+□Polymorphism for Martin-Löf Type Theories
+==========================================
 
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
