@@ -31,7 +31,7 @@ A sound theoretical foundation still needs to be put into shape. In a series of 
 Human readers understand implicit conversions immediately, forgive minor omissions, and think along with the author, so they are able to bridge nontrivial gaps and transform arguments "mutatis mutandis" once they grasp the idea. Any attempt at formalization is plagued by the pain to elaborate all of this explicitly.
 
 To start with, known issues with known solution approaches have to be addressed:
-- Most frustrating are the faulty type mismatch errors caused by obvious equalities and subsumptions not holding computationally. These can be reduced with:
+- Most frustrating are the type mismatch issues caused by obvious equalities that do not not hold computationally. These can be greatly reduced with
    - The universe `SProp` of definitionally propositional types ([“Definitional proof-irrelevance without K”](https://dl.acm.org/doi/10.1145/3290316))
    - The universe `SData` of definitionally set-like types ([“Observational Equality meets CiC”](https://hal.science/hal-04535982v1))
    - Limited predicate subtyping ([“Predicate Subtyping with Proof Irrelevance”](https://arxiv.org/abs/2110.13704))
@@ -40,7 +40,8 @@ To start with, known issues with known solution approaches have to be addressed:
 - The richness and flexibility of the type system lures into reinventing the wheel. Every library tends to use its own slightly different inventory of standard types and typeclasses, which massively hinders their interoperability. Luckily, this issue be addressed systematically by
   - [Algebraic ornaments](https://arxiv.org/abs/1212.3806) and [Dependent Interoperability](https://dl.acm.org/doi/abs/10.1145/2103776.2103779)
   - Typeclass-based mechanism of contextual implicit coercions as in [Lean](https://lean-lang.org/functional_programming_in_lean/type-classes/coercion.html) and [Scala3](https://dotty.epfl.ch/docs/reference/contextual/conversions.html).
-  - Fortress-style configurable inheritance for sound typeclass hierarchies, and a contextually configurable mechanism of instance resulution and derivation.
+  - Fortress-style configurable inheritance for sound typeclass hierarchies.
+  - Contextually configurable instance resulution and derivation.
 
 § HCCC as a programming language
 --------------------------------
