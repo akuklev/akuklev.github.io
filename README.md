@@ -28,9 +28,7 @@ A sound theoretical foundation still needs to be put into shape. In a series of 
 § A proof language we'd enjoy using
 -----------------------------------
 
-Human readers understand implicit conversions immediately, forgive minor omissions, and think along with the author, so they are able to bridge nontrivial gaps and transform arguments "mutatis mutandis" once they grasp the idea. Any attempt at formalization is plagued by the pain to elaborate all of this explicitly.
-
-To start with, known issues with known solution approaches have to be addressed:
+Human readers understand implicit conversions immediately, forgive minor omissions, and think along with the author, so they are able to bridge nontrivial gaps and transform arguments "mutatis mutandis" once they grasp the idea. Proof formalization is plagued by the pain to elaborate all of this explicitly. An enjoyable proof language must at least address the issues of that kind with known solution approaches:
 - Most frustrating are the type mismatch issues caused by obvious equalities that do not not hold computationally. Partial solutions:
    - The universe `SProp` of definitionally propositional types ([“Definitional proof-irrelevance without K”](https://dl.acm.org/doi/10.1145/3290316))
    - The universe `SData` of definitionally set-like types ([“Observational Equality meets CiC”](https://hal.science/hal-04535982v1))
