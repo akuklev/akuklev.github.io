@@ -42,8 +42,42 @@ By establishing a set-theoretic interpretation of types under ◇-modality, we w
           eval(c, nonDivergence) : T
 ```
 
-We will show that even in presence computational of Markov principle, all closed-form functions `f : □(X → Y)` are continuous with respect to the topology given by positively semi-decidable predicates which is also the usual open-ball topology for all types constructed as Cauchy completions, and the sets of closed-form inhabitants of types with positively semi-decidable equality are formally subcountable: Check if we can show that types with verifiable equality are formally subcountable: `∀<T : *> verifiable(T) → ◇(ℕ ⇀ □T)`   
-**TODO**: Check if we can also show that types with falsifiable equality are formally completely separable.
+We will show that even in presence computational of Markov principle, all closed-form functions `f : □(X → Y)` are continuous with respect to the topology given by positively semi-decidable predicates which is also the usual open-ball topology for all types constructed as Cauchy completions.
+
+**TODO**: Check that sets of closed-form inhabitants of types with positively semi-decidable equality are formally subcountable:
+```
+∀<T : Equitable> → ◇(ℕ ⇀ □T)
+```
+**TODO**: Check if we can also show that types with refutable equality are formally completely separable:
+```
+∀<T : Discernable> ∃(ds : ℕ ⇀ T) ∀(x : □T) ◇(ns : ℕ → ℕ, x = lim(ds ∘ ns))
+```
+
+where
+```
+structure Decidable<this P : Prop>
+  check : P ∨ ¬ P
+
+structure Verifiable<this P : Prop>
+  verify : Computation<P>
+  tightness : ¬P = ¬verify
+
+structure Refutable<this P : Prop>
+  refute : Computation<¬P>
+  tightness : P = refute
+
+establish Decidable<P> ≡ Verifiable<P> ∧ Refutable<P>
+
+structure Discrete<this T>
+  checkEq(a b : T) : Decidable<a = b>
+
+structure Discernable<this T>
+  checkEq(a b : T) : Refutable<a = b>
+
+structure Equitable<this T>
+  checkEq(a b : T) : Verifiable<a = b>
+```
+
 
 # Interpreting classical logic within ◇
 
@@ -56,15 +90,24 @@ We will show that even in presence computational of Markov principle, all closed
 Verse calculus is a functional logic programming language, which implies that a finite closed “program” can be evaluated:
 ```
          prgm : □◇P
-————————————————————————————————
- all(prgm) : PolyComputation P
+——————————————————————————————
+ ɜᵀ(prgm) : PolyComputation P
 ```
 
 Where PolyComputation is a monad similar to the Computation monad, but allowing to yield multiple, potentially infinutely many values, a computational stream modulo order and multiplicity of values.
+```
+structure PolyComputation<P>
+  next : Computation<(P, PolyComputation<P>)>
+```
 
-This is the “all” operator of Verse Calculus, while εᵀ gives “one” operator.
+ɜᵀ gives the “all” operator of Verse Calculus, while εᵀ gives “one” operator.
 
-TODO: Show that the “stream” `all(prgm : □◇P)` is productive and dense in the spectrum `◇P` with respect to the topology given by positively semi-decidable predicates.
+TODO: Show that the “stream” `all(prgm : □◇P)` is productive and dense in the spectrum `◇P` with respect to the topology given by positively semi-decidable predicates:
+```
+ p : □◇T    x : T    P : T -> Verifiable
+–––––––––––––––––––––––––––––––––––––––––
+            ɜᵀ(p).any(P)
+```
 
 # Spectral quantifiers and perceived entanglement
 
