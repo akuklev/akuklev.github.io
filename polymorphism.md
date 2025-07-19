@@ -91,9 +91,9 @@ def id : ∀<T : U> T → T
 ```
 is not only inhabitant of `Endo<T : U>`, but also an inhabitant of `Endo<T : U⁺>`, `Endo<T : U⁺⁺>`, etc.
 
-Polymorphism allows defining mathematical structures (“typeclasses”) without size restrictions, e.g. 
+Polymorphism allows defining mathematical structures ([“typeclasses”](http://akuklev.github.io/kotlin_typeclasses.pdf)) without size restrictions, e.g. 
 ```
-structure Monoid<by M : U> : U
+structure Monoid<this M : U> : U
   unit : M
   compose(x y : M) : M
   ...axioms
@@ -102,7 +102,7 @@ instance Endo<T> : Monoid<Endo<T>>
   unit: id<T>
   compose(f g : Endo<T>): { x : T ↦ f(g(x)) }
 
-structure Monad<by F : U → U>
+structure Monad<this F : U → U>
   unit<T>(x : T) : F<T>
   compose<X, Y>(x : F<X>, y : X → F<Y>) : F<Y>
   ...axioms
@@ -118,7 +118,7 @@ structure Category<Ob : U, Mor<X Y : Ob> : U>
 structure Categoryᵈ<Ob : U → U, Mor<X Y : Ob> : U
   ...
 
-structure MonoidHomomorphism<X Y : Group>(by apply : X → Y) : U
+structure MonoidHomomorphism<X Y : Group>(this apply : X → Y) : U
   ...axioms
 
 instance Monoid : Categoryᵈ<Monoid, MonoidHomomorphism>
@@ -149,7 +149,7 @@ the type `∀<T> (T → T)` is the Curch encoding of the unit type 𝟙. To esta
 
 Every inductive type `I` comes with a typeclass `Iᴿ<T : U>` of I-structures. For example, for natural numbers we have
 ```
-structure ℕᴿ<by T : U> : U
+structure ℕᴿ<this T : U> : U
   base : T
   next : T → T
 ```
@@ -183,7 +183,7 @@ instance ℕᶜ : ℕᴿ<ℕᶜ>
 
 To postulate that that the instance ℕ is the initial model, we need to introduce the induction rule (that is, dependent elimination rule) for ℕ. Ensuring that closed-form inhabitants of ℕᶜ are exhausted by Church encodings of ℕ elements is essentially the same rule, but for the type □ℕᶜ instead of ℕ. To formulate both rules uniformly for all inductive types, let us apply the ( ᵈ) operator to the typeclass of I-models:
 ```
-structure ℕᴿᵈ<T : U>(M : ℕᴿ<T>)<by Ts : T → U> : U
+structure ℕᴿᵈ<T : U>(M : ℕᴿ<T>)<this Ts : T → U> : U
   base : T
   next : T → T
 ```
