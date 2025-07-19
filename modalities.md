@@ -46,7 +46,7 @@ We will show that even in presence computational of Markov principle, all closed
 
 **TODO**: Check that sets of closed-form inhabitants of types with positively semi-decidable equality are formally subcountable:
 ```
-∀<T : Equitable> → ◇(ℕ ⇀ □T)
+∀<T : Equatable> → ◇(ℕ ⇀ □T)
 ```
 **TODO**: Check if we can also show that types with refutable equality are formally completely separable:
 ```
@@ -74,7 +74,7 @@ structure Discrete<this T>
 structure Discernable<this T>
   checkEq(a b : T) : Refutable<a = b>
 
-structure Equitable<this T>
+structure Equatable<this T>
   checkEq(a b : T) : Verifiable<a = b>
 ```
 
