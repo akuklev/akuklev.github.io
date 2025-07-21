@@ -4,9 +4,9 @@ A Blueprint
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
 
-At JetBrains, we create the most effective, convenient, and pleasurable tools for engineers and researchers, allowing their the natural drive to develop to thrive and bear fruit. We dare to pursue ambitious visionary ideas. We wanted to use a programming language we'd enjoy using, so we created one, and now Kotlin is the language of choice for millions of software developers worldwide.
+At JetBrains, we develop the most effective, convenient and enjoyable tools for engineers and researchers so that their natural drive to develop can flourish and bear fruit. We dare to pursue ambitious, visionary ideas. We wanted to use a programming language that we enjoy ourselves, so we created one, and now Kotlin is the language of choice for millions of software developers worldwide.
 
-If we want to make Kotlin amenable for certified programming, we want a proof language and toolset we'd enjoy using. We believe that the best proof language for certified programming should be a general-purpose language results, definitions, conjectures, constructions, and proofs in all mainstream areas of mathematics and computer science. After 25 years of active research, aided by a number of breakthroughs sprouting from the Univalent Foundations Program, we finally have a blueprint for such a language.
+To make Kotlin suitable for certified programming, we need a proof language and a toolset that we enjoy using ourselves. We believe that the best proof language for certified programming should be a general-purpose language for expressing results, definitions, conjectures, constructions and proofs in all major areas of mathematics and computer science. After 25 years of active research, supported by a series of breakthroughs resulting from the Univalent Foundations Programme, we finally have a blueprint for such a language.
 
 § Overview
 ----------
