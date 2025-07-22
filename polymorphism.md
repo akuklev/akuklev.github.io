@@ -319,16 +319,19 @@ the first universe `U`) and translate unbounded quantification over sets into pa
 via Zakharyaschev subframe canonical formulae, the translation will turn out to satisfy all axioms of ZMC/𝕊.
 
 Thus, this type theory variant is an extension of ZMC/𝕊.
-We intend to show that it is indeed a conservative extension thereof by exhibiting a construction
-for finite fragments of this type theory in ZMC/𝕊 that models inhabitants of `M` by the respective sets,
-so a type-theoretic translation of the set-theoretic formula φ is only inhabited if the formula φ holds
-in the model.
+Presumably, a conservative one: It is possible to exhibit a construction that yields ZMC/𝕊-valued models for
+finite fragments of this type theory in ZMC/𝕊 built in such a way that the type-theoretic translation of
+the set-theoretic formula φ is only inhabited if the formula φ holds in the model.
+
+Conservativity implies equiconsistency, so it should be possible to adapt the consistency-dependent canonicity proof
+for TTobs by [L. Pujet and N. Tabareau](https://dl.acm.org/doi/10.1145/3498693) to show desirable computational
+properties claimed above.
 
 # Future work
 
-In 2024, [J. Chan and S. Weirich devised a stratified type theory StraTT](https://arxiv.org/pdf/2309.12164), a logically
-consistent type theory that allows speaking of the all-encompassing universe `Type : Type` by stratifying typing
-judgments.
+In 2024, [J. Chan and S. Weirich devised a stratified type theory StraTT](https://arxiv.org/pdf/2309.12164), a
+logically consistent type theory that allows speaking of the all-encompassing universe `Type : Type` by stratifying
+typing judgments.
 This approach parallels New Foundations, a non-well-founded set theory developed by W. V. Quine in 1937, the only
 successful foundational theory able to speak of all-encompassing self-containing universal objects, which was recently
 definitely shown to be consistent.
