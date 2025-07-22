@@ -4,9 +4,9 @@ A Blueprint
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
 
-At JetBrains, we develop the most effective, convenient and enjoyable tools for engineers and researchers so that their natural drive to develop can flourish and bear fruit. We dare to pursue ambitious, visionary ideas. We wanted to use a programming language that we enjoy ourselves, so we created one, and now Kotlin is the language of choice for millions of software developers worldwide.
+At JetBrains, we develop the most effective, convenient and enjoyable tools for engineers and researchers so that their natural drive to develop can flourish and bear fruit. We dare to pursue ambitious, visionary ideas. We wanted to use a programming language that we ourselves would enjoy, so we created one, and now Kotlin is the language of choice for millions of software developers worldwide.
 
-To make Kotlin suitable for certified programming, we need a proof language and a toolset that we enjoy using ourselves. We believe that the best proof language for certified programming should be a general-purpose language for expressing results, definitions, conjectures, constructions and proofs in all major areas of mathematics and computer science. After 25 years of active research, supported by a series of breakthroughs resulting from the Univalent Foundations Programme, we finally have a blueprint for such a language.
+Likewise, we have endeavoured to develop a convenient and enjoyable language for formal reasoning: a general-purpose language for expressing results, definitions, conjectures, constructions and proofs in all major areas of mathematics and computer science — including, of course, theorems about Kotlin applications and Kotlin itself. After 25 years of active research, supported by a series of breakthroughs resulting from the Univalent Foundations programme, we finally have a blueprint for such a language. These developments have also led to a [variety of ideas for Kotlin](kotlin-series) that dramatically improve its capabilities for correct-by-construction software design and make it amenable to automated verification.
 
 § Overview
 ----------
