@@ -12,7 +12,7 @@ We dare to pursue ambitious, visionary ideas.
 We wanted to use a programming language that we ourselves would enjoy, so we created one,
 and now Kotlin is the language of choice for millions of software developers worldwide.
 
-Likewise, we have endeavored to develop a convenient and enjoyable language for formal reasoning:
+Likewise, we have endeavoured to develop a convenient and enjoyable language for formal reasoning:
 a general-purpose language for expressing results, definitions,
 conjectures, constructions, and proofs in all major areas of mathematics and computer science —
 including, of course, theorems about Kotlin applications and Kotlin itself.
@@ -105,7 +105,7 @@ An enjoyable proof language must at least address the issues of that kind with k
 --------------------------------
 
 Computational type theories are functional programming languages capable of exhaustive internal reasoning about the programs’
-behavior.
+behaviour.
 The ability to make use of classical termination proofs makes HCCC an exceptionally powerful total programming language.
 It is also capable of expressing general Turing-complete (and thus potentially diverging)
 computations and computations on exact real numbers
@@ -132,8 +132,8 @@ the pure modality ⊡ and the live modality ⟐.
 Pure objects `x : ⊡X` are self-contained;
 they do not interact through any references, even those available in the context,
 see [Controlling purity in Kotlin](kotlin_purity.pdf).
-Live objects `x : ⟐X` may have captured references,
-i.e., they can interact through references not present in the context.
+Live objects `x : ⟐X` may have captured references, i.e.
+they can interact through references not present in the context.
 Live objects include those that may interact or have interacted with the outside world,
 so they have a spectrum of possible states rather than one fixed state,
 just like the formal variables in Verse calculus.
@@ -194,7 +194,7 @@ The non-commutative generalization of state creation and substitution algebras w
 describing quantum arenas where separate objects can be entangled.
 There, the separately created objects generally do not remain separable objects,
 and the picture of arenas as collections of distinct objects becomes fuzzy.
-We cannot reason in terms of "distinct particles" anymore,
+We cannot reason in terms of "distinct particles" any more,
 and have to reason in terms of "field quanta", with quantum arenas playing the role of quantum fields.
 We assume this analogy can be made precise 
 and will allow describing quantum computations and perhaps also non-discrete quantum processes in general

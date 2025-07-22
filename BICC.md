@@ -1,47 +1,83 @@
 WIP: Bounded Inductive Construction Calculus
 ============================================
 
-Assume that we have a type theory that features an impredicative universe of propositions Prop, dependent function types ∀(x : X) Y(x), inductive types sufficiently general that they can be used for direct syntactical encodings of well-formed proofs carried out in a given formal system. Let Prf be the inductive type of of its own proofs together with a function Conclusion : Prf → Prop. Hilbert-style consistency proof is the proposition
+Assume that we have a type theory that features an impredicative universe of propositions `Prop`,
+dependent function types `∀(x : X) Y(x)`,
+inductive types sufficiently general that they can be used for direct syntactical encodings of well-formed proofs
+carried out in a given formal system.
+Let Prf be the inductive type of its own proofs together with a function `Conclusion : Prf → Prop`.
+Hilbert-style consistency proof is the proposition
 ```
   ∀(prf : Prf) ¬¬Conclusion(prf)
 ```
-That is, we can prove that conclusion of every proof is not false. Classically it is equivalent to its constructively stronger form, a dependent function
+That is, we can prove that the conclusion of every proof is not false.
+Classically it is equivalent to its constructively stronger form, a dependent function
 ```
   eval : ∀(prf : Prf) Conclusion(prf)
 ```
 
-Gödel's second incompleteness theorem seems to rule out theories that can prove their own Hilbert-style consistency, but the recently developed Finitary set theory H˂ʷ [Pakhomov19] uses a loophole of Gödel's result and proves its own consistency. Yet, the proof cannot be verified in its entirety because the syntactical encoding of the very proofs (“Gödel numbering”) lies outside of the scope of set theoretic language. We want to address this shortcoming by developing a type-theoretic counterpart of the finitary type theory.
+Gödel’s second incompleteness theorem seems to rule out theories that can prove their own Hilbert-style consistency,
+but the recently developed Finitary set theory H˂ʷ [Pakhomov19] uses a loophole of Gödel’s result
+and proves its own consistency.
+Yet the proof cannot be verified in its entirety because the syntactical encoding of the very proofs
+(“Gödel numbering”) lies outside the scope of set theoretic language.
+We want to address this shortcoming by developing a type-theoretic counterpart of the finitary type theory.
 
 
 # Universes, finitary set theory
 
-In type theories, types containing other types are known as universes. A universe is called hereditary if the types it contains are (1) themselves universes (2) hereditary ones. Pure set theories can be understood as type theories where all types (besides the universe of proposition Prop) are hereditary universes. Wellfounded pure set theories are the ones where ∈-induction for hereditary universes is derivable.
+In type theories, types containing other types are known as universes.
+A universe is called hereditary if the types it contains are (1) themselves universes (2) hereditary ones.
+Pure set theories can be understood as type theories where all types
+(besides the universe of proposition Prop) are hereditary universes.
+Well-founded pure set theories are the ones where ∈-induction for hereditary universes is derivable.
 
-Type theories, in particular the ones with infinite universe hierarchies have rule schemata producing a (r.e.) infinite number of rules, e.g. 
+Type theories, in particular the ones with infinite universe hierarchies have rule schemata
+producing a (r.e.) infinite number of rules, e.g. 
 ```
 –––––————–––––(UH)      –——––––————–––—(UC)
  Γ ⊢ Uⁿ : Uⁿ⁺            Γ ⊢ Uⁿ ⊆ Uⁿ⁺
 ```
-Finitary set theory H˂ʷ [Pakhomov19] features the schemes (UH) and (UA) from above defining a cumulative hierarchy of hereditary universes containing at least n elements for each finite n, the operation of completion V for hereditary universes U:
+Finitary set theory H˂ʷ [Pakhomov19] features the schemes (UH) and (UA) from above defining 
+a cumulative hierarchy of hereditary universes containing at least n elements for each finite n,
+the operation of completion V for hereditary universes U:
 ```
  Γ ⊢ T : U     U' ⊆ V(T)
 –––––————––––––––————–––—
      Γ ⊢ U' : V(U)
 ```
 
-Additionally it contains the type of propositions implementing classical predicate logic with equality and reflecting ∈-relation for hereditary universes. Hereditary universes can be filtered by predicates (separation). ∈-induction for predicates can be classically derived.
+Additionally,
+it contains the type of propositions implementing classical predicate logic with equality
+and reflecting ∈-relation for hereditary universes.
+Hereditary universes can be filtered by predicates (separation).
+∈-induction for predicates can be classically derived.
 
-It appears that generalizing Prop to a generic impredicative universe * (that contains polymorphic functions besides propositions) is a conservative extension.
+It appears that generalizing `Prop` to a generic impredicative universe `*`
+(that contains polymorphic functions besides propositions) is a conservative extension.
 
 
 # Local finiteness and inductive hierarchies
 
-A theory is called locally finite iff any of its finite subtheories (take any finite number of axioms generated by schemata) have finite models. It is precisely the locally finite theories that can evade the shackles of Gödel's second incompleteness theorem. As exemplified by H˂ʷ, a locally finite theory can be powerful enough to define query functions on finite domains (think of database queries applicable to finite tables), but a locally finite type theory cannot feature provably infinite types, but it is still possible to allow inductive definitions. Instead of defining types, they will define inductive hierarchies, that is cumulative hierarchies of finite “bounded inductive” types approximating the intended inductive type.
+A theory is called locally finite iff any of its finite subtheories
+(take any finite number of axioms generated by schemata) have finite models.
+It is precisely the locally finite theories that can evade the shackles of Gödel’s second incompleteness theorem.
+As exemplified by H˂ʷ,
+a locally finite theory can be powerful enough to define query functions on finite domains
+(think of database queries applicable to finite tables),
+but a locally finite type theory cannot feature provably infinite types,
+but it is still possible to allow inductive definitions.
+Instead of defining types, they will define inductive hierarchies,
+that is cumulative hierarchies of finite “bounded inductive” types approximating the intended inductive type.
 
-Our idea is to use terms of other bounded inductive types as levels of approximation. That is for every inductive definition `J` and some term `n : T` of some bounded inductive type, we'll have a bounded inductive type Jⁿ of J-terms that can be constructed from n using non-increasing structural induction. This way we'll have
+Our idea is to use terms of other bounded inductive types as levels of approximation.
+That is for every inductive definition `J` and some term `n : T` of some bounded inductive type,
+we will have a bounded inductive type Jⁿ of J-terms
+that can be constructed from n using non-increasing structural induction.
+This way we will have
 ```
       Γ, n : T ⊢ t' : Jⁿ
-––––––––––––––––––––––——————
+––––––––––––––––––––––––––––
  Γ, n : T, t : Jⁿ ⊢ Jᵗ ⊆ Jⁿ
 ```
 i.e. essentially we have `t : Jᵗ`.
@@ -49,16 +85,44 @@ i.e. essentially we have `t : Jᵗ`.
 
 # Towards consistency via finite partial models
 
-We hope to generalize the completion operator V from hereditary universes to terms of arbitrary inductive types so that Vᵗ is precisely the finitary hereditary universe where all bounded inductive types Jᵗ can be modelled.
+We hope
+to generalize the completion operator V from hereditary universes to terms of arbitrary inductive types
+so that Vᵗ is precisely the finitary hereditary universe where all bounded inductive types Jᵗ can be modelled.
 
-Since every proof `t : Prfⁿ` is finite, it can be carried out already inside the finite partial model `Vⁿ` of our theory. Checking a proof inside a finite model is a case of a query evaluation on a finite domain, so it should be possible to define the level-polymorphic function `evalⁿ : ∀(t : Prfⁿ) → Conclusion(prf)`, yielding the strong Hilbert-style consistency `eval : ∀(t : Prfᵗ) → Conclusion(prf)`.
+Since every proof `t : Prfⁿ` is finite,
+it can be carried out already inside the finite partial model `Vⁿ` of our theory.
+Checking a proof inside a finite model is a case of a query evaluation on a finite domain,
+so it should be possible to define the level-polymorphic function `evalⁿ : ∀(t : Prfⁿ) → Conclusion(prf)`,
+yielding the strong Hilbert-style consistency `eval : ∀(t : Prfᵗ) → Conclusion(prf)`.
 
 # Aspired Applications
 
-We want to develop Bounded Inductive Construction Calculus to be a trusted finitistic core theory to carry out metamathematical proofs. It seems, in most cases bi-interpretability and conservativity proofs can be carried out unconditionally.
+We want
+to develop Bounded Inductive Construction Calculus
+to be a trusted finitistic core theory to carry out metamathematical proofs.
+It seems, in most cases bi-interpretability and conservativity proofs can be carried out unconditionally.
 
-We intend to develop a logic-free formalization for the finitary set theory H˂ʷ and its intuitionistic variant CH˂ʷ (see https://akuklev.github.io/finitistic-core) and show their bi-interpretability with BICC. Then we intend to develop its extensions CH˂ᶿ for computable ordinals θ to gauge consistency strength of predicative theories, e.g. show bi-interpretability of Peano Arithmetic with CH˂ᵋ⁰ and thus its consistency modulo ε₀-induction. Consistency of impredicative theories is measured relative to set theories with some higher infinity axioms (existence of universes with given closure properties), so we hope to develop appropriate extensions of H˂ʷ with a fixed number, a countable hierarchy, or an ordinal-indexed hierarchy of universes with given properties to use for bi-intepretability proofs with impredicative theories.
+We intend to develop a logic-free formalization for the finitary set theory H˂ʷ and its intuitionistic variant CH˂ʷ
+(see https://akuklev.github.io/finitistic-core) and show their bi-interpretability with BICC.
+Then we intend
+to develop its extensions CH˂ᶿ for computable ordinals θ to gauge consistency strength of predicative theories,
+e.g. show bi-interpretability of Peano Arithmetic with CH˂ᵋ⁰ and thus its consistency modulo ε₀-induction.
+Consistency of impredicative theories is measured relative to set theories with some higher infinity axioms
+(existence of universes with given closure properties),
+so we hope to develop appropriate extensions of H˂ʷ with a fixed number, a countable hierarchy,
+or an ordinal-indexed hierarchy of universes with given properties
+to use for bi-interpretability proofs with impredicative theories.
 
-We intend to use BICC to prove soundness of HCCC, namely typechecking decidability, normalization, canonicity and conservativity over Mike Shulman's “Set theory for category theory” ZMC/𝕊, which also yields relative consistency. The same should be carried out for restricted variants of HCCC, namely a the one conservative over Tarski-Grothendieck set theory, the one conservative over ZFC and the strongest known predicative variant (extended predicative Mahlo universes, but no propositional resizing). Weak variants conservative over major reverse mathematics systems should be also isolated.
+We intend to use BICC to prove the soundness of HCCC, namely typechecking decidability, normalization,
+canonicity, and conservativity over M. Shulman’s “Set theory for category theory” ZMC/𝕊,
+which also yields relative consistency.
+The same should be carried out for restricted variants of HCCC,
+namely the one conservative over Tarski-Grothendieck set theory,
+the one conservative over ZFC and the strongest known predicative variant
+(extended predicative Mahlo universes, but no propositional resizing).
+Weak variants conservative over major reverse mathematics systems should be also isolated.
 
-We hope BICC might be the right choice to develop an extensive body of mechanized proofs of major results regarding conservativity, relative consistency, independence, forcing, realizability, ordinal analysis, and reverse mathematics.
+We hope
+BICC might be the right choice
+to develop an extensive body of mechanized proofs of major results regarding conservativity,
+relative consistency, independence, forcing, realizability, ordinal analysis, and reverse mathematics.

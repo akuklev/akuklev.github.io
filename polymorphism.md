@@ -31,8 +31,8 @@ Let us postulate the first universe U to be Σ- and Π-closed and add some basic
 Our goal is to state variadic cumulative.
 That is, we want to state that every type belonging to some universe `U` also belongs to `U⁺`,
 and every type former `F(K : U⁺) : U` can be also lifted one universe above.
-The second rule leads to inconsistency unless we only state it for closed-form type formers,
-i.e., the ones definable in empty context.
+The second rule leads to inconsistency unless we only state it for closed-form type formers, i.e.
+the ones definable in empty context.
 Naïvely,
 we can try
 to introduce the S4 necessity □-modality mapping types `T` to
@@ -82,7 +82,7 @@ that a closed-form element can only depend on non-closed elements of the context
 ```
 
 Now let us define the universe-shifting operator ( ⁺) for all types.
-Its action on the types will be defined on a case-by-case basis for all type formers (i.e., coinductively).
+Its action on the types will be defined on a case-by-case basis for all type formers (i.e. coinductively).
 It shifts the universe levels in types built using universes, e.g. `(U → U)⁺` should be `(U⁺ → U⁺)`,
 while doing nothing for types inside the base universe as they cannot involve universes in their definitions:
 ```
