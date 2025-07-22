@@ -4,7 +4,7 @@ A Blueprint
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com),
 [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
-[Radboud Univ. Nijmegen](https://sws.cs.ru.nl/Person/Guests)
+& [Radboud Univ. Nijmegen](https://sws.cs.ru.nl/Person/Guests)
 
 At JetBrains, we develop the most effective, convenient,
 and enjoyable tools for engineers and researchers so that their natural drive to develop can flourish and bear fruit.
