@@ -2,9 +2,6 @@ A Blueprint
 ===========
 
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
-[Alexander Kuklev](mailto:a@kuklev.com),
-[JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
-& [Radboud Univ. Nijmegen](https://sws.cs.ru.nl/Person/Guests)
 
 At JetBrains, we develop the most effective, convenient,
 and enjoyable tools for engineers and researchers so that their natural drive to develop can flourish and bear fruit.
@@ -45,18 +42,17 @@ come conveniently prepackaged in displayed ω-categories that keep track of stru
 homomorphisms, and equivalences on every level,
 so that all proofs and constructions can be generalized, specialized, and transferred along.
 
-We develop HCCC in steps:
 - Starting point of HCCC is the third-generation univalent type theory
   [HOTT currently being developed by M. Shulman et al.](https://ncatlab.org/nlab/show/higher+observational+type+theory)
   with propositional resizing and inductive types powerful enough to speak of the real numbers ℝ and the Turing-complete
   partiality monad `Computation<T>`. 
-- [“□Parametric Polymorphism for Agnostic Type Theories”](polymorphism):
+- [□Parametric Polymorphism for Agnostic Type Theories](polymorphism):
   We add the parametric quantification `∀<X : T> Y` and
   the S4 necessity modality mapping each proper type `T` to the set `□T` of its closed-form inhabitants.
   This way, the theory acquires truly polymorphic type (`List<T>`), typeclass (`Monoid<T>`), 
   and instance (`id : ∀<T> T → T`) definitions and LEM-compatible (□-internal) parametric reasoning,
   so `{ x ↦ x }` can be shown to be the unique closed-form inhabitant of `∀<T> T → T`.
-- [“◇Classical Reasoning in Constructive Type Theories”](modalities):
+- [◇Classical Reasoning in Constructive Type Theories](modalities):
   We add the S4 possibility modality mapping each proper type `T` to the spectrum `◇T` of its formal inhabitants
   to enable univalence-compatible (◇-internal) classical reasoning with choice
   without compromising favorable computational properties and decidability of proof and type checking. 
