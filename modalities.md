@@ -79,9 +79,7 @@ structure Equatable<this T>
 ```
 
 
-# Interpreting classical logic within ◇
 
-**TODO**
 
 # Interpreting verse calculus
 
@@ -110,9 +108,3 @@ TODO: Show that the “stream” `all(prgm : □◇P)` is productive and dense i
 ```
 
 # Spectral quantifiers and perceived entanglement
-
-# Embedding of the type-theoretic model of ZF-sets into ◇ by Zakharyaschev subframe canonical formulae
-
-# Set-theoretic model a la Pujet-Tabareau and conservativity via back-and-fourth argument
-
-# Admissibility of the computational Markov principle

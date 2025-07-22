@@ -500,28 +500,3 @@ By using the prototype Δ instead of ℕ we can deal with dependencies and thinn
 ## Initial algebra semantics for FQII type families
 **TODO**
 
-# A word about Mahloness and parametricity
-
-With prototypes, we can say that all typeformers have the form `Y<X : P → *> : *`. In presence of the □-modality representing finite closed terms, it is possible to postulate that for universe `U` and any closed-definable type former `TF : □((P → U) → *)` we have a universe `U + TF` containing all inhabitants of `U`, the type `U` itself, and closed under `TF`. Therefore, any finite construction or proof (however polymorphic it may be) is reflected entirely inside some universe `U : *`. With this rule, we obtain the type-theoretic counterpart of M. Shulman’s “Set theory for category theory” ZMC/𝕊.^[Seems that the proposed rule does not only extablish internal Mahloness of the virtual universe *, but also allows constructing infinitely many extermal Mahlo universes below, making * greatly Mahlo].
-
-Additionally we can postulate modal relational parametricity for all inductive types:
-```
-I-par : (n : □Iᵁ) → (R : I-Modᵈ<I-objᵁ>) → (R n)
-```
-— where `Iᵁ := ∀(T : U) ℕ-Mod<T> → T` is the type of Church-implementations, `( ᵁ) : ℕ → ℕᵁ` the recursion operator, and `I-objᵁ` the Church-encoding like
-```
-instance ℕ-objᶜ : ℕ-Mod(ℕᶜ)
-  base: 0ᶜ
-  next: ( ⁺)ᶜ
-```
-
-These operators can be used for instance to derive the classical
-```
-def m : 𝟙-Modᵈ 𝟙-objᵁ {id : 𝟙ᵁ ↦ (id ≃ { x ↦ x } }
-  point: refl
-
-Theorem ∀(id : □∀(T : *) T → T) id ≃ { x ↦ x }
-  𝟙-par(m)
-```
-
-With prototypes we should be able getting parametricity of higher arity for free, and also parametricity for general records, coinductive types, and indexed coinductive types.
