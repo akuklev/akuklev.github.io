@@ -5,7 +5,8 @@ endorse correct-by-construction software design, foster clarity and predictabili
 
 The first two proposals can be seen as an introduction of far-reaching contracts 
 that both foster correctness by construction and set the stage for statically
-verifiable contracts (see also [Usability Barriers for Liquid Types](https://dl.acm.org/doi/10.1145/3729327)):
+verifiable contracts
+(see also [Usability Barriers for Liquid Types by J. Aldrich et al.](https://dl.acm.org/doi/10.1145/3729327)):
 - [Purity and explicit effects](kotlin_purity.pdf) (1 page):
   In many cases, high-order functions such as `sortWith(comparator)`
   only have meaningful behaviour if their arguments are pure functions.
