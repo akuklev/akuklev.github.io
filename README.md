@@ -244,8 +244,8 @@ val r1 = heap.new<Int>(1)
 val r2 = heap.new<Int>(2)
 r1.set(3)
 
-// heap = (new<Int>(1) ↣ r1) • (new<Int>(2) ↣ r2) • r1.set(3)
-//      = (new<Int>(2) ↣ r1) • (new<Int>(2) ↣ r2)
+// heap = (new(1) ↣ r1) • (new(2) ↣ r2) • r1.set(3)
+//      = (new(2) ↣ r1) • (new(2) ↣ r2)
 ```
 
 If we consider value substitution operators such as `r1.set(3)`,
@@ -254,7 +254,7 @@ since this substitution operator is only available after `r1` is created.
 But setting the `r1` to `3` has the same effect as if it were originally initialized by `3`,
 so it is effectively sufficient to consider a trace monoid.
 
-It is customary to write creation operators `(new<Int>(1) ↣ r1)` as `r1 ↦ 1` and write
+It is customary to write creation operators `(new(1) ↣ r1)` as `r1 ↦ 1` and write
 (*) instead of (•) when the actions commute, so the final state of the heap can be written
 as `(r1 ↦ 3) * (r2 ↦ 2)`.
 
@@ -268,8 +268,10 @@ variables.
 Object may (and should) additionally contain equational laws for their trace
 algebroids, such as the commutativity of creation operators and absorption of substitutions:
 ```
-(new<Int>(a) ↣ x) • (new<Int>(b) ↣ y) = (new<Int>(b) ↣ y) • (new<Int>(a) ↣ x)
-(new<Int>(a) ↣ x) • x.set(b) = (new<Int>(b) ↣ x)
+contracts {
+  (new(a) ↣ x) • (new(b) ↣ y) = (new(b) ↣ y) • (new(a) ↣ x)
+  (new(a) ↣ x) • x.set(b) = (new(b) ↣ x)
+}
 ```
 
 This way, types of heap-like objects give rise to the associated concurrent separation logic
