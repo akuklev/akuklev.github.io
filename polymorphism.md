@@ -327,6 +327,7 @@ Conservativity implies equiconsistency, so it should be possible to adapt the co
 for TTobs by [L. Pujet and N. Tabareau](https://dl.acm.org/doi/10.1145/3498693) to show desirable computational
 properties claimed above.
 
+
 # Future work
 
 In 2024, [J. Chan and S. Weirich devised a stratified type theory StraTT](https://arxiv.org/pdf/2309.12164), a
