@@ -99,15 +99,20 @@ inductive ℕ
 
 Every inductive type comes with a ∞-procategory of its models. An inductive definition does not only generate the type (ℕ) itself, but also coinductive dual, the structure of a ℕ-model on an arbitrary type `T`.
 ```
-structure ℕ-Mod<T : *>
+structure ℕᴿ<this T : *>
   base : T
   next : T → T
 ```
 and its canonical instance
 ```
-instance ℕ-obj : ℕ-Mod<ℕ>
+instance ℕ : ℕᴿ<ℕ>
   base: 0
   next: ( ⁺)
+```
+
+Non-dependent elimination rule (recursion) has the following signature:
+```
+( )ᶜ : ℕ → ∀<T : *> ℕᴿ → T
 ```
 
 Models of single-sorted algebraic theories arise as models for quotient inductive types, for example monoids arise as models for the following type:
@@ -123,26 +128,30 @@ inductive MonTh
 
 To each type we can apply the ( ᵈ)-operator to obtain its displayed version. Displayed models for inductive types have the form
 ```
-structure ℕ-Modᵈ <M : ℕ-Mod> <Ts : M → *>
+structure ℕᴿᵈ <M : ℕᴿ, this Ts : |M| → *>
   base : Ts(M.base)
   next : ∀{n : M} Ts(n) → Ts(M.next n)
 ```
 allowing do define the type of induction motives and the induction operator:
 ```
-instance ℕᴹ : ℕ → *
-  ℕ-Modᵈ ℕ-obj
+def ℕᴹ<this P : ℕ → *> = ℕᴿᵈ<ℕ, P>
 
-ℕind<P : ℕ → *> : ℕᴹ → ∀(n : ℕ) P(n)
+ℕ-ind<P> : ℕᴹ<P> → ∀(n : ℕ) P(n)
 ```
  
-For each model `M : ℕ-Mod`, the inhabitants `Pm : ℕ-Modᵈ<M>` are promorphisms (many-to-many corresponcences, sometimes also called weak homomorphisms) on `M` with the target given by
+For each model `M : ℕᴿ`, the inhabitants `Pm : ℕᴿᵈ<M>` are promorphisms (many-to-many corresponcences,
+sometimes also called weak homomorphisms) on `M` with the target given by
 ```
-instance target : ℕ-Mod<M × Pm>
+instance Pm.target : ℕᴿ<M × Pm>
   base: (M.base, Pm.base M.base)
   step: { n : M, x : (Pm n) ↦ (M.step n, Pm.next (M.next n) x) }
 ```
 
-We can single out homomorphisms as the functional (= many-to-one) promorphisms `Σ(src : ℕMod<T>, pm : ℕModᵈ src) (f : ∀(n) (m : (pm n)) × ∀(n' : pm n) n ≃ m`, making the type of ℕ-models into a ∞-precategory (Segal type), which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕ-Mod>` of ℕ-models correspond to their isomorphisms.
+We can single out homomorphisms as the functional (= many-to-one)
+promorphisms `Σ(src : ℕᴿ<T>, pm : ℕᴿᵈ src) (f : ∀(n) (m : (pm n)) × ∀(n' : pm n) n ≃ m`,
+making the type of ℕ-models into a ∞-precategory (Segal type),
+which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕᴿ>` 
+of ℕ-models correspond to their isomorphisms.
 
 The presented construction generalizes to all inductive types, quotient inductive types and (quotient) inductive(-inductive-recursive) type families. We expect them to work mutatis mutandis for familes over inductive prototypes and positive fibered induction-recursion into arbitrary procategories.
 
