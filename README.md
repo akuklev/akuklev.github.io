@@ -220,7 +220,7 @@ for (i in 1..2) {
 }
 user.say("Bye!")
 
-// user = say("Hi"!) ; (user.say(1) | user.say(2)) • user.say("Bye!")
+// user = say("Hi"!) ; (user.say(1) | user.say(2)) ; user.say("Bye!")
 //      = say("Hi"!) ; user.say(1) ; user.say("Bye!") | say("Hi"!) ; user.say(2) ; user.say("Bye!")
 ```
 
