@@ -57,7 +57,7 @@ Now we can clearly see that it is indeed the S4 necessity modality.
 But in this form it does not work well with dependent types.
 To proceed, we need to make our type theory {0, ω}-graded,
 that is we will allow marking some variables in contexts as
-computationally irrelevant using zero subscripts above the colon.
+opaque using zero subscripts above the colon.
 It will allow introducing parametric quantifiers `∀<x : X> T(x)` (note angle brackets instead of parens):
 ```
  Γ ⊢ X : U     Γ, x : X ⊢ Y(x) : U
@@ -70,9 +70,9 @@ It will allow introducing parametric quantifiers `∀<x : X> T(x)` (note angle b
 ```
 
 But more importantly, it allows adjusting the rules for the □-modality to work well with dependent types.
-In the introduction rule we allow irrelevant variables,
+In the introduction rule we allow opaque variables,
 while in the elimination rule we state
-that a closed-form element can only depend on non-closed elements of the context irrelevantly:
+that a closed-form element can only depend on non-closed elements of the context opaquely:
 ```
    □Г, Δ° ⊢ x : X                  Г ⊢ x : □X(t)
 ––––––––––––––––––––(□Intro)      –––––––––––––––(□Elim)
@@ -172,7 +172,7 @@ cayleyEmbedding : ∀<M : Monoid> MonoidHomomorphism<M, Endo(M)>
 With the inhabitant cumulativity rule,
 it automatically applies also to monoids in any universe U. We have just achieved
 that closed-form type former definitions and closed-form proofs
-that depend on types irrelevantly automatically become fully polymorphic
+that depend on types parametrically automatically become fully polymorphic
 without mentioning universe levels explicitly in any way.
 
 Note that the coinductively defined operator ( ⁺) reminds of another coinductively defined operator on types,

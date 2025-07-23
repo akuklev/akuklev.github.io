@@ -139,7 +139,7 @@ val n = user.ask<Int>("Enter any integer number: ")
 
 We think that interactivity can be dealt with by introducing 
 - substructural reference-valued variables,
-- existential quantification over them to construct types with limited lifetimes, and
+- opaque existential quantification over them to construct types with limited lifetimes, and
 - the reference-level cousins of □/◇-modalities: the pure modality ⊡ and the live modality ⟐.
 
 Interaction only happens through references, and in general changes their typestates,
