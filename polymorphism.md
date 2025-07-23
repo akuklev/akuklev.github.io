@@ -333,9 +333,9 @@ properties claimed above.
 In 2024, [J. Chan and S. Weirich devised a stratified type theory StraTT](https://arxiv.org/pdf/2309.12164), a
 logically consistent type theory that allows speaking of the all-encompassing universe `Type : Type` by stratifying
 typing judgments.
-This approach parallels New Foundations, a non-well-founded set theory developed by W. V. Quine in 1937, the only
-successful foundational theory able to speak of all-encompassing self-containing universal objects, which was recently
-definitely shown to be consistent.
+This approach parallels [New Foundations](nf), a non-well-founded set theory developed by W. V. Quine in 1937,
+the only successful foundational theory able to speak of all-encompassing self-containing universal objects,
+which was recently definitely shown to be consistent.
 Stratified type theory can probably be extended to allow for the ω-category of all ω-categories, and be used to explore
 the boundaries of what can be said about such an object.
 

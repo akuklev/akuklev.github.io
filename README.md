@@ -52,7 +52,7 @@ so that all proofs and constructions can be generalized, specialized, and transf
   This way, the theory acquires truly polymorphic type (`List<T>`), typeclass (`Monoid<T>`), 
   and instance (`id : ∀<T> T → T`) definitions and LEM-compatible (□-internal) parametric reasoning,
   so `{ x ↦ x }` can be shown to be the unique closed-form inhabitant of `∀<T> T → T`.
-- [◇Classical Reasoning in Constructive Type Theories](modalities):
+- [◇Classical Reasoning in Constructive Type Theories](verse):
   We add the S4 possibility modality mapping each proper type `T` to the spectrum `◇T` of its formal inhabitants
   to enable univalence-compatible (◇-internal) classical reasoning with choice
   without compromising favorable computational properties and decidability of proof and type checking. 
@@ -60,7 +60,7 @@ so that all proofs and constructions can be generalized, specialized, and transf
   [Verse calculus](https://simon.peytonjones.org/verse-calculus/), a recently developed deterministic approach to 
   functional logic programming.
   Incidentally, we also vastly expand of the computational power by allowing all classically provable algorithms.
-- [Higher Categorical Type Theory](reedy-types):
+- [Higher Categorical Type Theory](prototypes):
   We add types representing Reedy categories, presheaves on them and functors between them,
   resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/)
   computational type theory with native ω-categories
