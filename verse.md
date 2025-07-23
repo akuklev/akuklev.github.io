@@ -87,15 +87,15 @@ structure Equatable<this T>
 
 Verse calculus is a functional logic programming language, which implies that a finite closed “program” can be evaluated:
 ```
-         prgm : □◇P
-——————————————————————————————
- ɜᵀ(prgm) : PolyComputation P
+      prgm : □◇P
+——————————————————————
+ ɜᵀ(prgm) : Stream<P>
 ```
 
-Where PolyComputation is a monad similar to the Computation monad, but allowing to yield multiple, potentially infinutely many values, a computational stream modulo order and multiplicity of values.
+Where `Stream<P>` is a monad similar to the Computation monad, but allowing to yield multiple, potentially infinutely many values, a computational stream modulo order and multiplicity of values.
 ```
-structure PolyComputation<P>
-  next : Computation<(P, PolyComputation<P>)>
+structure Stream<P>
+  next : Computation<(P, Stream<P>)>
 ```
 
 ɜᵀ gives the “all” operator of Verse Calculus, while εᵀ gives “one” operator.
