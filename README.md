@@ -16,7 +16,7 @@ including, of course, theorems about Kotlin applications and Kotlin itself.
 After 25 years of active research,
 supported by a series of breakthroughs resulting from the Univalent Foundations programme,
 we finally have a blueprint for such a language.
-These developments have also led to a [variety of ideas for Kotlin](kotlin-series)
+These developments have also led to a [variety of ideas for Kotlin](kotlin)
 that dramatically improve its capabilities for correct-by-construction software design
 and make it amenable to automated verification.
 
@@ -90,7 +90,7 @@ An enjoyable proof language must at least address the issues of that kind with k
   - Fortress-style configurable inheritance for sound typeclass hierarchies.
   - Contextually configurable instance resolution and derivation.
 
-In a series of [short](kotlin_literate.pdf) [proposals](kotlin_academic.pdf) we develop a versatile syntax
+In a series of [short](kotlin/kotlin_literate.pdf) [proposals](kotlin/kotlin_academic.pdf) we develop a versatile syntax
 for the resulting language
 designed for excellent readability,
 conciseness, and typographic perfection.
@@ -156,7 +156,7 @@ and/or capture external references.
 
 Pure objects `x : ⊡X` are self-contained;
 they do not make use of any external references, even those available in the context,
-see [Controlling purity in Kotlin](kotlin_purity.pdf).
+see [Controlling purity in Kotlin](kotlin/kotlin_purity.pdf).
 
 Sometimes the straightforward, correct-by-construction implementation of a non-interactive
 function is best described as an imperative algorithm `f : ⊡(X => Y)`.
@@ -183,7 +183,7 @@ can be captured inside objects of limited lifetime we introduce using reference-
 This mechanism enables structured sharing and structured concurrency.
 
 We have not yet worked out the formal definition for the interactive extension of HCCC, but we have developed
-[type system extension for Kotlin](kotlin_objects.pdf) that embraces effects, mutability, concurrency,
+[type system extension for Kotlin](kotlin/kotlin_objects.pdf) that embraces effects, mutability, concurrency,
 and synchronization on the practical level.
 It should also make Kotlin amenable to automated verification.
 

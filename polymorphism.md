@@ -120,7 +120,7 @@ def id : ∀<T : U> T → T
 ```
 is not only inhabitant of `Endo<T : U>`, but also an inhabitant of `Endo<T : U⁺>`, `Endo<T : U⁺⁺>`, etc.
 
-Polymorphism allows defining mathematical structures ([“typeclasses”](http://akuklev.github.io/kotlin_typeclasses.pdf))
+Polymorphism allows defining mathematical structures ([“typeclasses”](kotlin/kotlin_typeclasses.pdf))
 without size restrictions, e.g. 
 ```
 structure Monoid<this M : U> : U
