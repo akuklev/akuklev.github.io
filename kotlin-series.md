@@ -20,20 +20,22 @@ verifiable contracts (see also [Usability Barriers for Liquid Types](https://dl.
   It is also closely related to both Capture Checking in Scala and OxCaml,
   but lays more focus on shifting the complexity burden from library users to library developers as far as possible.
 
-Advanced declarative features and type-safe domain-specific languages further expand the applicability of
-correct-by-construction software design.
+Advanced declarative features and type-safe domain-specific languages further expand
+correct-by-construction design:
+- [Startup and dependency injection](kotlin_startup.pdf) (1 page):
+  Application startup often requires initialization of external
+  services and components possibly configurable via command-line arguments.
+  We propose a number of minor language extensions to achieve this with zero boilerplate. 
 - [Safe type providers](kotlin_meta.pdf) (2 pages):
   We propose introducing a safe form of type providers – compile-time functions
   that synthesize interfaces and type aliases – to greatly improve type-safety of libraries and APIs, enable very 
   sophisticated type-safe domain-specific languages (DSLs) such as embedded SQL.
-- [Startup and dependency injection](kotlin_startup.pdf) (1 page):
-  Application startup often requires initialization of external
-  services and components possibly configurable via command-line arguments.
-  We propose a number of minor language extensions to achieve this with zero boilerplate.
 - [Declarative Kotlin](kotlin_declarative.pdf) (2 pages):
   We outline a roadmap for seamless integration of declarative programming
   capabilities embracing the full power of Verse Calculus (roughly “Haskell + Prolog”) and beyond.
 - [Distributed Kotlin](kotlin_actors.pdf): An typesafe actor model with declarative complex event processing.
+
+Type-driven programming facilitates correct-by-construction design in some of the most complex areas:
 - [Typeclasses for Kotlin](kotlin_typeclasses.pdf) (2 pages): Ideas on introducing typeclasses in Kotlin way.
 - [Indexed types](kotlin_families.pdf):
   Indexed types enable correct-by-construction design of parsers and interpreters, as well as type-driven design of 
