@@ -220,21 +220,20 @@ for (i in 1..2) {
 }
 user.say("Bye!")
 
-// user = say("Hi"!) • (user.say(1) + user.say(2)) • user.say("Bye!")
-//      = say("Hi"!) • user.say(1) • user.say("Bye!") +
-//        say("Hi"!) • user.say(2) • user.say("Bye!")
+// user = say("Hi"!) ; (user.say(1) | user.say(2)) • user.say("Bye!")
+//      = say("Hi"!) ; user.say(1) ; user.say("Bye!") | say("Hi"!) ; user.say(2) ; user.say("Bye!")
 ```
 
 ```kotlin
 val n = user.ask<Int>("Enter any integer number: ")
 
 // user = (ask<Int>("Enter any integer number: ") ↣  0)
-//      + (ask<Int>("Enter any integer number: ") ↣  1)
-//      + (ask<Int>("Enter any integer number: ") ↣ -1)
-//      + (ask<Int>("Enter any integer number: ") ↣  2)
-//      + (ask<Int>("Enter any integer number: ") ↣ -2)
-//      + (ask<Int>("Enter any integer number: ") ↣  3)
-//      + ···
+//      | (ask<Int>("Enter any integer number: ") ↣  1)
+//      | (ask<Int>("Enter any integer number: ") ↣ -1)
+//      | (ask<Int>("Enter any integer number: ") ↣  2)
+//      | (ask<Int>("Enter any integer number: ") ↣ -2)
+//      | (ask<Int>("Enter any integer number: ") ↣  3)
+//      | ···
 ```
 
 Objects such as heaps, where fresh objects can be created,
@@ -244,8 +243,8 @@ val r1 = heap.new<Int>(1)
 val r2 = heap.new<Int>(2)
 r1.set(3)
 
-// heap = (new(1) ↣ r1) • (new(2) ↣ r2) • r1.set(3)
-//      = (new(2) ↣ r1) • (new(2) ↣ r2)
+// heap = (new(1) ↣ r1) ; (new(2) ↣ r2) ; r1.set(3)
+//      = (new(2) ↣ r1) ; (new(2) ↣ r2)
 ```
 
 If we consider value substitution operators such as `r1.set(3)`,
@@ -255,7 +254,7 @@ But setting the `r1` to `3` has the same effect as if it were originally initial
 so it is effectively sufficient to consider a trace monoid.
 
 It is customary to write creation operators `(new(1) ↣ r1)` as `r1 ↦ 1` and write
-(*) instead of (•) when the actions commute, so the final state of the heap can be written
+(*) instead of (;) when the actions commute, so the final state of the heap can be written
 as `(r1 ↦ 3) * (r2 ↦ 2)`.
 
 Above posed that object types are described by typestate transition and subsumption diagrams,
@@ -269,8 +268,8 @@ Object may (and should) additionally contain equational laws for their trace
 algebroids, such as the commutativity of creation operators and absorption of substitutions:
 ```
 contracts {
-  (new(a) ↣ x) • (new(b) ↣ y) = (new(b) ↣ y) • (new(a) ↣ x)
-  (new(a) ↣ x) • x.set(b) = (new(b) ↣ x)
+  { val x = new(a) ; x.set(b) } ≡ { val x = new(b) }
+  { val x = new(a) ; val y = new(b) } ≡ { val y = new(b) ; val x = new(n) }
 }
 ```
 
