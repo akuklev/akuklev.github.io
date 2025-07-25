@@ -8,7 +8,7 @@ A lifetime-based approach
 & [Radboud Univ. Nijmegen](https://sws.cs.ru.nl/Person/Guests)
 
 
-Kotlin relies on scope-based resource management but lacks mechanisms to prevent leaking, guarantee lifecycle safety, and rule out conflicting actions statically. We devise a mechanism addressing these issues in a manner compatible with structured concurrency and localized capturing in general. Our model can be seen as a generalization of the Rust approach.
+Kotlin relies on scope-based resource management but lacks mechanisms to prevent leaking, guarantee lifecycle safety, and rule out conflicting actions statically. We devise a mechanism addressing these issues in a manner compatible with and inspired by structured concurrency. Our approach subsumes Rust's borrowing and is closely related to Capture Checking in Scala and OxCaml, but lays more focus on shifting the burden from library users to library developers.
 
 # Introduction
 
