@@ -12,14 +12,13 @@ verifiable contracts
   only have meaningful behaviour if their arguments are pure functions.
   Type-level control over the purity of functions
   and data is essential to prevent nonsensical behaviour and dangerous vulnerabilities.
-- [Resources, lifecycles, and structured concurrency](kotlin_objects.pdf) (7 pages):
-  Kotlin relies on scope-based resource management 
-  but lacks mechanisms to enforce scope confinement, guarantee lifecycle safety, and rule out conflicting actions
-  statically.
+- [Resources, lifecycles, and structured concurrency](kotlin_objects.pdf) (8 pages):
+  Kotlin relies on scope-based resource management
+  but lacks mechanisms to prevent leaking,
+  guarantee lifecycle safety, and rule out conflicting actions statically.
   We devise a mechanism addressing these issues in a manner compatible with and inspired by structured concurrency.
-  Our model can be seen as a generalization of Rust approach.
-  It is also closely related to both Capture Checking in Scala and OxCaml,
-  but lays more focus on shifting the complexity burden from library users to library developers as far as possible.
+  Our approach subsumes Rust's borrowing and is closely related to Capture Checking in Scala and OxCaml,
+  but lays more focus on shifting the burden from library users to library developers.
 
 Advanced declarative features and type-safe domain-specific languages further expand
 correct-by-construction design:
