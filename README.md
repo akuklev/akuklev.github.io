@@ -17,8 +17,9 @@ After 25 years of active research,
 supported by a series of breakthroughs resulting from the Univalent Foundations programme,
 we finally have a blueprint for such a language.
 These developments have also led to a [variety of ideas for Kotlin](kotlin)
-that dramatically improve its capabilities for correct-by-construction software design
-and make it amenable to automated verification.
+that greatly improve its expressiveness and conciseness, and most importantly 
+enabling enforcing correctness-by-construction and verifiable contract programming — 
+the only mainstreamable formal methods.
 
 § The Foundation
 ----------------
@@ -61,7 +62,7 @@ so that all proofs and constructions can be generalized, specialized, and transf
   functional logic programming.
   Incidentally, we also vastly expand of the computational power by allowing all classically provable algorithms.
 - [Higher Categorical Type Theory](prototypes):
-  We add types representing Reedy categories, presheaves on them and functors between them,
+  We add types representing Reedy categories, presheaves on them, and functors between them,
   resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/)
   computational type theory with native ω-categories
   which is still interpretable in every elementary ∞-topos with enough inductive types.
@@ -102,10 +103,14 @@ carefully assembled into a coherent system.
 § Extensions for convenient programming
 ---------------------------------------
 
-Computational type theories are functional programming languages capable of exhaustive internal reasoning about
-the programs’ behaviour.
+Observational type theories can be seen as functional programming languages
+that faithfully internalize their own behavioural semantics:
+- arbitrary semantic properties of functions can be expressed in their signatures;
+- specifications of language primitives are part of the language itself and
+  can be composed into proofs of the aforementioned semantic properties.
+
 The ability to make use of classical termination proofs makes HCCC an exceptionally powerful total programming language,
-which is also capable of expressing general (Turing-complete and thus potentially diverging) computations and
+which is also capable of expressing not necessarily terminating Turing-complete computations and
 exact computations over the reals ℝ. The ◇-modality adds the unparalleled expressiveness of deterministic functional
 logic programming based on the recently introduced [Verse Calculus](https://simon.peytonjones.org/verse-calculus/).
 
@@ -114,7 +119,7 @@ Yet, as great as it sounds in theory,
 programming in bare-bones intensional type theories demands for frustrating amounts of explicit termination,
 productivity, and convertibility proofs.
 A decent practical programming experience can only be achieved by automating them away via liquid types
-and providing convenient infrastructure to deal with rare cases that cannot be automated:
+and providing convenient infrastructure to deal with cases that cannot be automated:
 indexed modalities for size-guarded recursion and [clock-guarded corecursion](https://arxiv.org/abs/1804.09098).
 
 § Embracing interactivity and concurrency
