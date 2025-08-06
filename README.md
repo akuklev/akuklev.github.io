@@ -104,10 +104,10 @@ carefully assembled into a coherent system.
 ---------------------------------------
 
 Observational type theories can be seen as functional programming languages
-that faithfully internalize their own behavioural semantics:
-- arbitrary semantic properties of functions can be expressed in their signatures;
-- specifications of language primitives are part of the language itself and
-  can be composed into proofs of the aforementioned semantic properties.
+that also contain an embedded language to reason about the programs’ behaviour.
+Unambiguous specifications of language primitives are part of the language and
+can be composed into formal proofs regarding any behaviorally relevant properties
+of the programs.
 
 The ability to make use of classical termination proofs makes HCCC an exceptionally powerful total programming language,
 which is also capable of expressing not necessarily terminating Turing-complete computations and
