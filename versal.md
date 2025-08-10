@@ -14,45 +14,73 @@ x :°X -- opaque argument, use only in type annotations
 As we have shown in “[□Parametric Polymorphism for Agnostic Type Theories](polymorphism)”, the opaque mode (`:°`) 
 allows introducing the □-modality mapping types `T` to their sets of closed-form inhabitants `t : □T`.
 It is also possible to define its dual ◇-modality that maps types to `T` to spectra `◇T` (see below)
-of their formally possible inhabitants. The respective rule us quite easy to state: everything which is not forbidden
-is possible.
+of their formally possible inhabitants.
+
+When “constructing” a formal inhabitant, we may use the principle `ε : (¬¬T) → T` that allows that states
+that everything which is not forbidden is possible:
 ```
-————————
+  Γ, ε : ∀<T> (¬¬T) → |T| ⊢ prf : P
+————————————————————————————————————
+          Γ ⊢ prf : ◇P
+```
+
+With ε is both double negation elimination for propositional types `T` and axiom of choice for the
+non-propositional ones^[To remain consistent with univalence under the ◇-modality,
+`ε` should only be applicable to types satisfying uniqueness of identity proofs propositionally,
+i.e. set-like types.]. 
+It allows harnessing the full power of classical (non-constructive) reasoning within ◇-fragment
+without compromising computational properties of the underlying type theory such as canonicity,
+normalization and decidability of type checking, as well as its compatibility with univalence.
+
+In fact, we can even use non-constructive proofs to enhance the computational strength of the
+underlying theory by postulating computational Markov Principle (CMP) that allows evaluating
+Turing-complete computations given a closed-form classical proof of their non-divergence:
+```
+ c : Computation<T>   nonDivergence : □◇(c ≠ ⊥)
+————————————————————————————————————————————————————
+          eval(c, nonDivergence) : T
 ```
 
 
-In intutionistic type theories, negation `¬T` is encoded as the function type `T → ⊥`.
+# Extracting counter-examples
+
+In intuitionistic type theories, negation `¬T` is encoded as the function type `T → Void`.
 A proof that requires an assumption `nT : ¬T` can employ this
 assumption to cut excluded cases when performing case analysis.
 For instance, a value `v : P + T` can be matched by `{ inl(p) ↦ ... ; inr(t) ↦ nT(t) }`.
-Using the ex-falso-quodlibet rule (the recursion operator of the empty type ⊥), the excluded branch `nT(t)`
-can typecheck against any type.
+Using the ex-falso-quodlibet rule (the recursion operator of the empty type `Void`),
+the excluded branch `nT(t)` can typecheck against any type.
 
 Proofs by contradiction `prf : ¬T → Void`assume a negative premise `nT : ¬T` to derive a contradiction,
 i.e. an expression of the empty type `Void`.
-To arrive at a contradiction one can construct a counter-example `t : T` and feed it into `nT(t) : Void`.
+To arrive at a contradiction, one can construct a counter-example `t : T` and feed it into `nT(t) : Void`.
 If we specify that a proof uses the negative premise `nT` exactly once, it is admissible to state that we
 can extract the counter-example fed into it from the closed proof term:
 ```
  prf : □( (nT :¹¬T) → Void ) 
 —————————————————————————————
-       extract(prf) : T
+      extract(prf) : T
 ```
 
-If the proof uses 
-
-
-On the other hand, such a premise can be used inside an internal recursive subproof to cut branches, so it can be used unbounded number of times. However, if we require such a premise to be used exactly once, we can extract a counterexample from a proof by contradiction:
-
-Otherwise, the extraction will be non-determinstic. However, we can introduce modalities of spectra ◇⁺, ◇⁻ and ◇, meaning “one or more possible outcome”, ”one or less outcomes” and “any number of possible outcomes”. With this modalities we have:
+If the proof uses the negative premise at most once, extraction is not guaranteed to terminate.
 ```
- prf : ¬(nT :⁺¬T)      prf : ¬(nT :⁻¬T)        prf : ¬¬T
-——————————————————    ——————————————————    ——————————————
-  εᵀ(prf) : ◇⁺T         εᵀ(prf) : ◇⁻T        εᵀ(prf) : ◇T
+  prf : □( (nT :⁻¬T) → Void ) 
+———————————————————————————————
+ extract(prf) : Computation<T>
 ```
 
-For the rest of this paper will not consider the substructural modes (⁻, ¹, ⁺) and modal operators (◇⁺, ◇⁻), and only consider the truly remarkable third rule above. It's the classical choice operator, which means we can presummably use classical reasoning (with excluded middle and choice) under the ◇-modality!  `◇T` is the type of hypothetically possible inhabitants of `T`, yet will argue that it has a sound computational^[Versal functions only compute on introspectable (closed-form) arguments, they cannot be applied to an “external function” (which can be applied to any value, but not introspected) nor an arbitrary (Cauchy) real number. This is in strong opposition to the total functions outside ◇-modality which are guaranteed to compute also on external entities. Verse calculus seems to provide a Krivine-type realizability interpretation for classical logic with choice, while general MLTT provide stronger Kreisel-type realizability for intuitionistic logic.] interpretation in terms of the Verse Calculus recently introduced by S. Peyton Jones et al. We will also introduce the dual types `□T` of “manifestly neccesary” inhabitants of `T`, i.e. finite closed terms, yielding the well-known computational interpretation in terms of staged computability. Dually to classical reasoning under ◇-modality, we obtain parametric reasoning under □-modality, so that we can show that `{ x ↦ x }` in the only canonical endomorphism of an arbitrary type up to equivalence: `∀(id : □∀(T : *) T → T) id ≃ { x ↦ x }`, see the [companion paper](/polymorphism)
-
+If we do not pose any restrictions on the usage multiplicity, the extraction process might yield any number of results.
+```
+   prf : □(¬¬T) 
+———————————————————
+ extract(prf) : §T
+```
+To account for this, we must introduce the surveyable subsets monad `§T`.
+As we’ll see below, it provides an interpretation for the recently developed Verse calculus, a novel approach
+to deterministic functional logic programming.
+We will argue
+that Verse calculus terms provide classical realizability interpretation^[[Krivine21](https://arxiv.org/abs/2006.05433)]
+for the non-constructive reasoning under ◇-modality.
 
 # Surveyable subsets
 
@@ -181,10 +209,12 @@ Using diverging computation, `flattening` and the acknowledging that spectral va
 
 The only missing thing from the Verse calculus is the `one` operator we prefer calling `any`:
 ```
- Γ, any<T> : ♮T → T ⊢ expr : X
+ Γ, any : ∀<T> ♮T → T ⊢ expr : X
 ————————————————————————————————
        Γ ⊢ expr : ♮X
 ```
+
+Note similarity between `any` operator here and `ε` operator for the `◇`-modality.
 
 Now it remains to be shown (by induction on Verse calculus terms), that our system can interpret Verse
 calculus with essentially the same reduction rules. Since Verse calculus satisfies a condition called
@@ -195,19 +225,6 @@ logical completeness, it is also admissible for our system:
  ∀(x : X) (y(x) ≠ ⊥) = all(ε(x': Y) y(x)).covers(x)
 ```
 
-
-Classical epsilon
-```
- Γ, any<T> : ◇T → T ⊢ prf : P
-——————————————————————————————
-        Γ ⊢ prf : ◇P
-
-
-    Γ, x : X ⊢ prf : ◇Y
-————————————————————————————————————————————————————
- ¬¬prf(x) -> any(ε(x': Y) prf(x)).covers(x)
-
-    Γ ⊢ X : Surveyable      Γ, x : X ⊢ y : ♮Y
-————————————————————————————————————————————————————
- ∀(x : X) (y(x) ≠ ⊥) = all(ε(x': Y) y(x)).covers(x)
-```
+Logical completeness can be further generalized to state that functional logic programming together with
+extraction operator `extract : □(¬¬T) → ♮T` provide a sound classical realizability interpretation to non-constructive 
+reasoning within `◇`.
