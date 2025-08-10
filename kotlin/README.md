@@ -26,14 +26,16 @@ correct-by-construction design:
   Application startup often requires initialization of external
   services and components possibly configurable via command-line arguments.
   We propose a number of minor language extensions to achieve this with zero boilerplate. 
-- [Safe type providers](kotlin_meta.pdf) (2 pages):
+- [On type providers for Kotlin](kotlin_meta.pdf) (2 pages):
   We propose introducing a safe form of type providers – compile-time functions
   that synthesize interfaces and type aliases – to greatly improve type-safety of libraries and APIs, enable very 
   sophisticated type-safe domain-specific languages (DSLs) such as embedded SQL.
-- [Declarative Kotlin](kotlin_declarative.pdf) (2 pages):
-  We outline a roadmap for seamless integration of declarative programming
-  capabilities embracing the full power of Verse Calculus (roughly “Haskell + Prolog”) and beyond.
-- [Distributed Kotlin](kotlin_actors.pdf): An typesafe actor model with declarative complex event processing.
+- [First-class query functions for Kotlin](kotlin_verse.pdf) (1 page):
+  We propose introducing query functions inspired by the recently developed Verse calculus, a
+  novel approach to deterministic functional logic programming combining the powers of Haskell
+  and Prolog. In a limited form which is much easier to implement, query functions can extend
+  SQL-like reactive query languages (see Exposed: Kotlin SQL Framework) by recursive queries
+  that leverage the power of Datalog while remaining easy to read, understand, and maintain.
 
 Type-driven programming facilitates correct-by-construction design in some of the most complex areas:
 - [Typeclasses for Kotlin](kotlin_typeclasses.pdf) (2 pages): Ideas on introducing typeclasses in Kotlin way.
