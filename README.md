@@ -307,7 +307,7 @@ describing quantum heaps where separate objects can be entangled.
 There, separately created objects do not remain separable,
 and the picture of heaps as collections of distinct objects becomes fuzzy:
 instead of "distinct particles", we deal with "field quanta", with quantum heaps playing the role of quantum fields.
-We assume this analogy can be made precise 
+We assume this analogy can be [made precise](https://ncatlab.org/nlab/show/quantum+circuits+via+dependent+linear+types) 
 and will allow describing quantum computations and perhaps also non-discrete quantum processes in general
 and might shed new some light onto formalization of quantum field theory.
 
