@@ -24,10 +24,12 @@ that everything which is not forbidden is possible:
           Γ ⊢ prf : ◇P
 ```
 
-With ε is both double negation elimination for propositional types `T` and axiom of choice for the
-non-propositional ones^[To remain consistent with univalence under the ◇-modality,
-`ε` should only be applicable to types satisfying uniqueness of identity proofs propositionally,
-i.e. set-like types.]. 
+NB: To remain consistent with univalence under the ◇-modality, `ε` should only be applicable
+to data types, i.e. types satisfying uniqueness of identity proofs propositionally.
+
+With ε is both double negation elimination (“law of excluded middle”)
+for propositional types `T` and axiom of choice for the non-propositional data types.
+
 It allows harnessing the full power of classical (non-constructive) reasoning within ◇-fragment
 without compromising computational properties of the underlying type theory such as canonicity,
 normalization and decidability of type checking, as well as its compatibility with univalence.
@@ -164,7 +166,7 @@ def infix <X, Y> zip(x : §X, y: §Y) : §(X × Y)
 ```
 
 Note that `§(X × Y)` is not equal to the cartesian product of type `§X × §Y`, but to
-the smash product `§X ∧ §Y` of pointed types `(X, ⊥)` and `(X, ⊥)`.
+the smash product `§X ⊗ §Y` of pointed types `(X, ⊥)` and `(X, ⊥)`.
 For all `x : X` and `y : Y`, `zip(unit(x), ⊥)` and `zip(unit(x), ⊥)` map to `zip(⊥, ⊥)`.
 
 For any type `T` we have the function `forget(x : T) : Unit`, so we can also define
@@ -185,7 +187,7 @@ Let us define the spectral pairing and spectral application:
 ```
  Γ ⊢ x : ♮X    Γ ⊢ y : ♮Y       Γ ⊢ x : ♮X    Γ ⊢ y : ♮Y       Γ ⊢ x : ♮X    Γ ⊢ f : ♮(X → Y)
 ——————————————————————————     ——————————————————————————     ————————————————————————————————
-     Γ ⊢ (x; y) : ♮Y              Γ ⊢ (x, y) : ♮X ∧ ♮Y              Γ ⊢ f(x) : ♮Y
+     Γ ⊢ (x; y) : ♮Y              Γ ⊢ (x, y) : ♮X ⊗ ♮Y              Γ ⊢ f(x) : ♮Y
 ```
 
 Under the hood this, operations work via `then`, `zip` and `map`. Availability of `unit` and strong
@@ -228,3 +230,76 @@ logical completeness, it is also admissible for our system:
 Logical completeness can be further generalized to state that functional logic programming together with
 extraction operator `extract : □(¬¬T) → ♮T` provide a sound classical realizability interpretation to non-constructive 
 reasoning within `◇`.
+
+# Circled quantifiers
+
+Now let us assume we have a universe `𝒮` of spectral types.
+
+For any two spectral types `X Y : 𝒮` realized by `§X` and `§Y` “under the hood”,
+we have the smash product `X ⊗ Y` realized by `§(X × Y)` and wedge sum `X ⊕ B`
+realized by `§(X + Y)`.
+We also have their indexed versions, the wedge and smash quantifiers:
+```
+  Γ, x : X ⊢ Y : 𝒮         Γ, x : X ⊢ Y : 𝒮
+————————————————————     ————————————————————
+ Γ ⊢ ⊕(x : X) Y : 𝒮       Γ ⊢ ⊗(x : X) Y : 𝒮
+```
+
+# Perceived entanglement and spectral quantifiers
+
+The peculiar property of Verse calculus deep embedding is our ability to extend contexts with spectral variables by
+non-spectral ones:
+```
+  Γ, x : X ⊢ Y : *
+—————————————————————
+ Γ, x :♮X, y : Y ctx
+```
+
+This way, we can entangle spectral variables:
+```
+ Γ, p q : ♮ℤ, w : (p + q = 5) ⊢ expr
+```
+In the body of `expr` the spectral variables `p` and `q` can assume arbitrary values individually,
+their sum will always be 5.
+
+In some context `Γ, x : ♮X` we can have a spectrum of types `Y : ♮*` and an entangled spectrum of
+values `y` so that `Y` and `y` can only appear in such pairs that `y : Y` or `y : ♮Y`, which allows
+us to define two spectral quantifiers
+```
+ Γ, x : ♮X ⊢ Y : ♮*      Γ, x : ♮X ⊢ y : Y
+———————————————————————————————————————————
+       Γ ⊢ (x : ♮X ↦ y) : &(x : ♮X) Y
+          
+ Γ, x : ♮X ⊢ Y : ♮*     Γ, x : ♮X ⊢ y : ♮Y
+———————————————————————————————————————————
+       Γ ⊢ (x : ♮X ↦ y) : ⅋(x : ♮X) Y
+```
+
+# Additional admissible laws
+
+Let us call a data type `Equatable` if its identity types are surveyable,
+`Discernible` the negation of its identity types are surveyable, or
+`Discrete` if both (i.e. its identity types are decidable).
+Let us denote partial functions by `X ⇀ Y`.
+We conjecture that the following three rules are admissible:
+
+- Closed-form functions are formally continuous:
+```
+∀<X, Y> ∀(f : □(X → Y)) ◇isContinuous(f)
+```
+
+- Closed-form inhabitants of equatable types are formally subcountable:
+```
+∀<T : Equatable> ◇(d : ℕ ⇀ □T) isSurjective(d)
+
+def <X> isSurjective(d : ℕ ⇀ X) 
+  ∀(x : X) ∃(n : ℕ) x = d(n)
+```
+
+- Discernible types are formally completely separable:
+```
+∀<T : Discernible> ◇(d : ℕ ⇀ □T) isDense(d)
+
+def <X> isDense(d : ℕ ⇀ X) 
+  ∀(x : X) ∃(s : ℕ → ℕ) x = lim(d ∘ s)
+```
