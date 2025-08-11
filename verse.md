@@ -185,9 +185,22 @@ Now let us introduce a deeply embedded do notation for this monad, which would a
 to the recently developed Verse calculus.
 
 First let us introduce special types
-`♮T` which correspond to `§T` under the hood but do not belong to the usual type theoretic universes and
-do not have usual `Id`-types on them. For the reasons explained below, we will call these spectral types.
-They will be used to introduce special substructural variables we will call spectral variables `x : ♮X`.
+`♮T` which correspond to `§T` under the hood but do not belong to the usual type theoretic universes `*`, and
+do not have the usual `Id`-types that make ordinary types `T : *` into ∞-groupoids. Instead, these types
+belong to special universes `𝒮` and have stabilized `Id`-types making them into Ω-spectra. For this reason
+we will call these spectral types.
+
+For any two spectral types `X Y : 𝒮` realized by `§X` and `§Y` “under the hood”,
+we have the smash product `X ⊗ Y` realized by `§(X × Y)` and wedge sum `X ⊕ B`
+realized by `§(X + Y)`.
+We also have their indexed versions, the wedge and smash quantifiers:
+```
+  Γ, x : X ⊢ Y : 𝒮         Γ, x : X ⊢ Y : 𝒮
+————————————————————     ————————————————————
+ Γ ⊢ ⊕(x : X) Y : 𝒮       Γ ⊢ ⊗(x : X) Y : 𝒮
+```
+
+Spectral types are there to introduce special substructural variables we will call spectral variables `x : ♮X`.
 
 Let us define the spectral pairing and spectral application:
 ```
@@ -236,20 +249,6 @@ logical completeness, it is also admissible for our system:
 Logical completeness can be further generalized to state that functional logic programming together with
 extraction operator `extract : □(¬¬T) → ♮T` provide a sound classical realizability interpretation to non-constructive 
 reasoning within `◇`.
-
-# Circled quantifiers
-
-Now let us assume we have a universe `𝒮` of spectral types.
-
-For any two spectral types `X Y : 𝒮` realized by `§X` and `§Y` “under the hood”,
-we have the smash product `X ⊗ Y` realized by `§(X × Y)` and wedge sum `X ⊕ B`
-realized by `§(X + Y)`.
-We also have their indexed versions, the wedge and smash quantifiers:
-```
-  Γ, x : X ⊢ Y : 𝒮         Γ, x : X ⊢ Y : 𝒮
-————————————————————     ————————————————————
- Γ ⊢ ⊕(x : X) Y : 𝒮       Γ ⊢ ⊗(x : X) Y : 𝒮
-```
 
 # Perceived entanglement and spectral quantifiers
 
