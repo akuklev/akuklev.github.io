@@ -79,11 +79,11 @@ If the proof uses the negative premise at most once, extraction is not guarantee
 
 If we do not pose any restrictions on the usage multiplicity, the extraction process might yield any number of results.
 ```
-   prf : □(¬¬T) 
-———————————————————
- extract(prf) : §T
+         prf : □(¬¬T) 
+————————————————————————————————
+ extract(prf) : Computation⁎<T>
 ```
-To account for this, we must introduce the surveyable subsets monad `§T`.
+To account for this, we must introduce the monad `Computation⁎<T>` of surveyable subsets.
 As we’ll see below, it provides an interpretation for the recently developed Verse calculus, a novel approach
 to deterministic functional logic programming.
 We will argue
@@ -102,7 +102,7 @@ structure LazySeq<T>:
   next : Computation<T × LazySeq<T>>
 ```
 
-Let us say that a lazy sequence `s : §T` intersects a computationally verified
+Let us say that a lazy sequence `s : LazySeq<T>` intersects a computationally verified
 predicate `p : T → Computation<Unit>` iff it has an element satisfying the predicate,
 and call sequences intersecting same predicates image-equivalent:
 ```kotlin
@@ -114,14 +114,14 @@ def <T> imageEq(s q : LazySeq<T>)
   ∀(p : T → Computation<Unit>) x.intersects(p) = x.intersects(q) 
 ```
 
-Since the above definitions respect image equivalence, we can define the type `§T`
+Since the above definitions respect image equivalence, we can define the type `Computation⁎<T>`
 of lazy sequences modulo image equivalence. It is the type of surveyable subsets of `T`.
 
-Let us also say that `s : §T` covers an `x : T`
+Let us also say that `s : Computation⁎<T>` covers an `x : T`
 iff it intersects every computationally verifiable predicate `p : T → Computation<Unit>`
 that holds for `x`:
 ```
-def <T> (§T).covers(x : T) =
+def <T> Computation⁎<T>.covers(x : T) =
   ∀(p : T → Computation<Unit>, p(x) = (return ()))
    s.intersects(p)
 ```
@@ -129,7 +129,7 @@ def <T> (§T).covers(x : T) =
 Types `T` equipped by an `s : §T` covering the whole type will be called surveyable:
 ```
 structure Surveyable<this T>
-  enumerate : §T
+  enumerate : Computation⁎<T>
   fullness : ∀(x : T) enumerate.covers(x)
 ```
 
@@ -154,45 +154,44 @@ A predicate is surveyable iff it is verifiable, so `x < y` for real
 Notably, we can generate a list of solutions for a verifiable
 predicate on a surveyable type: 
 ```kotlin
-def <T : Surveyable> findAll(p : T → Computation<Unit>) : §T
+def <T : Surveyable> findAll(p : T → Computation<Unit>) : Computation⁎<T>
 ```
 
 # Spectral variables and Verse calculus
 
-For any type `T`, the type `§T` is pointed as it can be instantiated by
-a divergent computation `⊥ : §T`.
-
-The type constructor `§T` carries a natural structure of a strong monad, as we
+The types `Computation⁎<T>` are pointed as they can be instantiated by
+a divergent computation `⊥ : Computation⁎<T>` and carry a natural structure
+of a strong monad, as we
 have
 ```kotlin
 def unit(x) = return(x, ⊥)
-def <T> §(§T).flatten() : §T
-def <T, R> §T.map(f : T → R) : §R
-def infix <X, Y> zip(x : §X, y: §Y) : §(X × Y)
+def <T> Computation⁎<Computation⁎<T>>.flatten() : Computation⁎<T>
+def <T, R> Computation⁎<T>.map(f : T → R) : Computation⁎<R>
+def infix <X, Y> zip(x : Computation⁎<X>,
+                     y : Computation⁎<Y>) : Computation⁎<X × Y>
 ```
 
-Note that `§(X × Y)` is not equal to the cartesian product of type `§X × §Y`, but to
-the smash product `§X ⊗ §Y` of pointed types `(X, ⊥)` and `(X, ⊥)`.
+Note that `Computation⁎<X × Y>` is not equal to the cartesian product of type `Computation⁎<X> × Computation⁎<Y>`, 
+but to the smash product `Computation⁎<X> ⊗ Computation⁎<Y>` of pointed types `(X, ⊥)` and `(X, ⊥)`.
 For all `x : X` and `y : Y`, `zip(unit(x), ⊥)` and `zip(unit(x), ⊥)` map to `zip(⊥, ⊥)`.
 
 For any type `T` we have the function `forget(x : T) : Unit`, so we can also define
 ```kotlin
-def infix <X, Y> then(x : §X, y: §Y) : §Y
+def infix <X, Y> then(x : Computation⁎<X>, y : Computation⁎<Y>) : Computation⁎<Y>
   x.map(::forget) zip y
 ```
 
 Now let us introduce a deeply embedded do notation for this monad, which would almost perfectly correspond
 to the recently developed Verse calculus.
 
-First let us introduce special types
-`♮T` which correspond to `§T` under the hood but do not belong to the usual type theoretic universes `*`, and
-do not have the usual `Id`-types that make ordinary types `T : *` into ∞-groupoids. Instead, these types
-belong to special universes `𝒮` and have stabilized `Id`-types making them into Ω-spectra. For this reason
-we will call these spectral types.
+First let us introduce special types `§T` that to `Computation⁎<T>` under the hood but do not belong to the usual
+type theoretic universes `*`, and do not have the usual `Id`-types that make ordinary types `T : *` into
+∞-groupoids. Instead, these types belong to special universes `𝒮` and have stabilized `Id`-types making
+them into Ω-spectra. For this reason we will call these spectral types.
 
-For any two spectral types `X Y : 𝒮` realized by `§X` and `§Y` “under the hood”,
-we have the smash product `X ⊗ Y` realized by `§(X × Y)` and wedge sum `X ⊕ B`
-realized by `§(X + Y)`.
+For any two spectral types `X Y : 𝒮` realized by `Computation⁎<X>` and `Computation⁎<Y>` “under the hood”,
+we have the smash product `X ⊗ Y` realized by `Computation⁎<X × Y>` and wedge sum `X ⊕ B`
+realized by `Computation⁎<X + Y>`.
 We also have their indexed versions, the wedge and smash quantifiers:
 ```
   Γ, x : X ⊢ Y : 𝒮         Γ, x : X ⊢ Y : 𝒮
@@ -200,13 +199,13 @@ We also have their indexed versions, the wedge and smash quantifiers:
  Γ ⊢ ⊕(x : X) Y : 𝒮       Γ ⊢ ⊗(x : X) Y : 𝒮
 ```
 
-Spectral types are there to introduce special substructural variables we will call spectral variables `x : ♮X`.
+We introduce spectral types to introduce special substructural variables we will call spectral variables `x : §X`.
 
 Let us define the spectral pairing and spectral application:
 ```
- Γ ⊢ x : ♮X    Γ ⊢ y : ♮Y       Γ ⊢ x : ♮X    Γ ⊢ y : ♮Y       Γ ⊢ x : ♮X    Γ ⊢ f : ♮(X → Y)
+ Γ ⊢ x : §X    Γ ⊢ y : §Y       Γ ⊢ x : §X    Γ ⊢ y : §Y       Γ ⊢ x : §X    Γ ⊢ f : §(X → Y)
 ——————————————————————————     ——————————————————————————     ————————————————————————————————
-     Γ ⊢ (x; y) : ♮Y              Γ ⊢ (x, y) : ♮X ⊗ ♮Y              Γ ⊢ f(x) : ♮Y
+     Γ ⊢ (x; y) : §Y              Γ ⊢ (x, y) : §X ⊗ §Y              Γ ⊢ f(x) : §Y
 ```
 
 Under the hood this, operations work via `then`, `zip` and `map`. Availability of `unit` and strong
@@ -214,25 +213,25 @@ monad laws guarantee that a normal variable always can be used where a spectral 
 
 With `findAll` we can implement the ∃-binder of the Verse calculus:
 ```
- Γ ⊢ X : Surveyable    Γ, x : X ⊢ y : ♮Y
+ Γ ⊢ X : Surveyable    Γ, x : X ⊢ y : §Y
 —————————————————————————————————————————
-        Γ ⊢ (ε(x : Y) y) : ♮X
+        Γ ⊢ (ε(x : Y) y) : §X
 ```
 
 We also can introduce
 ```
- Γ ⊢ T : *          Γ ⊢ s : ♮(§T)           Γ ⊢ x : ♮T  
-————————————     ———————————————————     ————————————————— 
- Γ ⊢ ⊥ : ♮T       Γ ⊢ anyOf(s) : ♮T       Γ ⊢ all(x) : §T 
+ Γ ⊢ T : *         Γ ⊢ s : §Computation⁎<T>          Γ ⊢ x : §T  
+————————————     ————————————————————————————     ————————————————— 
+ Γ ⊢ ⊥ : §T           Γ ⊢ anyOf(s) : §T           Γ ⊢ all(x) : §T 
 ```
 
 Using diverging computation, `flattening` and the acknowledging that spectral variables work via §-types under the hood.
 
 The only missing thing from the Verse calculus is the `one` operator we prefer calling `any`:
 ```
- Γ, any : ∀<T> ♮T → T ⊢ expr : X
+ Γ, any : ∀<T> §T → T ⊢ expr : X
 ————————————————————————————————
-       Γ ⊢ expr : ♮X
+       Γ ⊢ expr : §X
 ```
 
 Note similarity between `any` operator here and `ε` operator for the `◇`-modality.
@@ -241,13 +240,13 @@ Now it remains to be shown (by induction on Verse calculus terms), that our syst
 calculus with essentially the same reduction rules. Since Verse calculus satisfies a condition called
 logical completeness, it is also admissible for our system:
 ```
-    Γ ⊢ X : Surveyable      Γ, x : X ⊢ y : ♮Y
+    Γ ⊢ X : Surveyable      Γ, x : X ⊢ y : §Y
 ————————————————————————————————————————————————————
  ∀(x : X) (y(x) ≠ ⊥) = all(ε(x': Y) y(x)).covers(x)
 ```
 
 Logical completeness can be further generalized to state that functional logic programming together with
-extraction operator `extract : □(¬¬T) → ♮T` provide a sound classical realizability interpretation to non-constructive 
+extraction operator `extract : □(¬¬T) → §T` provide a sound classical realizability interpretation to non-constructive 
 reasoning within `◇`.
 
 # Perceived entanglement and spectral quantifiers
@@ -257,27 +256,27 @@ non-spectral ones:
 ```
   Γ, x : X ⊢ Y : *
 —————————————————————
- Γ, x :♮X, y : Y ctx
+ Γ, x :§X, y : Y ctx
 ```
 
 This way, we can entangle spectral variables:
 ```
- Γ, p q : ♮ℤ, w : (p + q = 5) ⊢ expr
+ Γ, p q : §ℤ, w : (p + q = 5) ⊢ expr
 ```
 In the body of `expr` the spectral variables `p` and `q` can assume arbitrary values individually,
 their sum will always be 5.
 
-In some context `Γ, x : ♮X` we can have a spectrum of types `Y : ♮*` and an entangled spectrum of
-values `y` so that `Y` and `y` can only appear in such pairs that `y : Y` or `y : ♮Y`, which allows
+In some context `Γ, x : §X` we can have a spectrum of types `Y : §*` and an entangled spectrum of
+values `y` so that `Y` and `y` can only appear in such pairs that `y : Y` or `y : §Y`, which allows
 us to define two spectral quantifiers
 ```
- Γ, x : ♮X ⊢ Y : ♮*      Γ, x : ♮X ⊢ y : Y
+ Γ, x : §X ⊢ Y : §*      Γ, x : §X ⊢ y : Y
 ———————————————————————————————————————————
-       Γ ⊢ (x : ♮X ↦ y) : &(x : ♮X) Y
+       Γ ⊢ (x : §X ↦ y) : &(x : §X) Y
           
- Γ, x : ♮X ⊢ Y : ♮*     Γ, x : ♮X ⊢ y : ♮Y
+ Γ, x : §X ⊢ Y : §*     Γ, x : §X ⊢ y : §Y
 ———————————————————————————————————————————
-       Γ ⊢ (x : ♮X ↦ y) : ⅋(x : ♮X) Y
+       Γ ⊢ (x : §X ↦ y) : ⅋(x : §X) Y
 ```
 
 # Admissibility of modal Church's thesis
