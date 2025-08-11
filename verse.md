@@ -120,14 +120,14 @@ of lazy sequences modulo image equivalence. It is the type of surveyable subsets
 Let us also say that `s : Computation⁎<T>` covers an `x : T`
 iff it intersects every computationally verifiable predicate `p : T → Computation<Unit>`
 that holds for `x`:
-```
+```kotlin
 def <T> Computation⁎<T>.covers(x : T) =
   ∀(p : T → Computation<Unit>, p(x) = (return ()))
    s.intersects(p)
 ```
 
 Types `T` equipped by an `s : §T` covering the whole type will be called surveyable:
-```
+```kotlin
 structure Surveyable<this T>
   enumerate : Computation⁎<T>
   fullness : ∀(x : T) enumerate.covers(x)
@@ -287,24 +287,24 @@ Let us call a data type `Equatable` if its identity types are surveyable,
 Let us denote partial functions by `X ⇀ Y`.
 We conjecture that the following three rules are admissible:
 
-- Closed-form inhabitants of equatable types are formally subcountable:
-```
+**Closed-form inhabitants of equatable types are formally subcountable:**
+```kotlin
 ∀<T : Equatable> ◇(d : ℕ ⇀ □T) isSurjective(d)
 
 def <X> isSurjective(d : ℕ ⇀ X) 
   ∀(x : X) ∃(n : ℕ) x = d(n)
 ```
 
-- Discernible types are formally completely separable:
-```
+**Discernible types are formally completely separable:**
+```kotlin
 ∀<T : Discernible> ◇(d : ℕ ⇀ □T) isDense(d)
 
 def <X> isDense(d : ℕ ⇀ X) 
   ∀(x : X) ∃(s : ℕ → ℕ) x = lim(d ∘ s)
 ```
 
-- Closed-form functions are formally continuous:
-```
+**Closed-form functions are formally continuous:**
+```kotlin
 ∀<X, Y> ∀(f : □(X → Y)) ◇isContinuous(f)
 ```
 
