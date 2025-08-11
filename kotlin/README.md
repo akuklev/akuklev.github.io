@@ -38,10 +38,10 @@ correct-by-construction design:
   that leverage the power of Datalog while remaining easy to read, understand, and maintain.
 
 Type-driven programming facilitates correct-by-construction design in some of the most complex areas:
-- [Typeclasses for Kotlin](kotlin_typeclasses.pdf) (2 pages): Ideas on introducing typeclasses in Kotlin way.
-- [Indexed types](kotlin_families.pdf):
-  Indexed types enable correct-by-construction design of parsers and interpreters, as well as type-driven design of 
-  complex transformation (e.g. compilation) and analysis
+- [Type classes for Kotlin](kotlin_typeclasses.pdf) (2 pages): Ideas on introducing typeclasses in Kotlin way.
+- [Type families for Kotlin](kotlin_families.pdf):
+  Type families indexed by inductive prototypes enable correct-by-construction design of parsers and interpreters,
+  as well as type-driven design of complex transformation (e.g. compilation) and analysis
   (e.g. typechecking and control-flow analysis) algorithms in general.
   
 Lastly, we propose semantic and syntactic extensions to reach into areas where Python and Lean currently dominate:
