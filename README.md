@@ -290,8 +290,8 @@ We suspect that reference-level counterparts of indexed guarded computation moda
 rise to causal temporal logic allowing internal conceptualization of such notions as consensus 
 fairness and eventual consistency.
 
-§ Incorporating external logics
--------------------------------
+§ External logics
+-----------------
 
 At some point, Kotlin might be extended to incorporate models of physical systems that software
 is interacting with or using as components to enable verification of [AI-coupled robotic
