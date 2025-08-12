@@ -81,7 +81,7 @@ An enjoyable proof language must at least address the issues of that kind with k
 - Most frustrating are the type mismatch issues caused by obvious equalities that do not hold computationally.
  Partial solutions:
    - The universe `SProp` of definitionally propositional types ([“Definitional proof-irrelevance without K”](https://dl.acm.org/doi/10.1145/3290316))
-   - The universe `SData` of definitionally set-like types ([“Observational Equality meets CiC”](https://hal.science/hal-04535982v1))
+   - The universe `SData` of definitionally set-like types ([“Observational Equality meets CiC”](https://hal.science/hal-04535982v1)), and `FData` of discrete finitary types
    - Limited predicate subtyping ([“Predicate Subtyping with Proof Irrelevance”](https://arxiv.org/abs/2110.13704))
    - Equations on neutral terms ([“New Equations for Neutral Terms”](https://dl.acm.org/doi/10.1145/2502409.2502411)) and parallel reductions ([“The Taming of the Rew”](https://dl.acm.org/doi/10.1145/3434341))
    - Typechecking-driven automated equality proof synthesis
