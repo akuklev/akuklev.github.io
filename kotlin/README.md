@@ -49,7 +49,7 @@ correct-by-construction design:
 
 Type-driven programming facilitates correct-by-construction design in some of the most complex areas:
 - [Type classes for Kotlin](kotlin_typeclasses.pdf) (2 pages): Ideas on introducing typeclasses in Kotlin way.
-- [Type families for Kotlin](kotlin_families.pdf):
+- [Type families for Kotlin](kotlin_families.pdf) (TBD):
   Type families indexed by inductive prototypes enable correct-by-construction design of parsers and interpreters,
   as well as type-driven design of complex transformation (e.g. compilation) and analysis
   (e.g. typechecking and control-flow analysis) algorithms in general. Typefamilies are vital for a declarative
