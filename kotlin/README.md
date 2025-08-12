@@ -1,3 +1,13 @@
+Kotlin provides the most advanced tools for creating mobile apps and games,
+an excellent reactive declarative UI framework called
+[Noria](https://blog.jetbrains.com/fleet/2023/02/fleet-below-deck-part-vi-ui-with-noria/),
+as well as all the tools needed to create most complex desktop applications,
+perfected during the development of
+[Fleet](https://blog.jetbrains.com/fleet/2022/01/fleet-below-deck-part-i-architecture-overview/).
+It is precisely the experience working on educational apps, developing and Fleet and contemplating
+their architecture that motivated me to devise a series of possible additional improvement directions
+for Kotlin.
+
 Structured programming pioneered by ALGOL and
 structured concurrency used in Kotlin
 illustrate one of the pillars of great programming language design:
@@ -42,8 +52,12 @@ Type-driven programming facilitates correct-by-construction design in some of th
 - [Type families for Kotlin](kotlin_families.pdf):
   Type families indexed by inductive prototypes enable correct-by-construction design of parsers and interpreters,
   as well as type-driven design of complex transformation (e.g. compilation) and analysis
-  (e.g. typechecking and control-flow analysis) algorithms in general.
-  
+  (e.g. typechecking and control-flow analysis) algorithms in general. Typefamilies are vital for a declarative
+  [combinator based biparser framework](https://dl.acm.org/doi/10.1145/3704910). With
+  [efficient](https://jeffreykegler.github.io/Ocean-of-Awareness-blog/individual/2018/05/combinator.html)
+  [incremental](https://github.com/tree-sitter/tree-sitter) declarative biparsers, we will be able to provide
+  next level IDE infrastructure.
+   
 Lastly, we propose semantic and syntactic extensions to reach into areas where Python and Lean currently dominate:
 - [Literate Kotlin](kotlin_literate.pdf) (4 pages):
   Literate programming is the ultimate approach for building reliable and maintainable applications and libraries.
@@ -52,3 +66,7 @@ Lastly, we propose semantic and syntactic extensions to reach into areas where P
   We develop an alternative syntactic front-end for these usages.
 - [Academic Kotlin](kotlin_academic.pdf) (3 pages):
   Literate Kotlin extensions dedicated to applications in computer science and in pure mathematics.
+  On top of that, these extensions enable a declarative reactive illustration framework based on
+  and backward compatible with [PGF/TikZ](https://en.wikipedia.org/wiki/PGF/TikZ#Gallery)
+  (and ultimately Donald Knuth's METAFONT), helping to incorporate dynamic illustrations
+  into interactive textbooks and educational apps.
