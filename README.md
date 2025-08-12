@@ -122,6 +122,11 @@ A decent practical programming experience can only be achieved by automating the
 and providing convenient infrastructure to deal with cases that cannot be automated:
 indexed modalities for size-guarded recursion and [clock-guarded corecursion](https://arxiv.org/abs/1804.09098).
 
+Another aspect is the practicability of exact real computations, which are orders of magnitude slower than
+ordinary approxinate real computations using floating-point numbers. To achieve practical relevance, exact
+real computations require tools for extraction of fast approximate algorithms of (at least probablistically) 
+guaranteed precision.
+
 § Embracing interactivity and concurrency
 -----------------------------------------
 
@@ -285,6 +290,21 @@ We suspect that reference-level counterparts of indexed guarded computation moda
 rise to causal temporal logic allowing internal conceptualization of such notions as consensus 
 fairness and eventual consistency.
 
+§ Incorporating external logics
+-------------------------------
+
+At some point, Kotlin might be extended to incorporate models of physical systems that software
+is interacting with or using as components to enable verification of [AI-coupled robotic
+systems](https://arxiv.org/pdf/2504.03272) (including self-driving cars and delivery drones),
+medical devices, reactor control systems, transportation systems, and electric circuits.
+There is a readily available and widely applied tool ([KeYmaera X](https://symbolaris.com/info/KeYmaera.html))
+that allows modeling hybrid systems with nonlinear discrete jumps, nonlinear differential equations,
+differential-algebraic equations, differential inequalities, and systems with nondeterministic
+discrete or continuous input, lacking only the probablistic toolset. However, being a separate
+tool rather than a part of a programming language (and its formal backing construction calculus),
+it introduces a gap between a piece of software as it stands and its model, compromising the
+verification reliability and complicating it.
+
 § The Missing Part
 ------------------
 
@@ -308,8 +328,8 @@ There, separately created objects do not remain separable,
 and the picture of heaps as collections of distinct objects becomes fuzzy:
 instead of "distinct particles", we deal with "field quanta", with quantum heaps playing the role of quantum fields.
 We assume this analogy can be [made precise](https://ncatlab.org/nlab/show/quantum+circuits+via+dependent+linear+types) 
-and will allow describing quantum computations and perhaps also non-discrete quantum processes in general
-and might shed new some light onto formalization of quantum field theory.
+allowing to describe quantum algorithms and model physical quantum systems, hopefully shedding new some light
+onto formalization of the quantum field theory.
 
 The affine logic for biconstructive mathematics seems an entirely distinct subject at first.
 However, biconstructive propositions are semantically described as particularly simple Chu spaces,
