@@ -1,4 +1,4 @@
-# Overview
+# Non-constructive modality
 
 In 2016 C. McBride [introduced](https://link.springer.com/chapter/10.1007/978-3-319-30936-1_12)
 graded type theories with exact control over the multiplicity of computational argument usages.

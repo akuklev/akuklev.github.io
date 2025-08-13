@@ -84,7 +84,7 @@ If we do not pose any restrictions on the usage multiplicity, the extraction pro
  extract(prf) : Computation⁎<T>
 ```
 To account for this, we must introduce the monad `Computation⁎<T>` of surveyable subsets.
-As we’ll see below, it provides an interpretation for the recently developed Verse calculus, a novel approach
+As we will see below, it provides an interpretation for the recently developed Verse calculus, a novel approach
 to deterministic functional logic programming.
 We will argue
 that Verse calculus terms provide classical realizability interpretation^[[Krivine21](https://arxiv.org/abs/2006.05433)]
@@ -278,7 +278,7 @@ us to define two spectral quantifiers
        Γ ⊢ (x : §X ↦ y) : ⅋(x : §X) Y
 ```
 
-# Admissibility of modal Church's thesis
+# Admissibility of modal Church’s thesis
 
 Let us call a data type `Equatable` if its identity types are surveyable,
 `Discernible` the negation of its identity types are surveyable, or
@@ -307,4 +307,5 @@ def <X> isDense(d : ℕ ⇀ X)
 ∀<X, Y> ∀(f : □(X → Y)) ◇isContinuous(f)
 ```
 
-Formal continuity is equivalent to with formal (synthetic) computability, so the latter principle is the modal version of Church's thesis.
+Formal continuity is equivalent to with formal (synthetic) computability,
+so the latter principle is the modal version of Church’s thesis.
