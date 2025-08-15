@@ -17,11 +17,15 @@ The first two proposals can be seen as an introduction of far-reaching contracts
 that both foster correctness by construction and set the stage for statically
 verifiable contracts
 (see also [Usability Barriers for Liquid Types by J. Aldrich et al.](https://dl.acm.org/doi/10.1145/3729327)):
-- [Purity, constants, and explicit effects](kotlin_purity.pdf) (1 page):
-  In many cases, high-order functions such as `sortWith(comparator)`
-  only have meaningful behaviour if their arguments are pure functions.
-  Type-level control over the purity of functions
-  and data is essential to prevent nonsensical behaviour and dangerous vulnerabilities.
+- [Mere data, constant expressions, and checked effects](kotlin_purity.pdf) (1 page): We propose introducing
+  a modifier keyword `mere` (in `mere data class`, `mere fun interface`, etc.) to keep track of
+  hereditarily immutable and self-contained objects. Since mere data is inherently serializable,
+  one can allow constants of non-primitive mere types.
+  Being self-contained, mere functions can be executed at compile time, provided their
+  arguments are known at compile time, allowing for rich constant expressions
+  With a bit of additional effort we can single out pure functions among self-contained ones. In many cases,
+  correct behavior high-order functions such as `sortWith(comparator)` depends on purity of their arguments.
+  By enforcing purity we can prevent precarious behavior and eliminate possible vulnerabilities.
 - [Resources, lifecycles, and structured concurrency](kotlin_objects.pdf) (8 pages):
   Kotlin relies on scope-based resource management
   but lacks mechanisms to prevent leaking,
