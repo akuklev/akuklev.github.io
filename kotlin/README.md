@@ -23,8 +23,8 @@ verifiable contracts
   one can allow constants of non-primitive mere types.
   Being self-contained, mere functions can be executed at compile time, provided their
   arguments are known at compile time, allowing for rich constant expressions
-  With a bit of additional effort we can single out pure functions among self-contained ones. In many cases,
-  correct behavior high-order functions such as `sortWith(comparator)` depends on purity of their arguments.
+  In many cases, high-order functions such as `sortWith(comparator)` rely on on purity of their arguments.
+  With a bit of additional effort we can single out pure functions among self-contained ones.
   By enforcing purity we can prevent precarious behavior and eliminate possible vulnerabilities.
 - [Resources, lifecycles, and structured concurrency](kotlin_objects.pdf) (8 pages):
   Kotlin relies on scope-based resource management
