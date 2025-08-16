@@ -18,9 +18,9 @@ that both foster correctness by construction and set the stage for statically
 verifiable contracts
 (see also [Usability Barriers for Liquid Types by J. Aldrich et al.](https://dl.acm.org/doi/10.1145/3729327)):
 - [Mere data, constant expressions, and checked effects](kotlin_purity.pdf) (1 page): We propose introducing
-  a modifier keyword `mere` (in `mere data class`, `mere fun interface`, etc.) to keep track of
-  hereditarily immutable and self-contained objects. Since mere data is inherently serializable,
-  one can allow constants of non-primitive mere types.
+  a modifier keyword `mere` (in `mere data class`, `mere fun interface`, etc.) to enforce hereditarily
+  immutable and self-contained objects devoid of identity besides equality. Since mere data is inherently
+  serializable, one can allow constants of non-primitive mere types.
   Being self-contained, mere functions can be executed at compile time, provided their
   arguments are known at compile time, allowing for rich constant expressions
   In many cases, high-order functions such as `sortWith(comparator)` rely on on purity of their arguments.
