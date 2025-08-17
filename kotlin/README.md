@@ -26,15 +26,6 @@ verifiable contracts
   In many cases, high-order functions such as `sortWith(comparator)` rely on on purity of their arguments.
   With a bit of additional effort, we can single out pure functions among self-contained ones.
   By enforcing purity, we can prevent odd behavior and eliminate possible vulnerabilities.
-- We propose introducing
-  a modifier keyword `mere` (in `mere data class`, `mere fun interface`, etc.) to enforce hereditarily
-  immutable and self-contained objects devoid of identity besides equality. Since mere data is inherently
-  serializable, one can allow constants of non-primitive mere types.
-  Being self-contained, mere functions can be executed at compile time, provided their
-  arguments are known at compile time, allowing for rich constant expressions
-  In many cases, high-order functions such as `sortWith(comparator)` rely on on purity of their arguments.
-  With a bit of additional effort we can single out pure functions among self-contained ones.
-  By enforcing purity we can prevent precarious behavior and eliminate possible vulnerabilities.
 - [Resources, lifecycles, and structured concurrency](kotlin_objects.pdf) (8 pages):
   Kotlin relies on scope-based resource management
   but lacks mechanisms to prevent leaking,
