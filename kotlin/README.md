@@ -26,7 +26,7 @@ verifiable contracts
   In many cases, high-order functions such as `sortWith(comparator)` rely on on purity of their arguments.
   With a bit of additional effort, we can single out pure functions among self-contained ones.
   By enforcing purity, we can prevent odd behavior and eliminate possible vulnerabilities.
-- [Resources, lifecycles, and structured concurrency](kotlin_objects.pdf) (8 pages):
+- [Objects, lifecycles, and structured concurrency](kotlin_objects.pdf) (8 pages):
   Kotlin relies on scope-based resource management
   but lacks mechanisms to prevent leaking,
   guarantee lifecycle safety, and rule out conflicting actions statically.
