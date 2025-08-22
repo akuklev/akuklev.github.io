@@ -17,7 +17,7 @@ The first two proposals can be seen as an introduction of far-reaching contracts
 that both foster correctness by construction and set the stage for statically
 verifiable contracts
 (see also [Usability Barriers for Liquid Types by J. Aldrich et al.](https://dl.acm.org/doi/10.1145/3729327)):
-- [Data, constant expressions, and checked effects](kotlin_purity.pdf) (1 page):
+- [Data, constant expressions, pure functions](kotlin_purity.pdf) (1 page):
   We propose introducing modifier combinations `value data class`, `value fun interface`, and `value (Xs)-> Y`
   to enforce hereditarily immutable and self-contained objects devoid of identity besides equality.
   Since such types are inherently serializable, one can allow constants of non-primitive mere types.
