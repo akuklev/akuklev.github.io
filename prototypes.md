@@ -98,8 +98,8 @@ a absolutely vital for the definition of the aforementioned type family
 given type in a given context.
 
 Bi-directionally typed languages also
-require a fibered type family `Redex / type : ↓(c : Ctx) ↑(Ty c) ` of
-reducible expressions synthesizing their types.
+require a fibered type family `Redex / type : ↓(c : Ctx) ↑(ty : Ty c, Tm ty) `
+of reducible expressions synthesizing their normal form.
 
 Now as we have motivated the need for all this stuff, let's dive in.
 
