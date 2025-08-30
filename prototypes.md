@@ -90,8 +90,6 @@ require a fibered type family `Redex : ↓(c : Ctx) ↑(ty : Ty c, Tm ty) `
 of reducible expressions together with a function 
 `|r : Redex| : Σ(ty : Ty c) Tm ty` that computes their normal forms.
 
-Now as we have motivated the need for all this stuff, let's dive in.
-
 # Setting and basics
 
 Our base theory will be the Higher Observational Type Theory with an infinite tower of cumulative
@@ -110,8 +108,7 @@ data Bool
 data Unit
   Point
   
-data Void
-  # no elements at all 
+data Void {}    # no elements at all 
 ```
 
 We can generalize them to sum types by allowing infinite families of “possible values”
@@ -338,14 +335,16 @@ Models of single-sorted algebraic theories arise as dual typeclasses
 for quotient inductive types we will call prototypes of those theories.
 Monoids arise as models for the following type:
 ```
-data MonoidPt
-  e : MonoidPt
-  (∘) : MonoidPt → MonoidPt → MonoidPt
+data Monoidᴾ
+  e : Monoidᴾ
+  (∘) : Monoidᴾ → Monoidᴾ → Monoidᴾ
 
   unitorL : x = e ∘ x
   unitorR : x = x ∘ e
   associator : (x ∘ y) ∘ z = x ∘ (y ∘ z)
 ```
+
+The dual typeclass `Monoidᴾᴿ<T>` will be automatically simply called `Monoid<T>`.
 
 We can also provide an unbiased definition for monoids, where the composition operation
 is not taken to be binary, but can have any finite arity including zero for the neutral
@@ -365,10 +364,10 @@ on lists `xs : T*` turning them into respective trees `pr(xs) : PTree<T>`.
 
 Now we can proceed to the definition of an unbiased monoid:
 ```
-shape MonoidPt
-  compose : LaxMonoidPt* → LaxMonoidPt
+shape Monoidᴾ
+  compose : LaxMonoidᴾ* → LaxMonoidᴾ
 
-  expand(xs : LaxMonoidPt*,
+  expand(xs : LaxMonoidᴾ*,
          pr : Parenthesization xs.length
   : compose(xs) = (pr(xs) map compose)  
 ```
@@ -377,10 +376,10 @@ If we can orient equalities so they map structurally smaller terms to structural
 larger ones, we can reformulate the theory as a shape type with extenders instead
 of identities. Algebraic theories with extenders are known as lax algebraic theories.
 ```
-shape LaxMonoidPt
-  compose : LaxMonoidPt* → LaxMonoidPt
+shape LaxMonoidᴾ
+  compose : LaxMonoidᴾ* → LaxMonoidᴾ
 
-  compose(xs) [pr : Parenthesization xs.length⟩ (pr(xs) map compose)
+  compose(xs) [pr : Parenthesization xs.length⟩ (pr(xs) ▸map compose)
 
   [pr⟩ [pr'⟩ ↦ [expand (pr' ∘) p⟩  
 ```
@@ -557,11 +556,11 @@ shape □¹⁺ : * ↑ □¹⁺
 Just like we defined a monoid prototype above, we can define a prototype for categories as
 an indexed quotient-inductive type family:
 ```
-data CatPt : (□¹⁺)ᵈ
-  id : ∀(o : CatPt Ob) (CatPt Mor)(o, o)
-  (▸) : ∀(x y z : CatPt Ob) (CatPt Mor)(x, y)
-                          → (CatPt Mor)(y, z)
-                          → (CatPt Mor)(x, z)
+data Catᴾ : (□¹⁺)ᵈ
+  id : ∀(o : Catᴾ Ob) (Catᴾ Mor)(o, o)
+  (▸) : ∀(x y z : Catᴾ Ob) (Catᴾ Mor)(x, y)
+                          → (Catᴾ Mor)(y, z)
+                          → (Catᴾ Mor)(x, z)
 
   unitorL : ∀{x y} f = id ▸ f
   unitorR : ∀{x y} f = f ▸ id
@@ -570,7 +569,7 @@ data CatPt : (□¹⁺)ᵈ
 
 The dual typeclass is precisely the usual definition of a category:
 ```
-typeclass CatPtᴿ<this Ts : (□¹⁺)ᵈ>
+typeclass Cat<this Ts : (□¹⁺)ᵈ>
   id : ∀<o> Ts.mor(o, o)
   (▸) : ∀<x, y, z> Ts.mor(x, y)
                  → Ts.mor(y, z)
@@ -581,31 +580,42 @@ typeclass CatPtᴿ<this Ts : (□¹⁺)ᵈ>
 Which is precisely the ordinary definition of a category that works perfectly in set-like types.
 For a definition that works in arbitrary universes, we additionally have to require univalence.
 
-As it turns out, it can be achieved by adding two extenders to the index shape type:
+As it turns out, it can be achieved by adding a Yoneda extender to the category signature:
 ```
 shape □¹⁺ : * ↑ □¹⁺
   Ob  / (Void / exfalso)
   Mor / (Bool / { Ob })
 
-  Ob [よR⟩ Mor / ff
-  Ob [よL⟩ Mor / tt
+  Ob [よ⟩ Mor / ff
 ```
 
-Now given `Ts : (□¹)ᵈ`, for every `o : Ts.Ob` we'll have Yoneda embeddings:
-```
-o[よR⟩ : ∀<target> Ts.Mor(o, target)
-o[よL⟩ : ∀<source> Ts.Mor(source, o)
-```
-
-These embeddings suffice to derive the said univalence requirement:
+It can be used to derive the said univalence requirement:
 ```
 ∀<X, Y> (a ≃ b) ≃ Σ(f : Ts.mor(X, Y)
                     g : Ts.mor(Y, X)) (f ▸ g = id) and (f ▸ g = id)            
 ```
 
+But more importantly, it imposes functoriality on functions between categories:
+```
+f : ∀<Xs Ys : Cat> Xs.Ob  → Ys.Ob
+g : ∀<Xs Ys : Cat> Xs.Ob² → Ys.Ob
+g : ∀<Xs Ys : Cat> F<Xs.Ob> → Ys.Ob
+```
+
+Applying these functions to the embeddings `o[よ⟩` one obtains their action on morphisms,
+which must commute with `Cat`-structure, i.e. compositions.
+
+This way we can even introduce monoidal (or lax monoidal) structure on categories as
+simple as:
+```
+typeclass MonoidalCat<Ts : Cat> extends Monoid<Ts.Ob> {}
+typeclass LaxMonoidalCat<Ts : Cat> extends LaxMonoid<Ts.Ob> {}
+```
+
 Exactly as we did for monoids, we can proceed to derive an unbiased definition
 a lax prototype.
-Mutatis mutandis, lax categories turn out to be virtual equipments.
+As far as we understand, lax categories are precisely the virtual double
+categories.
 
 # Displayed algebraic structures
 
@@ -623,8 +633,8 @@ say like the category `Grp : Catᵈ` of all groups and the category of all categ
 # Universes as categories
 
 As we have seen above, not only inductive shapes have the notion of extensions; universes do as well.
-It is not hard to see that it also applies to universes of type families, universes of fibered types,
-and universes of fibered type families.
+It is not hard to see that it also applies to universes of type families (“presheaf universes”),
+universes of fibered types, and universes of fibered type families.
 ̈Universes of fibered types or type families will also exhibit selectors if they are fibered
 over self-fibered types.
 It can be shown to also apply to universes of models for any given algebraic theory,
@@ -636,7 +646,11 @@ In this work we only considered dependent type formers valued in ordinary types,
 be possible to introduce dependent type formers in shape universes `$𝒰` using an approach
 modelled after “Type Theory for Synthetic ∞-categories” by E. Riehl and M. Shulman.
 
-# Promorphisms in universes of models
+Models of lax algebraic theories and dependently sorted algebraic theories can also have
+directed higher structure, form ω-categories. Thus, in a future work we should be pursuing
+stacks.
+
+## Promorphisms in universes of models
 
 Displayed models for inductive types have the form
 ```
@@ -664,14 +678,3 @@ promorphisms `Σ(src : ℕᴿ<T>, pm : ℕᴿᵈ src) (f : ∀(n) (m : (pm n)) �
 making the type of ℕ-models into a ∞-precategory (Segal type),
 which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕᴿ>`
 of ℕ-models correspond to their isomorphisms.
-
-# S-ary parametricity and induced algebraic structure (Lax monoidal category example)
-Universes of type families over a given shape (e.g. `(□¹)ᵈ`) admit internal universes of
-(either strict or lax) models for every lax prototype.
-
-In particular, we have prototypes `LaxMonoidPt / □¹` and `LaxMonPt /ˢ □¹` of lax and
-strict `□¹`-indexed monoids.
-
-For any prototypes over the same signature shape, we can build symmetric products,
-e.g. the prototypes `CatPt ⊙ (LaxMonoidPt / □¹)` and `CatPt ⊙ (LaxMonoidPt /ˢ □¹)`
-of lax and ordinary monoidal categories respectively.
