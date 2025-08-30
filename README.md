@@ -61,7 +61,7 @@ so that all proofs and constructions can be generalized, specialized, and transf
   [Verse calculus](https://simon.peytonjones.org/verse-calculus/), a recently developed deterministic approach to 
   functional logic programming.
   Incidentally, we also vastly expand of the computational power by allowing all classically provable algorithms.
-- [Higher Categorical Type Theory](prototypes):
+- [Higher Categorical Type Theory](reedy):
   We add types representing Reedy categories, presheaves on them, and functors between them,
   resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/)
   computational type theory with native ω-categories
