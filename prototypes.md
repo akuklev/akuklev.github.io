@@ -607,20 +607,6 @@ Exactly as we did for monoids, we can proceed to derive an unbiased definition
 a lax prototype.
 Mutatis mutandis, lax categories turn out to be virtual equipments.
 
-# Universes as categories
-
-As we have seen above, not only inductive shapes have the notion of extensions; universes do as well.
-It is not hard to see that it also applies to universes of type families, universes of fibered types,
-and universes of fibered type families.
-In fact, universes of fibered types or type families will also exhibit selectors iff they are fibered
-over self-fibered types.
-Here we will show that it also applies to universes of models for any given algebraic theory,
-including infinitary algebraic theories with dependent sorts and their generalized form as long
-their sort algebras are stratified.
-
-In fact, in all of these cases, the categories `𝒱` also carry a natural weak model structure and
-are equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
-
 # Displayed algebraic structures
 
 The other nice thing is that since we have defined categories as models for an inductive type,
@@ -631,8 +617,24 @@ Ring : Catᵈ
 Cat : Catᵈ
 ```
 Furthermore, we can iterate, and thus `Catᵈ : Catᵈᵈ`, etc. And since constructions and proofs also can be lifted,
-any statement we have proven for all small categories `prf<C : Cat>` also can be applied to displayed categories, 
+any statement we have proven for all small categories `prf<C : Cat>` also can be applied to displayed categories,
 say like the category `Grp : Catᵈ` of all groups and the category of all categories `Cat : Catᵈ` itself.
+
+# Universes as categories
+
+As we have seen above, not only inductive shapes have the notion of extensions; universes do as well.
+It is not hard to see that it also applies to universes of type families, universes of fibered types,
+and universes of fibered type families.
+̈Universes of fibered types or type families will also exhibit selectors if they are fibered
+over self-fibered types.
+It can be shown to also apply to universes of models for any given algebraic theory,
+including infinitary algebraic theories with dependent sorts and their generalized form as long
+their sort algebras are stratified. In fact, in all of these cases, the categories `𝒱` are also
+equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
+
+In this work we only considered dependent type formers valued in ordinary types, but it should
+be possible to introduce dependent type formers in shape universes `$𝒰` using an approach
+modelled after “Type Theory for Synthetic ∞-categories” by E. Riehl and M. Shulman.
 
 # Promorphisms in universes of models
 
