@@ -257,7 +257,7 @@ be irrelevant for all predicates and functions defined on these types.
 # Type families and inverse categories
 
 For a type `J : 𝒰` let `Jᵈ` denote the respective universe of type families indexed by `J`.
-A typical example are length-indexed lists:
+A typical example is length-indexed lists:
 ```
 data Vec<T> : Natᵈ
   nil : Vec<T> 0
@@ -280,36 +280,38 @@ a “lax” index type instead of `Nat`:
 ```
 shape LaxNat
   lax(n : Nat) : LaxNat
-  extend(n : Nat) : (l : LaxNat) → when(l)
-    lax(m) ↦ l ↑ lax(n + m)
-    extend(m) ↦ extend(n + m)
+  lax(n) [extend (m : Nat)⟩ lax(n + m)
+  [extend n⟩ [extend m⟩ ↦ [extend n + m⟩
 ```
 
-While quotient inductive types admit constructors of identities between their elements,
-inductive shape types admit constructors of extensions “between” their elements.
-In synthetic types, for any two elements `x y : T` we have an identity type
-`x = y : 𝒰`. In shape types, for every element `x : P` we have a `P`-indexed
-type family `l↑ : Pᵈ`. We will write `s ↑ t` for `s↑ t`.
+To each universe `𝒰` we'll have an associated shape universe `$𝒰` occupied by the types like the one
+above. Inductive shape types are stratified directed counterparts of quotient inductive types.
+For every pair of their elements `x y : T` of and ordinary type `T : 𝒰` there is a type `(x = y) : 𝒰`
+of identifications between `x` and `y`.
 
-Inhabitants of `s ↑ t` the extenders from the element `s` to the element `t`.
-Sources of extenders must be structurally smaller than their targets to enable typechecking.
+Shape types `S : $𝒰` admit extension types instead: for every element `s : S`,
+there is a type family `s↑ : Pᵈ`. We will write `s ↑ t` for `s↑ t`.
 
-Every function we define on a shape type must have an action on all constructors,
-including extension constructors. The action of an extension constructor on the
-other extension constructors are their composition. The action of an
-extension constructor on extension constructors must have the form
-of function application, i.e. `extend(m) ↦ extend(f m)` so the typechecker
-can ensure that the composition is associative by construction.
+Quotient inductive types admit generators of identities `x = y` between their elements. 
+Shape types allow extension generators like `s [extend n⟩ t` that generate inhabitants 
+of the type `s ↑ t`. Sources of extenders must be structurally smaller than their targets
+to enable typechecking. Whenever we define an extension `s [extend n⟩ t` , we must also
+define how this extension acts on all possible extensions `e : t ↑ t'` yielding
+some `[extend f(n)⟩ : s ↑ t'`. This action must be given by some function `f`
+so ensure associativity by construction (because function composition is).
 
 This way, shape types form strictly associative inverse categories.
 
-To have an example for other functions, let us define addition for
+Every function we define on a shape type must have an action on all constructors,
+including extension constructors, which amounts to functoriality.
+
+To have an example, let us define addition for
 `LaxNat`s:
 ```
 def add : LaxNat² → LaxNat
   (lax(n), lax(m)) ↦ lax(m + n)
-  (extend(n) _, _) ↦ extend(n)
-  (_, extend(n) _) ↦ extend(n) 
+  (n[extend k⟩, m) ↦ add(n, m) [extend k⟩
+  (n, m[extend k⟩) ↦ add(n, m) [extend k⟩ 
 ```
 
 With `LaxNat` we can transform `ZeroEndingSequence` into a type family:
@@ -333,14 +335,73 @@ F(e) : ∀<Y : F(s)ᵈ> (∀(x : F(s)) Y(x)) → (∀(x : F(t)) F(e) Y)(x))
 Now we can fill in the gap in the definition of `ZeroEndingSizedSequence`. The type
 of the equality constructor `f = append(f, 0)` does not typecheck yet, but we can
 decompose it into an application `{ it = append(f, 0) } f` and apply the domain
-extension to the function part by applying `ZeroEndingSizedSequence (extend(1) n)`:
+extension to the function part by applying `ZeroEndingSizedSequence n[extend 1⟩`:
 ```
 data ZeroEndingSizedSequence : LaxNatᵈ
   nil : ZeroEndingSizedSequence lax(0)
   append<n>(prefix : ZeroEndingSizedSequence n, head : Nat) : ZeroEndingSizedSequence (lax(1) + n) 
   extend<n>(f : ZeroEndingSizedSequence n)
-  : ZeroEndingSizedSequence (extend(1) n) { it = append(f, 0) } f
+  : ZeroEndingSizedSequence n[extend 1⟩ { it = append(f, 0) } f
 ```
+
+# Lax algebraic theories via shapes
+
+Models of single-sorted algebraic theories arise as dual typeclasses
+for quotient inductive types we will call prototypes of those theories.
+Monoids arise as models for the following type:
+```
+data MonoidPt
+  e : MonoidPt
+  (∘) : MonoidPt → MonoidPt → MonoidPt
+
+  unitorL : x = e ∘ x
+  unitorR : x = x ∘ e
+  associator : (x ∘ y) ∘ z = x ∘ (y ∘ z)
+```
+
+We can also provide an unbiased definition for monoids, where the composition operation
+is not taken to be binary, but can have any finite arity including zero for the neutral
+element `e`. Let's introduce several types:
+```
+data PTree<T>
+  Leaf(label : T)
+  Node(branches : PTree<T>*)
+```
+```
+data SizedPTree<T> : ℕᵈ
+  Leaf(label : T) : SizedPTree<T> 1
+  Node<sizes : ℕ*>(branches : HList<T> sizes) : SizedPTree<T> (sum sizes)
+```
+A `pr : Parenthesization(n : ℕ)` is just a `SizedPTree<Unit> n` that acts
+on lists `xs : T*` turning them into respective trees `pr(xs) : PTree<T>`.
+
+Now we can proceed to the definition of an unbiased monoid:
+```
+shape MonoidPt
+  compose : LaxMonoidPt* → LaxMonoidPt
+
+  expand(xs : LaxMonoidPt*,
+         pr : Parenthesization(xs.length)
+  : compose(xs) = (pr(xs) map compose)  
+```
+
+If we can orient equalities so they map structurally smaller terms to structurally
+larger ones, we can reformulate the theory as a shape type with extensions instead
+of identities. Algebraic theories with extenders are known as lax algebraic theories.
+```
+shape LaxMonoidPt
+  compose : LaxMonoidPt* → LaxMonoidPt
+
+  compose(xs) [expand (pr : Parenthesization(l ▸length))⟩ (pr(xs) map compose)
+  [expand pr⟩ [expand pr'⟩ ↦ [expand (pr' ∘) p⟩  
+```
+
+When mapping into set-like types, extensions can only be mapped into identities,
+so exchanging identities for extensions does not affect set-like models, but the
+extension formulation provides an explicitly confluent system of rules making
+the theory stratified. Stratifiability of the sort algebra is necessary for
+generalized algebraic theories to have explicit syntactic free models and effective
+model structure on the category of their models.
 
 # Fibered types and direct categories
 
@@ -508,68 +569,6 @@ their sort algebras are stratified.
 
 In fact, in all of these cases, the categories `𝒱` also carry a natural weak model structure and
 are equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
-
-* * *
-
-Models of single-sorted algebraic theories arise as dual typeclasses
-for quotient inductive types. Monoids arise as models for the following type:
-```
-data MonTh
-  e : MonTh
-  (∘) : MonTh → MonTh → MonTh
-
-  unitorL : x = e ∘ x
-  unitorR : x = x ∘ e
-  associator : (x ∘ y) ∘ z = x ∘ (y ∘ z)
-```
-
-If we can orient equalities so they map structurally smaller terms to structurally
-larger ones, we can reformulate the theory as a shape type with extensions instead
-of identities. Algebraic theories with extenders are known as lax algebraic theories.
-When mapping into set-like types, extensions can only be mapped into identities,
-so exchanging identities for extensions does not affect set-like models, but the
-extension formulation provides an explicitly confluent system of rules making
-the theory stratified. Stratifiability of the sort algebra is necessary for
-generalized algebraic theories to have explicit syntactic free models and effective
-model structure on the category of their models.
-
-```
-data PTree<T>
-  Leaf(label : T)
-  Node(branches : PTree<T>*)
-```
-```
-shape LaxMonTh
-  compose(xs : LaxMonTh*) : LaxMonTh
-
-  extend(s : LaxMonTh) : s.when
-    compose(xs) ↦ ∀(p : Parenthesization xs.length) compose(xs) ↑ p(compose, xs)
-    ...
-```
-
-**TODO:** Recondile with older version:
-
-Let us introduce the type of natural number lists indexed by their sum:
-```
-data SumsTo : ℕ → *
-  nil : SumsTo 0
-  cons : ∀{n : ℕ} (head : ℕ, tail : SumsTo n ) → SumsTo (head + n)
-```
-
-Now we can write a function `unflatten` that takes a `list : List<T>` and
-an additive decomposition `s : SumsTo(list ▸length)` into a `listOfLists : List<List<T>>` with
-`listOfLists ▸flatten = list` and `listOfLists ▸map {.length} = s`.
-
-Now we can define the following
-```
-shape LaxTh
-  compose : List<LaxTh> → LaxTh
-
-  compose(l) ⟨parenthesize(s : SumsTo(l ▸length))] compose(l ▸unflatten(s))
-```
-
-The models `LaxTh-Mod` for this prototype are the unbiased lax monoids.
-
 
 # Categories as models for an inductive type
 
