@@ -4,33 +4,21 @@ Higher Categorical Type Theory
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
 
-Building on the unpublished ideas of C. McBride,
-we propose a novel extension for univalent Martin-Löf Type Theories (MLTTs) that allows
-internalizing Reedy categories as so called shape types.
+Building on the unpublished ideas of C. McBride and ideas from “Displayed Type Theory and Semi-Simplicial Types”
+by A. Kolomatskaia and M. Shulman, we propose a novel extension for univalent Martin-Löf Type Theories (MLTTs)
+that allows internalizing Reedy categories.
 
-Indexing and fibering over shape types provides effective machinery
-for dealing with syntaxes that include binding,
-and become indispensable when internalizing the syntax and semantics of type theories themselves. 
-Bidirectional presentations of dependent type theories turn out to be inductive-inductive-recursive definitions.
+Indexing and fibering over shape types provide effective machinery to deal with syntaxes that include binding
+and become indispensable when internalizing the syntax and semantics of type theories themselves.
+In this way, we obtain a convenient tooling and uniformly establish the existence of initial models for structures
+like [weak ω-categories](https://arxiv.org/abs/1706.02866), [virtual equipments](https://arxiv.org/abs/2210.08663), 
+(∞,1)-toposes
+once the [Higher Observation Type Theory (HOTT)](https://ncatlab.org/nlab/show/higher+observational+type+theory)
+is complete.
 
-Semantically, fibered quotient inductive-inductive type definitions (FQIITs) are effective presentations of weak model
-categories whose structure-preserving functors correspond to elimination motives.
-In strong analogy to the functorial semantics of Lavwere algebraic theories,
-these functors themselves form a category of models, with their natural transformations serving as model homomorphisms.
-
-We conjecture of initial models in an arbitrary (∞,1)-topos conditionally on the existence of an
-appropriate large cardinal: probably, an inaccessible for small and a Mahlo cardinal for large FQIITs respectively.
-
-Such result would uniformly establish the existence of initial models for structures
-admitting an effective bidirectionally algebraic presentation,
-including [weak ω-categories](https://arxiv.org/abs/1706.02866),
-[virtual equipments](https://arxiv.org/abs/2210.08663), 
-(∞,1)-toposes once the [Higher Observation Type Theory (HOTT)](https://ncatlab.org/nlab/show/higher+observational+type+theory) is complete.
-
-In the end, our theory should be homoiconic, i.e. capable of representing their own syntax in terms of inductive types
-and performing structural induction over it (also known as “eating themselves”).
-
-
+Finally, this approach should lead to a homoiconic univalent type theory (see “Type Theory should eat itself”),
+i.e. one capable of representing its own syntax as a generalized inductive type
+and thus also performing structural induction over it.
 
 # Motivation
 
@@ -450,7 +438,7 @@ Inductive-recursive definitions are mutually dependent definitions of an inducti
 and a recursive function on that type.
 Such definitions naturally generate a fibered type.
 
-TODO: Σ-closed universe example
+**TODO:** Σ-closed universe example
 
 We will use `|_|` as the default name of fibering function unless it is explicitly named.
 
