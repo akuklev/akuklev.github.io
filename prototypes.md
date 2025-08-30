@@ -103,9 +103,9 @@ quotient inductive types.
 The simplest types of this kind are the finite datatypes (also known as enums) defined by enumerating
 their possible values:
 ```
-data Boolean
-  True
-  False
+data Bool
+  True    `tt`
+  False   `ff`
   
 data Unit
   Point
@@ -124,7 +124,7 @@ data Possibly<X>
 
 Each inductive type comes along with a dual typeclass:
 ```
-typeclass Booleanᴿ<this Y>
+typeclass Boolᴿ<this Y>
   true  : Y
   false : Y
 ```
@@ -139,8 +139,8 @@ Instances of these typeclasses represent by-case analysis of the respective sum 
 Inhabitants of inductive types `x : T` can be converted into functions
 evaluating their by-case analysers: `xᶜ : ∀<Y : Tᴿ> Y`:
 ```
-def Trueᶜ<Y : Booleanᴿ>() = Y.true
-def False<Y : Booleanᴿ>() = Y.false
+def Trueᶜ<Y : Boolᴿ>() = Y.true
+def False<Y : Boolᴿ>() = Y.false
 
 def Nothingᶜ<X, Y : Possiblyᴿ<X>>()  = Y.nothing
 def Value<X, Y : Possiblyᴿ<X>)(x : X)ᶜ  = Y.value(x)
@@ -150,9 +150,9 @@ These functions are known as Church representations.
 
 What if we want to return values of different types for `True` and `False`?
 If we have universes (types of types), we can first define a function from
-booleans into some universe `R : Boolean → 𝒰` and then a dependent case analyser
+booleans into some universe `R : Bool → 𝒰` and then a dependent case analyser
 ```
-typeclass Booleanᴹ<this Y : Boolean → *>
+typeclass Boolᴹ<this Y : Bool → *>
   true  : Y(True)
   false : Y(False)
 ```
@@ -268,38 +268,38 @@ a “lax” index type instead of `Nat`:
 ```
 shape LaxNat
   lax(n : Nat) : LaxNat
-  lax(n) [extend (m : Nat)⟩ lax(n + m)
-  [extend n⟩ [extend m⟩ ↦ [extend n + m⟩
+  lax(n) [m : Nat⟩ lax(n + m)
+  [n⟩ [m⟩ ↦ [(n +) m⟩
 ```
 
 To each universe `𝒰` we'll have an associated shape universe `$𝒰` occupied by the types like the one
 above. Inductive shape types are stratified directed counterparts of quotient inductive types.
-For every pair of their elements `x y : T` of and ordinary type `T : 𝒰` there is a type `(x = y) : 𝒰`
+For every pair of their elements `x y : T` of a set-like type `T : 𝒰` there is a type `(x = y) : 𝒰`
 of identifications between `x` and `y`.
 
-Shape types `S : $𝒰` admit extension types instead: for every element `s : S`,
+Shape types `S : $𝒰` admit extender types instead: for every element `s : S`,
 there is a type family `s↑ : Pᵈ`. We will write `s ↑ t` for `s↑ t`.
 
-Quotient inductive types admit generators of identities `x = y` between their elements. 
-Shape types allow extension generators like `s [extend n⟩ t` that generate inhabitants 
+Quotient inductive types admit constructors of identities `x = y` between their elements. 
+Shape types allow constructors of extenders like `s [n⟩ t` that generate inhabitants 
 of the type `s ↑ t`. Sources of extenders must be structurally smaller than their targets
-to enable typechecking. Whenever we define an extension `s [extend n⟩ t` , we must also
-define how this extension acts on all possible extensions `e : t ↑ t'` yielding
-some `[extend f(n)⟩ : s ↑ t'`. This action must be given by some function `f`
+to enable typechecking. Whenever we define an extender `s [n⟩ t` , we must also
+define how it acts on all possible extenders `e : t ↑ t'` yielding
+some `[f n⟩ : s ↑ t'`. This action must be given by some function `f`
 so ensure associativity by construction (because function composition is).
 
 This way, shape types form strictly associative inverse categories.
 
 Every function we define on a shape type must have an action on all constructors,
-including extension constructors, which amounts to functoriality.
+including extender constructors, which amounts to functoriality.
 
 To have an example, let us define addition for
 `LaxNat`s:
 ```
 def add : LaxNat² → LaxNat
   (lax(n), lax(m)) ↦ lax(m + n)
-  (n[extend k⟩, m) ↦ add(n, m) [extend k⟩
-  (n, m[extend k⟩) ↦ add(n, m) [extend k⟩ 
+  (n[k⟩, m) ↦ add(n, m) [k⟩
+  (n, m[k⟩) ↦ add(n, m) [k⟩ 
 ```
 
 With `LaxNat` we can transform `ZeroEndingSequence` into a type family:
@@ -311,8 +311,8 @@ data ZeroEndingSizedSequence : ↓LaxNat
 ```
 
 Before we fill in the gap in the above definition, note that type families also seem to be functions on their index type,
-so they must act on the extension constructors: they must map extension constructors to identities or extensions
-between function results. Extensions between types are domain extensions for functions defined
+so they must act on the extender constructors: they must map extender constructors to identities or extenders
+between function results. Extenders between types are domain extension maps for functions defined
 on those types, i.e. for a types `X Y : *`, the type `X ↑ Y` is `∀<Z> (X → Z) → (Y → Z)`.
 Let `F : Iᵈ` be a type family, and `e : s ↑ t` for some `s t : I`.
 Then `F(e) : ∀<Y> (F(s) → Y) → (F(t) → Y)`. We also have a dependently typed version.
@@ -369,27 +369,28 @@ shape MonoidPt
   compose : LaxMonoidPt* → LaxMonoidPt
 
   expand(xs : LaxMonoidPt*,
-         pr : Parenthesization(xs.length)
+         pr : Parenthesization xs.length
   : compose(xs) = (pr(xs) map compose)  
 ```
 
 If we can orient equalities so they map structurally smaller terms to structurally
-larger ones, we can reformulate the theory as a shape type with extensions instead
+larger ones, we can reformulate the theory as a shape type with extenders instead
 of identities. Algebraic theories with extenders are known as lax algebraic theories.
 ```
 shape LaxMonoidPt
   compose : LaxMonoidPt* → LaxMonoidPt
 
-  compose(xs) [expand (pr : Parenthesization(l ▸length))⟩ (pr(xs) map compose)
-  [expand pr⟩ [expand pr'⟩ ↦ [expand (pr' ∘) p⟩  
+  compose(xs) [pr : Parenthesization xs.length⟩ (pr(xs) map compose)
+
+  [pr⟩ [pr'⟩ ↦ [expand (pr' ∘) p⟩  
 ```
 
-When mapping into set-like types, extensions can only be mapped into identities,
-so exchanging identities for extensions does not affect set-like models, but the
-extension formulation provides an explicitly confluent system of rules making
-the theory stratified. Stratifiability of the sort algebra is necessary for
-generalized algebraic theories to have explicit syntactic free models and effective
-model structure on the category of their models.
+When mapping into set-like types, extenders can only be mapped into identities,
+so exchanging identities for extenders does not affect set-like models, but the
+lax formulation provides an explicitly confluent system of rules making the 
+theory stratified. Stratifiability of the sort algebra is necessary for
+generalized algebraic theories to have explicit syntactic free models and
+an effective model structure on the category of their models.
 
 # Fibered types and direct categories
 
@@ -442,8 +443,8 @@ Such definitions naturally generate a fibered type.
 
 We will use `|_|` as the default name of fibering function unless it is explicitly named.
 
-Fibered types allow formulating dependent type extensions:
-for a type `X : 𝒰` and a fibered type `Y : Y' / X`, extensions `X ↑ Y` are terms of the type
+Fibered types allow formulating dependent extender types:
+for a type `X : 𝒰` and a fibered type `Y : Y' / X`, extenders `X ↑ Y` are terms of the type
 `∀<Z : X → 𝒰> (∀(x : X) Z(x)) → (∀(y : Y') Z(|y|))`.
 
 `Σ`-type former is tightly connected to fibered types.
@@ -529,20 +530,82 @@ Type families over Δ⁺ are semi-simplicial types.
 Type families over thin (i.e. with at most one arrow between any two inhabitants)
 self-indexed types are also known as very dependent types.
 
-# Putting everything together: representing Reedy categories
-Most notably, we can combine extensions (degeneracy maps) and selections (face maps)
+# Combining extenders and selectors: Reedy categories
+
+Most notably, we can combine extenders (degeneracy maps) and selectors (face maps)
 yielding strictly associative Reedy categories like the simplicial category Δ:
 ```
 shape Δ  : * ↑ Δ
-  simplex(n : Nat) / ((Σ(m) Fin(m) → Fin(n)) / simplex(m)) 
-  extend : (s : Δ) → when(s)
-    simplex(n) ↦ (Σ(m) Fin(m) → Fin(n)) → s ↑ simplex(m)
-    ... simplicial identities
+  simplex(n : Nat) / ((Σ(m) Fin(m) → Fin(n)) / simplex(m))
+  
+  simplex(n)[m : Nat, f : Fin(m) → Fin(n)⟩ simplex(m) / (intertwining identities) 
+  [m, f⟩ [m', f'⟩ ↦ [m', { it ∘ f } f'⟩
 ```
 
-Type families `F : ↓Δ` on Δ are the simplicial types.
+Type families on Δ are the infamous simplicial types,
+which are vital for defining the syntax of dependent typed theories.
 
-As we already mentioned above, the shape type Δ is vital for defining the syntax of dependent typed theories.
+# Categories as models of a shape-indexed prototype
+
+Let us again consider the category signature shape:
+```
+shape □¹⁺ : * ↑ □¹⁺
+  Ob  / (Void / exfalso)
+  Mor / (Bool / { Ob })
+```
+
+Just like we defined a monoid prototype above, we can define a prototype for categories as
+an indexed quotient-inductive type family:
+```
+data CatPt : (□¹⁺)ᵈ
+  id : ∀(o : CatPt Ob) (CatPt Mor)(o, o)
+  (▸) : ∀(x y z : CatPt Ob) (CatPt Mor)(x, y)
+                          → (CatPt Mor)(y, z)
+                          → (CatPt Mor)(x, z)
+
+  unitorL : ∀{x y} f = id ▸ f
+  unitorR : ∀{x y} f = f ▸ id
+  associator : ∀{f g h} (f ▸ g) ▸ h = f ▸ (g ▸ h)
+```
+
+The dual typeclass is precisely the usual definition of a category:
+```
+typeclass CatPtᴿ<this Ts : (□¹⁺)ᵈ>
+  id : ∀<o> Ts.mor(o, o)
+  (▸) : ∀<x, y, z> Ts.mor(x, y)
+                 → Ts.mor(y, z)
+                 → Ts.mor(x, z}
+  ... subject to unitality and associativity
+```
+
+Which is precisely the ordinary definition of a category that works perfectly in set-like types.
+For a definition that works in arbitrary universes, we additionally have to require univalence.
+
+As it turns out, it can be achieved by adding two extenders to the index shape type:
+```
+shape □¹⁺ : * ↑ □¹⁺
+  Ob  / (Void / exfalso)
+  Mor / (Bool / { Ob })
+
+  Ob [よR⟩ Mor / ff
+  Ob [よL⟩ Mor / tt
+```
+
+Now given `Ts : (□¹)ᵈ`, for every `o : Ts.Ob` we'll have Yoneda embeddings:
+```
+o[よR⟩ : ∀<target> Ts.Mor(o, target)
+o[よL⟩ : ∀<source> Ts.Mor(source, o)
+```
+
+These embeddings suffice to derive the said univalence requirement:
+```
+∀<X, Y> (a ≃ b) ≃ Σ(f : Ts.mor(X, Y)
+                    g : Ts.mor(Y, X)) (f ▸ g = id) and (f ▸ g = id)            
+```
+
+Exactly as we did for monoids, we can proceed to derive an unbiased definition
+a lax prototype.
+Mutatis mutandis, lax categories turn out to be virtual equipments.
 
 # Universes as categories
 
@@ -552,77 +615,11 @@ and universes of fibered type families.
 In fact, universes of fibered types or type families will also exhibit selectors iff they are fibered
 over self-fibered types.
 Here we will show that it also applies to universes of models for any given algebraic theory,
-including infinitary algebraic theories with dependent sorts and their generalized form as long 
+including infinitary algebraic theories with dependent sorts and their generalized form as long
 their sort algebras are stratified.
 
 In fact, in all of these cases, the categories `𝒱` also carry a natural weak model structure and
 are equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
-
-# Categories as models for an inductive type
-
-There can be more then one dependency between two inhabitants of an inductive prototype:
-```
-shape □¹⁺ : * ↑ □¹⁺
-  Ob  / (Void / exfalso)
-  Mor / (Bool / { Ob })
-```
-
-
-Now let us define the following indexed quotient-inductive type family:
-```
-data CatTh : □¹⁺ → *
-  id : ∀{o : CatTh Ob} (CatTh Mor){source: o, target: o}
-  (▸) : ∀{x y z : CatTh Ob} (CatTh Mor)(x, y)
-                          → (CatTh Mor)(y, z)
-                          → (CatTh Mor)(x, z)
-
-  unitorL : ∀{x y} f = id ▸ f
-  unitorR : ∀{x y} f = f ▸ id
-  associator : ∀{f g h} (f ▸ g) ▸ h = f ▸ (g ▸ h)
-```
-
-Now consider the type of models for this type:
-```
-typeclass CatTh-Mod<Ts : Δ¹⁺ → *>
-  id : ∀{o : Ts.ob} → Ts.mor{source: o, target: o}
-  (▸) : ∀{x y z : Ts.ob} (Ts.mor){source: x, target: y}
-                       → (Ts.mor){source: y, target: z}
-                       → (Ts.mor){source: x, target: z}
-  ... subject to unitality and associativity
-```
-
-That's precisely the definition of a category!
-Well, actually, a precategory because we do not yet require univalence. But we can require univalence an embedding arrows we forgot in the definition
-of our prototype:
-```
-prototype □¹
-  ob / ???
-  mor / ???
-
-  よR : ob ↑ mor
-  よL : ob ↑ mor
-  // higher identities, essentially free + 
-  [source⟩⟨よR] ↦ [source⟩
-  [target⟩⟨よL] ↦ [target⟩
-```
-
-Now given `Ts : □¹ → *`, for every `o : Ts.Ob` we'll have Yoneda embeddings
-```
-o よR : ∀(target : Ts.Ob) Ts.Mor(source: o, target)
-o よL : ∀(source : Ts.Ob) Ts.Mor(source, target: o)
-```
-that allow to derive 
-```
-univalence : ∀{X Y : Ts.ob} (a ≃ b) ≃ Σ(f : Ts.hom{source: X, target: Y})
-                                      Σ(g : Ts.hom{source: Y, target: X})
-                                      (f ▸ g = id) and (f ▸ g = id)            
-```
-
-# Induced algebraic structure (Lax monoidal category example)
-
-Structures defined as models for an inductive type compose extremely well. Consider `↓□¹`-valued models `LaxTh-Mod<↓□¹>` 
-of the lax monoid prototype, and then consider the `LaxTh-Mod<↓□¹>`-valued models of `CatTh`. 
-This way we obtain lax monoidal categories `CatTh-Mod<LaxTh-Mod<↓□¹>>`!
 
 # Displayed algebraic structures
 
@@ -666,4 +663,13 @@ making the type of ℕ-models into a ∞-precategory (Segal type),
 which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕᴿ>`
 of ℕ-models correspond to their isomorphisms.
 
-The presented construction generalizes to all generalizations of inductive types.
+# S-ary parametricity and induced algebraic structure (Lax monoidal category example)
+Universes of type families over a given shape (e.g. `(□¹)ᵈ`) admit internal universes of
+(either strict or lax) models for every lax prototype.
+
+In particular, we have prototypes `LaxMonoidPt / □¹` and `LaxMonPt /ˢ □¹` of lax and
+strict `□¹`-indexed monoids.
+
+For any prototypes over the same signature shape, we can build symmetric products,
+e.g. the prototypes `CatPt ⊙ (LaxMonoidPt / □¹)` and `CatPt ⊙ (LaxMonoidPt /ˢ □¹)`
+of lax and ordinary monoidal categories respectively.
