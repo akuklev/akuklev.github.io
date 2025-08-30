@@ -647,8 +647,8 @@ be possible to introduce dependent type formers in shape universes `$𝒰` using
 modelled after “Type Theory for Synthetic ∞-categories” by E. Riehl and M. Shulman.
 
 Models of lax algebraic theories and dependently sorted algebraic theories can also have
-directed higher structure, form ω-categories. Thus, in a future work we should be pursuing
-stacks.
+directed higher structure, form ω-categories.
+Thus, in a future work we shall be pursuing stacks.
 
 ## Promorphisms in universes of models
 
