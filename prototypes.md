@@ -667,7 +667,7 @@ Categories of models also carry a weak model structure.
 Models of lax algebraic theories and dependently sorted algebraic theories can also have
 directed higher structure, and in general form weak ω-categories.
 
-# Pursuing stacks
+# (Pre)sheaf universes as categories: Pursuing stacks
 
 As we have seen above, not only inductive shapes have the notion of extenders and selectors (i.e.
 are weak model categories); universes do as well.
