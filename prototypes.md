@@ -107,7 +107,7 @@ Now as we have motivated the need for all this stuff, let's dive in.
 # Setting and basics
 
 Our base theory will be the Higher Observational Type Theory with an infinite tower of cumulative
-universes `* : *⁺ : *⁺⁺ : ···` featuring □-modality based polymorphism.
+universes `* : *⁺ : *⁺⁺ : ···` featuring □-modality-based polymorphism.
 
 All universes will be closed under dependent product, dependent sum types, and
 quotient inductive types.
@@ -184,8 +184,8 @@ data Nat `ℕ`
 ```
 ```
 data List<T> `T*`
-  EmptyList : List<T>
-  NonEmptyList(head : T, tail : List<T>) : List<T>
+  EmptyList : T*
+  NonEmptyList(head : T, tail : T*) : T*
 ```
 ```
 data BinTree<T>
@@ -195,7 +195,7 @@ data BinTree<T>
 ```
 data VarTree<T>
   Leaf
-  Node(label: T, branches : List<VarTree<T>>)
+  Node(label: T, branches : VarTree<T>*)
 ```
 ```
 data InfTree<T>
@@ -256,10 +256,10 @@ be irrelevant for all predicates and functions defined on these types.
 
 # Type families and inverse categories
 
-For a type `J : 𝒰` let `↓J` denote the respective universe of type families indexed by `J`.
+For a type `J : 𝒰` let `Jᵈ` denote the respective universe of type families indexed by `J`.
 A typical example are length-indexed lists:
 ```
-data Vec<T> : ↓Nat
+data Vec<T> : Natᵈ
   nil : Vec<T> 0
   cons<n>(head : T, tail : Vec<T> n) : Vec<T> n⁺
 ```
@@ -289,7 +289,7 @@ While quotient inductive types admit constructors of identities between their el
 inductive shape types admit constructors of extensions “between” their elements.
 In synthetic types, for any two elements `x y : T` we have an identity type
 `x = y : 𝒰`. In shape types, for every element `x : P` we have a `P`-indexed
-type family `↑l : ↓P`. (We'll use the shorthand `s ↑ t` for `↑s t`.)
+type family `l↑ : Pᵈ`. We will write `s ↑ t` for `s↑ t`.
 
 Inhabitants of `s ↑ t` the extenders from the element `s` to the element `t`.
 Sources of extenders must be structurally smaller than their targets to enable typechecking.
@@ -321,12 +321,13 @@ data ZeroEndingSizedSequence : ↓LaxNat
 ```
 
 Before we fill in the gap in the above definition, note that type families also seem to be functions on their index type,
-so they must act on the extension constructors.
-However, the only proper action would be domain extension for functions defined
-on those type families. Let `F : ↓I` be a type family, and `e : s ↑ t` for some `s t : I`.
+so they must act on the extension constructors: they must map extension constructors to identities or extensions
+between function results. Extensions between types are domain extensions for functions defined
+on those types, i.e. for a types `X Y : *`, the type `X ↑ Y` is `∀<Z> (X → Z) → (Y → Z)`.
+Let `F : Iᵈ` be a type family, and `e : s ↑ t` for some `s t : I`.
 Then `F(e) : ∀<Y> (F(s) → Y) → (F(t) → Y)`. We also have a dependently typed version.
 ```
-F(e) : ∀<Y : ↓F(s)> (∀(x : F(s)) Y(x)) → (∀(x : F(t)) F(e) Y)(x))
+F(e) : ∀<Y : F(s)ᵈ> (∀(x : F(s)) Y(x)) → (∀(x : F(t)) F(e) Y)(x))
 ```
 
 Now we can fill in the gap in the definition of `ZeroEndingSizedSequence`. The type
@@ -334,7 +335,7 @@ of the equality constructor `f = append(f, 0)` does not typecheck yet, but we ca
 decompose it into an application `{ it = append(f, 0) } f` and apply the domain
 extension to the function part by applying `ZeroEndingSizedSequence (extend(1) n)`:
 ```
-data ZeroEndingSizedSequence : ↓LaxNat
+data ZeroEndingSizedSequence : LaxNatᵈ
   nil : ZeroEndingSizedSequence lax(0)
   append<n>(prefix : ZeroEndingSizedSequence n, head : Nat) : ZeroEndingSizedSequence (lax(1) + n) 
   extend<n>(f : ZeroEndingSizedSequence n)
@@ -344,22 +345,27 @@ data ZeroEndingSizedSequence : ↓LaxNat
 # Fibered types and direct categories
 
 Many operations on containers have the following property:
-the shape of the resulting container only depends on shapes of the arguments.
+the shape of the resulting container only depends on the shapes of the arguments.
 For example, length of the list computed by `concatenate`, `map`, and `reverse`
 can be computed based on the lengths of the input lists.
 
-Let us introduce a notion of fibered types.
-For every type `B : 𝒰` we'll have a type family `↓B` indexed by types `T : 𝒰`.
-We will use the shorthand `S ↓ T` for `↑T S`.
-```
-inductive ↓B : ↓𝒰
-  fiberedType(F : 𝒰, f : F → B) : F ↓ B 
-```
+To account for that let us introduce a notion of fibered types and functions between
+them, namely the functions with the property described above.
 
-For shortness let us denote `fiberedType(F, f)` by `F / f`. 
+A fibered type is given by a pair of a type `E` and a function `f : E → B` written
+as `E / f`.
+We will denote the type of such terms as `E ↓ B` and occasionally `(e : E) ↓ B(e)`
+in case of dependent functions.
+
+Fibered types above some base type `B : 𝒰` form a type family `↓B` and `E ↓ B := ↓B E`
+is just a reverse application:
+```
+data ↓B : 𝒰ᵈ
+  (E : 𝒰) / (f : E → B) : E ↓ B 
+```
 
 For example, we can take the type of lists `T*` and the function `length : T* → ℕ`:
-`T* / length : T* ↓ ℕ`.
+`T* / length : T* ↓ ℕ`. 
 
 A function between fibered types is a pair of functions `(f / b) : (X / p) → (Y / q)`,
 so that the following square commutes by construction:
@@ -379,41 +385,38 @@ flatten<T> / sum : (T* / length)* → (T* / length)
 map<X, Y>(f : X → Y) / id : (X* / length)  → (Y* / length)
 ```
 
-In general, the function `f` in `X / f` may be a dependent function `f : ∀(x : X) Y(x)`,
-so we can introduce dependently fibered types `(x : X) ↓ Y(x)`.
- 
 Inductive-recursive definitions are mutually dependent definitions of an inductive type
 and a recursive function on that type.
 Such definitions naturally generate a fibered type.
 
-TODO: Universe example
+TODO: Σ-closed universe example
 
+We will use `|_|` as the default name of fibering function unless it is explicitly named.
 
-As already mentioned in the previous section, for a type `J : 𝒰` we have the type `↓J`
-of `J`-indexed type families.
-The type former `Σ<J> : ↓J → 𝒰` makes it a fibered type: `↓J / Σ : ↓J ↑𝒰`.
+Fibered types allow formulating dependent type extensions:
+for a type `X : 𝒰` and a fibered type `Y : Y' / X`, extensions `X ↑ Y` are terms of the type
+`∀<Z : X → 𝒰> (∀(x : X) Z(x)) → (∀(y : Y') Z(|y|))`.
 
-For every type-valued function `Y : B → 𝒰`, we have the fibered type `ΣY / fst : ΣY ↑B`.
-Owing to equality, we can invert this operation (for ordinary types, not shape types):
-for every fibered type `F / f : F ↑B` we have a function
-`{ b : B ↦ Σ(x : F) f(x) = b} : B → 𝒰`.
+`Σ`-type former is tightly connected to fibered types.
+On one hand, for every type family `Y : Bᵈ`, we have the fibered type `Σ'Y / fst : ΣY ↓ B`.
+On the other hand, `Σ<J : 𝒰> : Jᵈ → 𝒰` maps type families into types so for every J we have
+a fibered type `Jᵈ / Σ<J>`.
 
-
-Fibered types have non-trivial behaviour with respect to type families indexed
-over them.
-For a fibered type `F / f : F ↑B` and a type-family `Y : ↓(F / f)` indexed over
-it, and an element `x : F` we have the following rule:
+Above we only used the operator ( ᵈ) on types `T : 𝒰` to denote type-families `Tᵈ`, but
+this operator was actually introduced in “Displayed Type Theory and Semi-Simplicial Types”
+for all terms.
+Let us extend its definition to fibered types as follows.
+For `Y : (F / f)ᵈ`, where `f : F → B`, and `x : F` let:
 ```
 Y(x) : Bᵈ (f x) Y
 ```
-where `Bᵈ` is displayed counterpart of `B` as introduced in [[dTT]] paper.
 
-Inductive types can be self-fibered:
+Еhe significance of this definition comes to light when we consider
+that inductive types can be self-fibered:
 ```
-shape 𝔻 : * ↑ 𝔻
+shape 𝔻 : * ↓ 𝔻
   fst / (Void / exfalso)
   snd / (Unit / { fst })
-  def select : 𝔻 → * ↑ 𝔻
 ```
 
 Here we define a type with two generators `fst` and `snd`, and a function `|x : 𝔻| : (* ↓ 𝔻)`,
@@ -477,6 +480,7 @@ Type families over Δ⁺ are semi-simplicial types.
 Type families over thin (i.e. with at most one arrow between any two inhabitants)
 self-indexed types are also known as very dependent types.
 
+# Putting everything together: representing Reedy categories
 Most notably, we can combine extensions (degeneracy maps) and selections (face maps)
 yielding strictly associative Reedy categories like the simplicial category Δ:
 ```
@@ -491,38 +495,26 @@ Type families `F : ↓Δ` on Δ are the simplicial types.
 
 As we already mentioned above, the shape type Δ is vital for defining the syntax of dependent typed theories.
 
-Notably, universes of types, type families, and fibered types/type families also carry a shape structure
-with selections given by fibered types and extensions given by type families and a compatible proarrow
-equipment given by display operator ( ᵈ).
-Universes of models for any given algebraic theory also carry a shape structure and a compatible proarrow
-equipment.
+# Universes as categories
+
+As we have seen above, not only inductive shapes have the notion of extensions; universes do as well.
+It is not hard to see that it also applies to universes of type families, universes of fibered types,
+and universes of fibered type families.
+In fact, universes of fibered types or type families will also exhibit selectors iff they are fibered
+over self-fibered types.
+Here we will show that it also applies to universes of models for any given algebraic theory,
+including infinitary algebraic theories with dependent sorts and their generalized form as long 
+their sort algebras are stratified.
+
+In fact, in all of these cases, the categories `𝒱` also carry a natural weak model structure and
+are equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
 
 * * *
 
-Every inductive type comes with a ∞-procategory of its models.
-An inductive definition does not only generate the type (ℕ) itself,
-but also coinductive dual, the structure of a ℕ-model on an arbitrary type `T`.
+Models of single-sorted algebraic theories arise as dual typeclasses
+for quotient inductive types. Monoids arise as models for the following type:
 ```
-typeclass ℕᴿ<this T : *>
-  zero : T
-  next : T → T
-```
-and its canonical instance
-```
-instance ℕ : ℕᴿ<ℕ>
-  zero: 0
-  next: ( ⁺)
-```
-
-Non-dependent elimination rule (recursion) has the following signature:
-```
-( )ᶜ : ℕ → ∀<T : ℕᴿ> T
-```
-
-Models of single-sorted algebraic theories arise as models for quotient inductive types,
-for example monoids arise as models for the following type:
-```
-inductive MonTh
+data MonTh
   e : MonTh
   (∘) : MonTh → MonTh → MonTh
 
@@ -531,37 +523,31 @@ inductive MonTh
   associator : (x ∘ y) ∘ z = x ∘ (y ∘ z)
 ```
 
-To each type we can apply the ( ᵈ)-operator to obtain its displayed version.
-Displayed models for inductive types have the form
-```
-typeclass ℕᴿᵈ <M : ℕᴿ, this Ts : |M| → *>
-  zero : Ts(M.zero)
-  next : ∀{n : M} Ts(n) → Ts(M.next n)
-```
-allowing do define the type of induction motives and the induction operator:
-```
-def ℕᴹ<this P : ℕ → *> = ℕᴿᵈ<ℕ, P>
+If we can orient equalities so they map structurally smaller terms to structurally
+larger ones, we can reformulate the theory as a shape type with extensions instead
+of identities. Algebraic theories with extenders are known as lax algebraic theories.
+When mapping into set-like types, extensions can only be mapped into identities,
+so exchanging identities for extensions does not affect set-like models, but the
+extension formulation provides an explicitly confluent system of rules making
+the theory stratified. Stratifiability of the sort algebra is necessary for
+generalized algebraic theories to have explicit syntactic free models and effective
+model structure on the category of their models.
 
-ℕ-ind<P : ℕᴹ>(n : ℕ) : P(n)
 ```
- 
-For each model `M : ℕᴿ`, the inhabitants `Pm : ℕᴿᵈ<M>` are promorphisms (many-to-many corresponcences,
-sometimes also called weak homomorphisms) on `M` with the target given by
+data PTree<T>
+  Leaf(label : T)
+  Node(branches : PTree<T>*)
 ```
-instance Pm.target : ℕᴿ<M × Pm>
-  base: (M.zero, Pm.zero M.base)
-  step: { n : M, x : (Pm n) ↦ (M.step n, Pm.next (M.next n) x) }
+```
+shape LaxMonTh
+  compose(xs : LaxMonTh*) : LaxMonTh
+
+  extend(s : LaxMonTh) : s.when
+    compose(xs) ↦ ∀(p : Parenthesization xs.length) compose(xs) ↑ p(compose, xs)
+    ...
 ```
 
-We can single out homomorphisms as the functional (= many-to-one)
-promorphisms `Σ(src : ℕᴿ<T>, pm : ℕᴿᵈ src) (f : ∀(n) (m : (pm n)) × ∀(n' : pm n) n ≃ m`,
-making the type of ℕ-models into a ∞-precategory (Segal type),
-which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕᴿ>` 
-of ℕ-models correspond to their isomorphisms.
-
-The presented construction generalizes to all generalizations of inductive types.
-
-# Induced algebraic structure (Lax monoids example)
+**TODO:** Recondile with older version:
 
 Let us introduce the type of natural number lists indexed by their sum:
 ```
@@ -585,7 +571,7 @@ shape LaxTh
 The models `LaxTh-Mod` for this prototype are the unbiased lax monoids.
 
 
-## Categories as models for an inductive type
+# Categories as models for an inductive type
 
 There can be more then one dependency between two inhabitants of an inductive prototype:
 ```
@@ -645,16 +631,52 @@ univalence : ∀{X Y : Ts.ob} (a ≃ b) ≃ Σ(f : Ts.hom{source: X, target: Y})
                                       (f ▸ g = id) and (f ▸ g = id)            
 ```
 
+# Induced algebraic structure (Lax monoidal category example)
+
 Structures defined as models for an inductive type compose extremely well. Consider `↓□¹`-valued models `LaxTh-Mod<↓□¹>` 
 of the lax monoid prototype, and then consider the `LaxTh-Mod<↓□¹>`-valued models of `CatTh`. 
 This way we obtain lax monoidal categories `CatTh-Mod<LaxTh-Mod<↓□¹>>`!
 
-The other nice thing is that since we have defined categories as models for an inductive type, we automatically have the structure of a displayed category on categories:
+# Displayed algebraic structures
+
+The other nice thing is that since we have defined categories as models for an inductive type,
+we automatically have the typeclass of displayed categories, and all algebraic typeclasses are instances of it:
 ```
+Group : Catᵈ
+Ring : Catᵈ
 Cat : Catᵈ
 ```
-Furthermore, we can iterate, and thus `Catᵈ : Catᵈᵈ` etc. And since constructions and proofs also can be lifted,
+Furthermore, we can iterate, and thus `Catᵈ : Catᵈᵈ`, etc. And since constructions and proofs also can be lifted,
 any statement we have proven for all small categories `prf<C : Cat>` also can be applied to displayed categories, 
-say like the category `Grp : Catᵈ` of all groups and the category of all categories `Cat : Catᵈ` itself. 
-Seems like dream of size-agnostic category theory came true.
-Well, except we want to have the same for ω-categories `ωCat : ωCatᵈ : ωCatᵈᵈ : ···`.
+say like the category `Grp : Catᵈ` of all groups and the category of all categories `Cat : Catᵈ` itself.
+
+# Promorphisms in universes of models
+
+Displayed models for inductive types have the form
+```
+typeclass ℕᴿᵈ <M : ℕᴿ, this Ts : |M| → *>
+  zero : Ts(M.zero)
+  next : ∀{n : M} Ts(n) → Ts(M.next n)
+```
+allowing do define the type of induction motives and the induction operator:
+```
+def ℕᴹ<this P : ℕᵈ> = ℕᴿᵈ<ℕ, P>
+
+ℕ-ind<P : ℕᴹ>(n : ℕ) : P(n)
+```
+
+For each model `M : ℕᴿ`, the inhabitants `Pm : ℕᴿᵈ<M>` are promorphisms (many-to-many corresponcences,
+sometimes also called weak homomorphisms) on `M` with the target given by
+```
+instance Pm.target : ℕᴿ<M × Pm>
+  zero: (M.zero, Pm.zero M.base)
+  step: { n : M, x : (Pm n) ↦ (M.step n, Pm.next (M.next n) x) }
+```
+
+We can single out homomorphisms as the functional (= many-to-one)
+promorphisms `Σ(src : ℕᴿ<T>, pm : ℕᴿᵈ src) (f : ∀(n) (m : (pm n)) × ∀(n' : pm n) n ≃ m`,
+making the type of ℕ-models into a ∞-precategory (Segal type),
+which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕᴿ>`
+of ℕ-models correspond to their isomorphisms.
+
+The presented construction generalizes to all generalizations of inductive types.
