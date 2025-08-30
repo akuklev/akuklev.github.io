@@ -515,17 +515,17 @@ Algebraic theories with dependent sorts can be
 expressed via inductive type families indexed over a finite self-fibered index type S.
 In particular categories are models of an algebraic theory over the shape
 ```
-shape □¹⁺ : * ↑ □¹⁺
+data Cell2₊ : * ↑ Cell2₊
   Ob  / (Void / exfalso)
   Mor / (Bool / { Ob })
 ```
 
-To deal with ∞-categories, one can introduce a shape types `CellType` containing cell types
+To deal with ∞-categories, one can introduce a shape types `Cell` containing cell types
 of every dimension `n : Nat`.
 
 Dually to our lax natural numbers, we can introduce a self-indexed type `Δ⁺`:
 ```
-shape Δ⁺ : * ↑ Δ⁺
+data Δ⁺ : * ↑ Δ⁺
   simplex(n : Nat) / ((Σ(m) Fin(m) → Fin(n)) / simplex(m))
 ```
 
@@ -550,17 +550,19 @@ which are vital for defining the syntax of dependent typed theories.
 
 # Categories as models of a shape-indexed prototype
 
-Let us again consider the category signature shape:
+Let us revisit the category signature shape, adding an extra extender:
 ```
-shape □¹⁺ : * ↑ □¹⁺
+shape Cell2 : * ↑ Cell2
   Ob  / (Void / exfalso)
   Mor / (Bool / { Ob })
+
+  Ob [よ⟩ Mor / ff
 ```
 
 Just like we defined a monoid prototype above, we can define a prototype for categories as
 an indexed quotient-inductive type family:
 ```
-data Catᴾ : (□¹⁺)ᵈ
+data Catᴾ : Cell2ᵈ
   id : ∀(o : Catᴾ Ob) (Catᴾ Mor)(o, o)
   (▸) : ∀(x y z : Catᴾ Ob) (Catᴾ Mor)(x, y)
                           → (Catᴾ Mor)(y, z)
@@ -573,7 +575,7 @@ data Catᴾ : (□¹⁺)ᵈ
 
 The dual typeclass is precisely the usual definition of a category:
 ```
-typeclass Cat<this Ts : (□¹⁺)ᵈ>
+typeclass Cat<this Ts : Cell2ᵈ>
   id : ∀<o> Ts.mor(o, o)
   (▸) : ∀<x, y, z> Ts.mor(x, y)
                  → Ts.mor(y, z)
@@ -581,19 +583,7 @@ typeclass Cat<this Ts : (□¹⁺)ᵈ>
   ... subject to unitality and associativity
 ```
 
-Which is precisely the ordinary definition of a category that works perfectly in set-like types.
-For a definition that works in arbitrary universes, we additionally have to require univalence.
-
-As it turns out, it can be achieved by adding a Yoneda extender to the category signature:
-```
-shape □¹⁺ : * ↑ □¹⁺
-  Ob  / (Void / exfalso)
-  Mor / (Bool / { Ob })
-
-  Ob [よ⟩ Mor / ff
-```
-
-It can be used to derive the said univalence requirement:
+Yoneda extender induces equivalence between isomorphism and equivalence for objects in categories:
 ```
 ∀<X, Y> (a ≃ b) ≃ Σ(f : Ts.mor(X, Y)
                     g : Ts.mor(Y, X)) (f ▸ g = id) and (f ▸ g = id)            
@@ -618,8 +608,11 @@ typeclass LaxMonoidalCat<Ts : Cat> extends LaxMonoid<Ts.Ob> {}
 
 Exactly as we did for monoids, we can proceed to derive an unbiased definition
 a lax prototype.
-As far as we understand, lax categories are precisely the virtual double
-categories.
+To our understanding, lax categories are precisely the virtual double
+categories, “the natural place in which to enrich categories”. Since
+we now can describe weak ω-categories algebraically, it is worth studying
+if categories weakly enriched in ω-categories are ω-categories themselves
+as expected.
 
 # Displayed algebraic structures
 
@@ -666,6 +659,15 @@ of ℕ-models correspond to their isomorphisms.
 Categories of models also carry a weak model structure.
 Models of lax algebraic theories and dependently sorted algebraic theories can also have
 directed higher structure, and in general form weak ω-categories.
+In particular, we expect to have an infinite typeclass hierarchy
+```
+ωCat : ωCatᵈ : ωCatᵈᵈ : ···
+```
+
+Together with [□-modality based approach to polymorphism](polymorphism), we expect
+to have a satisfying solution to all size issues arising in ordinary and higher
+category theory. In fact, we hope that the presented type theory is capable of
+eventually formalizing the [nLab](http://ncatlab.org) in its entirety.
 
 # (Pre)sheaf universes as categories: Pursuing stacks
 
