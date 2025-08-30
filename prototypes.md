@@ -161,7 +161,7 @@ I-ind<Y : Iᴹ>(x : I) : Y(x)
 ```
 
 Non-finite inductive types admit (strictly positive) recursion in type definitions,
-allowing introduce such types as natural numbers, lists, and trees:
+allowing to introduce such types as natural numbers, lists, and trees:
 ```
 data Nat `ℕ`
   Zero `0`
@@ -309,8 +309,12 @@ data ZeroEndingSizedSequence : ↓LaxNat
 
 Before we fill in the gap in the above definition, note that type families also seem to be functions on their index type,
 so they must act on the extender constructors: they must map extender constructors to identities or extenders
-between function results. Extenders between types are domain extension maps for functions defined
-on those types, i.e. for a types `X Y : *`, the type `X ↑ Y` is `∀<Z> (X → Z) → (Y → Z)`.
+between function results. If deal with type-valued functions on shapes `S → 𝒰`, extenders can only be mapped to
+identities, but type families `Sᵈ` are more that type-valued functions: they allow mapping extenders to extenders
+between types which we define as follows. For types `X Y : 𝒰`, the type `X ↑ Y` is a pair of a function `b : Y → X` and
+domain extension operator `e : ∀<Z> (X → Z) → (Y → Z)` so that for every `f : X → Z`, we have equality by construction
+(definitional equality) `b ∘ e(f) = f`.
+
 Let `F : Iᵈ` be a type family, and `e : s ↑ t` for some `s t : I`.
 Then `F(e) : ∀<Y> (F(s) → Y) → (F(t) → Y)`. We also have a dependently typed version.
 ```
@@ -384,7 +388,7 @@ shape LaxMonoidᴾ
   [pr⟩ [pr'⟩ ↦ [expand (pr' ∘) p⟩  
 ```
 
-When mapping into set-like types, extenders can only be mapped into identities,
+When mapping into ordinary types, extenders can only be mapped into identities,
 so exchanging identities for extenders does not affect set-like models, but the
 lax formulation provides an explicitly confluent system of rules making the 
 theory stratified. Stratifiability of the sort algebra is necessary for
@@ -444,7 +448,7 @@ We will use `|_|` as the default name of fibering function unless it is explicit
 
 Fibered types allow formulating dependent extender types:
 for a type `X : 𝒰` and a fibered type `Y : Y' / X`, extenders `X ↑ Y` are terms of the type
-`∀<Z : X → 𝒰> (∀(x : X) Z(x)) → (∀(y : Y') Z(|y|))`.
+`e : ∀<Z : X → 𝒰> (∀(x : X) Z(x)) → (∀(y : Y') Z(|y|))` so that `|e(f(_))| = f(_)` by construction. 
 
 `Σ`-type former is tightly connected to fibered types.
 On one hand, for every type family `Y : Bᵈ`, we have the fibered type `Σ'Y / fst : ΣY ↓ B`.
@@ -630,27 +634,7 @@ Furthermore, we can iterate, and thus `Catᵈ : Catᵈᵈ`, etc. And since const
 any statement we have proven for all small categories `prf<C : Cat>` also can be applied to displayed categories,
 say like the category `Grp : Catᵈ` of all groups and the category of all categories `Cat : Catᵈ` itself.
 
-# Universes as categories
-
-As we have seen above, not only inductive shapes have the notion of extensions; universes do as well.
-It is not hard to see that it also applies to universes of type families (“presheaf universes”),
-universes of fibered types, and universes of fibered type families.
-̈Universes of fibered types or type families will also exhibit selectors if they are fibered
-over self-fibered types.
-It can be shown to also apply to universes of models for any given algebraic theory,
-including infinitary algebraic theories with dependent sorts and their generalized form as long
-their sort algebras are stratified. In fact, in all of these cases, the categories `𝒱` are also
-equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
-
-In this work we only considered dependent type formers valued in ordinary types, but it should
-be possible to introduce dependent type formers in shape universes `$𝒰` using an approach
-modelled after “Type Theory for Synthetic ∞-categories” by E. Riehl and M. Shulman.
-
-Models of lax algebraic theories and dependently sorted algebraic theories can also have
-directed higher structure, form ω-categories.
-Thus, in a future work we shall be pursuing stacks.
-
-## Promorphisms in universes of models
+# Universes of models are proarrow equiped model categories
 
 Displayed models for inductive types have the form
 ```
@@ -678,3 +662,28 @@ promorphisms `Σ(src : ℕᴿ<T>, pm : ℕᴿᵈ src) (f : ∀(n) (m : (pm n)) �
 making the type of ℕ-models into a ∞-precategory (Segal type),
 which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕᴿ>`
 of ℕ-models correspond to their isomorphisms.
+
+Categories of models also carry a weak model structure.
+Models of lax algebraic theories and dependently sorted algebraic theories can also have
+directed higher structure, and in general form weak ω-categories.
+
+# Pursuing stacks
+
+As we have seen above, not only inductive shapes have the notion of extenders and selectors (i.e.
+are weak model categories); universes do as well.
+It is not hard to see that it also applies to universes of fibered types, 
+universes of type families (“presheaf universes”), and universes of fibered type families.
+Conjecturally, it also applies to sheaf universes.
+
+As we have seen above, it also applies to universes of models for any given algebraic theory,
+including infinitary algebraic theories with dependent sorts and their generalized form as long
+their sort algebras are stratified. In fact, in all of these cases, the categories `𝒱` are also
+equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
+
+So far we have only considered dependent type formers valued in ordinary types, and 
+type families (valued in universes as categories), but it should be possible to
+introduce broader dependent type formers in shape universes `$𝒰` using an approach
+modelled after “Type Theory for Synthetic ∞-categories” by E. Riehl and M. Shulman.
+
+As universes of lax or dependently sorted algebraic theories carry non-invertible higher
+morphisms, ultimately we shall be pursuing stacks.
