@@ -1,94 +1,87 @@
-Higher Categorical Type Theory
-==============================
+Reedy Types and Type Families Thereover
+=======================================
 
 [author]: mailto:a@kuklev.com "Alexander Kuklev, JetBrains Research"
 [Alexander Kuklev](mailto:a@kuklev.com), [JetBrains Research](https://research.jetbrains.org/researchers/alexander.kuklev/)
 
 Building on the unpublished ideas of C. McBride and ideas from “Displayed Type Theory and Semi-Simplicial Types”
-by A. Kolomatskaia and M. Shulman, we propose a novel extension for univalent Martin-Löf Type Theories (MLTTs)
-that allows internalizing Reedy categories.
+by A. Kolomatskaia and M. Shulman, we propose a novel extension for univalent Martin-Löf Type Theories (MLTTs) for internalizing Reedy categories.
 
-Indexing and fibering over shape types provide effective machinery to deal with syntaxes that include binding
+Indexing and fibering over Reedy types provide effective machinery to deal with syntaxes that include binding
 and become indispensable when internalizing the syntax and semantics of type theories themselves.
-In this way, we obtain a convenient tooling and uniformly establish the existence of initial models for structures
-like [weak ω-categories](https://arxiv.org/abs/1706.02866), [virtual equipments](https://arxiv.org/abs/2210.08663), 
+In this way, we obtain convenient tooling and uniformly establish the existence of initial models for structures
+like [weak `ω`-categories](https://arxiv.org/abs/1706.02866), [virtual equipments](https://arxiv.org/abs/2210.08663),
 (∞,1)-toposes
 once the [Higher Observation Type Theory (HOTT)](https://ncatlab.org/nlab/show/higher+observational+type+theory)
 is complete.
 
-Finally, this approach should lead to a homoiconic univalent type theory (see “Type Theory should eat itself”),
+Finally, this approach should lead to a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/) univalent type theory,
 i.e. one capable of representing its own syntax as a generalized inductive type
 and thus also performing structural induction over it.
 
-# Motivation
+# Why do we need advanced type families?
 
 Finitary type families abstractly embody formalized languages.
 For example, consider the following simple language of arithmetic
 and logical expressions:
-```
-data ExpressionKind
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| ExpressionKind
   Numeric
   Logical
 
-data Expr : ↓ExpressionKind
-  Literal(n : Int)          : Expr(Numeric)
-  Sum(a b : Expr(Numeric))  : Expr(Numeric)
-  Mul(a b : Expr(Numeric))  : Expr(Numeric)
-  Div(a b : Expr(Numeric))  : Expr(Numeric)
-  Pow(a b : Expr(Numeric))  : Expr(Numeric)
-  Neg(a : Expr(Numeric))    : Expr(Numeric)
-  Log(a : Expr(Numeric))    : Expr(Numeric)
+|\textbf{\textcolor{dgreen}{data}}| Expr : ExpressionKind → *
+  Literal(n : Int)         : Expr Numeric
+  Sum(a b : Expr Numeric)  : Expr Numeric
+  Mul(a b : Expr Numeric)  : Expr Numeric
+  Div(a b : Expr Numeric)  : Expr Numeric
+  Pow(a b : Expr(Numeric)  : Expr Numeric
+  Neg(a : Expr Numeric)    : Expr Numeric
+  Log(a : Expr Numeric)    : Expr Numeric
   
-  Eq(a b : Expr(Numeric))   : Expr(Logical)
-  Less(a b : Expr(Numeric)) : Expr(Logical)
-  And(a b : Expr(Logical))  : Expr(Logical)
-  Or(a b : Expr(Logical))   : Expr(Logical)
-  Not(a b : Expr(Logical))  : Expr(Logical)
+  Eq(a b : Expr Numeric)   : Expr Logical
+  Lt(a b : Expr Numeric)   : Expr Logical
+  Or(a b : Expr Logical)   : Expr Logical
+  And(a b : Expr Logical)  : Expr Logical
+  Not(a : Expr Logical)    : Expr Logical
 ```
 
-This approach scales up to languages that may declare and bind named
-entities (variables, constants, internal types) including general-purpose
+If we allow generalized types as indexes, this approach scales up to languages with scoped binders (variables, type definitions) including general-purpose
 programming languages themselves.
 
 Data types defined that way are inhabited by abstract syntax trees
 corresponding to finite expressions of the language, and they come
-with a recursive descent analysis operator that enabling
+with a recursive descent analysis operator enabling
 type-driven design of correct-by-construction analysers and interpreters.
 This includes type checking, compilation, control flow analysis,
 as well as static analysis and abstract interpretation in general.
 
 As for IDEs, inductive type families enable designing biparsers for
-those languages, i.e. parsers that maintain one-to-one mapping
+those languages, parsers that maintain a one-to-one mapping
 between the source code and the respective annotated abstract syntax
 tree, enabling both fast incremental reparsing and mechanized refactoring.
 
-* * *
-
 To represent languages with typed variables, one introduces the type `Ty`
-representing variable types in the language, and the type family `Tm : ↓Ctx`
-of terms in a given context, where contexts are lists of types `Ctx := Ty*`.
+representing variable types in the language, and the type family `Tm : Ctxᵈ`
+of terms in a given context, where contexts are lists of types `Ctx := Ty`{$^*$}.
 Definition of term substitution can be vastly simplified if we make the type
-`Ctx` of contexts fibered over the shape type `LaxNat` that enables context
+`Ctx` of contexts fibered over the lax type `LaxNat` that enables context
 extension and selection of subcontexts.
 
-In case of dependently typed languages, the we’ll have a type family `Ty : ↓Ctx`
+In case of dependently typed languages,  we’ll have a type family `Ty : Ctxᵈ`
 of variable types available in a given context `c : Ctx`, and the type of contexts
 is an iterated dependent pair type
-```
-data Ctx
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Ctx
   Empty : Ctx
   Append(prefix : Ctx, head : Ty prefix)
 ```
-fibered over the shape type Δ that enables context extension and
-selection of subcontexts and respecting type dependencies, which is
-a absolutely vital for the definition of the aforementioned type family
-`Ty : ↓Ctx` and the type family `Tm : ↓(c : Ctx, Ty c)` of terms of a
+fibered over the Reedy type Δ that enables context extension and
+selection of subcontexts and respecting type dependencies, which is vital for the definition of the type family
+`Ty : Ctxᵈ` and the type family `Tm : (c : Ctx, Ty c)ᵈ` of terms of a
 given type in a given context.
 
-Bi-directionally typed languages (computational type theories) also
-require a fibered type family `Redex : ↓(c : Ctx) ↑(ty : Ty c, Tm ty) `
-of reducible expressions together with a function 
-`|r : Redex| : Σ(ty : Ty c) Tm ty` that computes their normal forms.
+Bi-directionally typed languages (computational type theories) also require a fibered type family `Redex : (c : Ctx)ᵈ ↓ (ty : Ty c, Tm ty)`
+of reducible expressions that synthesize their types.
 
 # Setting and basics
 
@@ -100,33 +93,33 @@ quotient inductive types.
 
 The simplest types of this kind are the finite datatypes (also known as enums) defined by enumerating
 their possible values:
-```
-data Bool
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Bool
   True    `tt`
   False   `ff`
   
-data Unit
+|\textbf{\textcolor{dgreen}{data}}| Unit
   Point
   
-data Void {}    # no elements at all 
+|\textbf{\textcolor{dgreen}{data}}| Void {}    // no elements at all 
 ```
 
 We can generalize them to sum types by allowing infinite families of “possible values”
 parametrized by some other type:
-```
-data Possibly<X>
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Possibly<X>
   Nothing
   Value(x : X)
 ```
 
 Each inductive type comes along with a dual typeclass:
-```
-typeclass Boolᴿ<this Y>
+```kotlin
+|\textbf{\textcolor{dgreen}{typeclass}}| Boolᴿ<this Y>
   true  : Y
   false : Y
 ```
-```
-typeclass Possiblyᴿ<X, this Y>
+```kotlin
+|\textbf{\textcolor{dgreen}{typeclass}}| Possiblyᴿ<X, this Y>
   nothing : Y
   value(x : X) : Y
 ```
@@ -135,55 +128,55 @@ Instances of these typeclasses represent by-case analysis of the respective sum 
 
 Inhabitants of inductive types `x : T` can be converted into functions
 evaluating their by-case analysers: `xᶜ : ∀<Y : Tᴿ> Y`:
-```
-def Trueᶜ<Y : Boolᴿ>() = Y.true
-def False<Y : Boolᴿ>() = Y.false
+```kotlin
+|\textbf{\textcolor{dgreen}{def}}| True<Y : Boolᴿ>ᶜ = Y.true
+|\textbf{\textcolor{dgreen}{def}}| False<Y : Boolᴿ>ᶜ = Y.false
 
-def Nothingᶜ<X, Y : Possiblyᴿ<X>>()  = Y.nothing
-def Value<X, Y : Possiblyᴿ<X>)(x : X)ᶜ  = Y.value(x)
+|\textbf{\textcolor{dgreen}{def}}| Nothing<X, Y : Possiblyᴿ<X>>ᶜ  = Y.nothing
+|\textbf{\textcolor{dgreen}{def}}| Value<X, Y : Possiblyᴿ<X>)(x : X)ᶜ  = Y.value(x)
 ```
 
 These functions are known as Church representations.
 
 What if we want to return values of different types for `True` and `False`?
 If we have universes (types of types), we can first define a function from
-booleans into some universe `R : Bool → 𝒰` and then a dependent case analyser
-```
-typeclass Boolᴹ<this Y : Bool → *>
+booleans into some universe `R : Bool → U` and then a dependent case analyser
+```kotlin
+|\textbf{\textcolor{dgreen}{typeclass}}| Boolᴹ<this Y : Bool → *>
   true  : Y(True)
   false : Y(False)
 ```
 
 To apply dependent case analysers to inhabitants of the respective type we
-need special operator called induction for reasons explained below:
+need a special operator called induction for reasons explained below:
 ```
 I-ind<Y : Iᴹ>(x : I) : Y(x)
 ```
 
 Non-finite inductive types admit (strictly positive) recursion in type definitions,
 allowing to introduce such types as natural numbers, lists, and trees:
-```
-data Nat `ℕ`
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Nat `ℕ`
   Zero `0`
   Next(pred : ℕ) `pred⁺`
 ```
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| List<T> `T|$^*$|`
+  EmptyList : T|$^*$|
+  NonEmptyList(head : T, tail : T|$^*$|) : T|$^*$|
 ```
-data List<T> `T*`
-  EmptyList : T*
-  NonEmptyList(head : T, tail : T*) : T*
-```
-```
-data BinTree<T>
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| BinTree<T>
   Leaf
   Node(label: T, left : BinTree<T>, right : BinTree<T>)
 ```
-```
-data VarTree<T>
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| VarTree<T>
   Leaf
-  Node(label: T, branches : VarTree<T>*)
+  Node(label: T, branches : VarTree<T>|$^*$|)
 ```
-```
-data InfTree<T>
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| InfTree<T>
   Leaf
   Node(label: T, branches : Nat → InfTree<T>)
 ```
@@ -192,15 +185,15 @@ All above examples except infinitely branching trees are finitary inductive type
 i.e. inductive types with the property that all of their generators have a finite
 number of parameters, and all these parameters are of finitary inductive types.
 Finitary inductive types may be infinite, but their inhabitants can be encoded
-by natural numbers or, equivalently finite bit strings.
+by natural numbers or equivalently finite bit strings.
 
 Finitary inductive types embody single-sorted languages.
 They are inhabited by abstract syntax trees corresponding to finite expressions
 of the language formed by their generators.
 
 “Case analysis” for the type of natural numbers provides n-ary iteration operator:
-```
-typeclass Natᴿ<this Y>
+```kotlin
+|\textbf{\textcolor{dgreen}{typeclass}}| Natᴿ<this Y>
   zero : Y
   next(p : Y) : Y
 ```
@@ -209,7 +202,7 @@ allowing to iterate arbitrary functions given number of times. In general,
 “case analysis” turns into “recursive descent analysis”. For lists and trees we
 obtain the respective fold operators.
 
-Type-valued functions on natural numbers `Y : Nat → 𝒰` can encode arbitrary predicates,
+Type-valued functions on natural numbers `Y : Nat → U` can encode arbitrary predicates,
 and a dependent `Nat`-analyser `Natᴹ<Y>` encodes an induction motive: it establishes
 a proof of the base case `Y(zero)` and the inductive step `Y(n) → Y(n⁺)`.
 Dependent case analysis operator turns induction motives into to proof the predicate
@@ -224,94 +217,97 @@ quotient inductive types may additionally contain constructors of identities
 between inhabitants.
 
 This way we can define rational numbers and unordered collections:
-```
-data Rational
-  frac(num : Int, den : PosInt)
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Rational
+  Frac(num : Int, den : PosInt)   `num / den`
   expand<num, den>(n : PosInt) : frac(num, den) = frac(num · n, den · n)
   
-data Collection<T>
-  bagOf<n : FinType>(items : n → T)
-  permute<n, items>(p : n!) : bagOf(items) = bagOf(items ∘ p)
+|\textbf{\textcolor{dgreen}{data}}| Collection<T>
+  Bag<n : FinType>(items : n → T)
+  permute<n, items>(p : n!) : Bag(items) = Bag(items ∘ p)
 ```
-where `n!` is the type of automorphisms on the type `n`, i.e. permutations in case of finite types.
+where `n!` is the type of automorphisms on the type `n`, i.e. permutations in the case of finite types.
 
 That is, in addition to listing generators, we require that some actions
 on generators (expanding the fraction or permuting list elements) must
 be irrelevant for all predicates and functions defined on these types.
 
-# Type families and inverse categories
+# Lax types: internalizing inverse categories
 
-For a type `J : 𝒰` let `Jᵈ` denote the respective universe of type families indexed by `J`.
+For a type `J : U` let `Jᵈ` denote the respective universe of type families indexed by `J`.
 A typical example is length-indexed lists:
-```
-data Vec<T> : Natᵈ
-  nil : Vec<T> 0
-  cons<n>(head : T, tail : Vec<T> n) : Vec<T> n⁺
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| SizedList<T> : Natᵈ
+  EmptySizedList : Vec<T> 0
+  NonEmptySizedList<n>(head : T, tail : SizedList<T> n) : SizedList<T> n⁺
 ```
 
 
 Now consider the quotient inductive type of eventually-zero sequences:
-```
-data ZeroEndingSequence
-  nil : ZeroEndingSequence
-  append(prefix : ZeroEndingSequence, head : Nat)
-  extend(f : ZeroEndingSequence) : f = append(f, 0)
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| ZeroEndingSequence
+  Zeros : ZeroEndingSequence
+  Append(prefix : ZeroEndingSequence, head : Nat)
+  extend(f : ZeroEndingSequence) : f = Append(f, 0)
 ```
 
 As we have seen above, we can turn the type of lists to a length-indexed type family over `Nat`,
 but we cannot make `ZeroEndingSequence` into a type family over `Nat` because
 `extend` generates equality between “lists” of different lengths. We need
 a “lax” index type instead of `Nat`:
-```
-shape LaxNat
-  lax(n : Nat) : LaxNat
-  lax(n) [m : Nat⟩ lax(n + m)
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| LaxNat : $*
+  Lax(n : Nat) : LaxNat
+  Lax(n) [m : Nat⟩ Lax(n + m)
   [n⟩ [m⟩ ↦ [(n +) m⟩
 ```
 
-To each universe `𝒰` we'll have an associated shape universe `$𝒰` occupied by the types like the one
-above. Inductive shape types are stratified directed counterparts of quotient inductive types.
-For every pair of their elements `x y : T` of a set-like type `T : 𝒰` there is a type `(x = y) : 𝒰`
+To each universe `U` we'll have an associated lax universe `$U` occupied by the types like the one
+above. Lax inductive types are stratified directed counterparts of quotient inductive types.
+For every pair of their elements `x y : T` of a set-like type `T : U` there is a type `(x = y) : U`
 of identifications between `x` and `y`.
 
-Shape types `S : $𝒰` admit extender types instead: for every element `s : S`,
+Lax types `S : $U` admit extender types instead: for every element `s : S`,
 there is a type family `s↑ : Pᵈ`. We will write `s ↑ t` for `s↑ t`.
 
-Quotient inductive types admit constructors of identities `x = y` between their elements. 
-Shape types allow constructors of extenders like `s [n⟩ t` that generate inhabitants 
+Quotient inductive types admit constructors of identities `x = y` between their elements.
+Lax types allow constructors of extenders like `s [n⟩ t` that generate inhabitants
 of the type `s ↑ t`. Sources of extenders must be structurally smaller than their targets
 to enable typechecking. Whenever we define an extender `s [n⟩ t` , we must also
 define how it acts on all possible extenders `e : t ↑ t'` yielding
 some `[f n⟩ : s ↑ t'`. This action must be given by some function `f`
-so ensure associativity by construction (because function composition is).
+to ensure associativity by construction (because function composition is).
 
-This way, shape types form strictly associative inverse categories.
+This way, lax types form strictly associative inverse categories.
 
-Every function we define on a shape type must have an action on all constructors,
+Every function we define on a lax type must have an action on all constructors,
 including extender constructors, which amounts to functoriality.
 
 To have an example, let us define addition for
 `LaxNat`s:
-```
-def add : LaxNat² → LaxNat
-  (lax(n), lax(m)) ↦ lax(m + n)
+```kotlin
+|\textbf{\textcolor{dgreen}{def}}| add : LaxNat² → LaxNat
+  (Lax(n), Lax(m)) ↦ Lax(m + n)
   (n[k⟩, m) ↦ add(n, m) [k⟩
   (n, m[k⟩) ↦ add(n, m) [k⟩ 
 ```
 
 With `LaxNat` we can transform `ZeroEndingSequence` into a type family:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| ZeroEndingSizedSequence : ↓LaxNat
+  Zeros : ZeroEndingSizedSequence lax(0)
+  Append<n>(prefix : ZeroEndingSizedSequence n, head : Nat)
+  : ZeroEndingSizedSequence (lax(1) + n) 
 ```
-data ZeroEndingSizedSequence : ↓LaxNat
-  nil : ZeroEndingSizedSequence lax(0)
-  append<n>(prefix : ZeroEndingSizedSequence n, head : Nat) : ZeroEndingSizedSequence (lax(1) + n) 
+```kotlin
   extend<n>(f : ZeroEndingSizedSequence n) : ???
 ```
 
 Before we fill in the gap in the above definition, note that type families also seem to be functions on their index type,
 so they must act on the extender constructors: they must map extender constructors to identities or extenders
-between function results. If deal with type-valued functions on shapes `S → 𝒰`, extenders can only be mapped to
-identities, but type families `Sᵈ` are more that type-valued functions: they allow mapping extenders to extenders
-between types which we define as follows. For types `X Y : 𝒰`, the type `X ↑ Y` is a pair of a function `b : Y → X` and
+between function results. If we deal with type-valued functions on lax types `S → U`, extenders can only be mapped to
+identities, but type families `Sᵈ` are more than type-valued functions: they allow mapping extenders to extenders
+between types which we define as follows. For types `X Y : U`, the type `X ↑ Y` is a pair of a function `b : Y → X` and
 domain extension operator `e : ∀<Z> (X → Z) → (Y → Z)` so that for every `f : X → Z`, we have equality by construction
 (definitional equality) `b ∘ e(f) = f`.
 
@@ -325,24 +321,28 @@ Now we can fill in the gap in the definition of `ZeroEndingSizedSequence`. The t
 of the equality constructor `f = append(f, 0)` does not typecheck yet, but we can
 decompose it into an application `{ it = append(f, 0) } f` and apply the domain
 extension to the function part by applying `ZeroEndingSizedSequence n[extend 1⟩`:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| ZeroEndingSizedSequence : LaxNatᵈ
+  Zeros : ZeroEndingSizedSequence Lax(0)
+  Append<n>(prefix : ZeroEndingSizedSequence n, head : Nat)
+  : ZeroEndingSizedSequence (Lax(1) + n) 
 ```
-data ZeroEndingSizedSequence : LaxNatᵈ
-  nil : ZeroEndingSizedSequence lax(0)
-  append<n>(prefix : ZeroEndingSizedSequence n, head : Nat) : ZeroEndingSizedSequence (lax(1) + n) 
+```kotlin
   extend<n>(f : ZeroEndingSizedSequence n)
-  : ZeroEndingSizedSequence n[extend 1⟩ { it = append(f, 0) } f
+  : ZeroEndingSizedSequence n[extend 1⟩ { it = Append(f, 0) } f
 ```
-
-# Lax algebraic theories via shapes
+\newpage
+# Lax algebraic theories
 
 Models of single-sorted algebraic theories arise as dual typeclasses
 for quotient inductive types we will call prototypes of those theories.
 Monoids arise as models for the following type:
-```
-data Monoidᴾ
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Monoidᴾ
   e : Monoidᴾ
   (∘) : Monoidᴾ → Monoidᴾ → Monoidᴾ
-
+```
+```kotlin
   unitorL : x = e ∘ x
   unitorR : x = x ∘ e
   associator : (x ∘ y) ∘ z = x ∘ (y ∘ z)
@@ -353,56 +353,59 @@ The dual typeclass `Monoidᴾᴿ<T>` will be automatically simply called `Monoid
 We can also provide an unbiased definition for monoids, where the composition operation
 is not taken to be binary, but can have any finite arity including zero for the neutral
 element `e`. Let's introduce several types:
-```
-data PTree<T>
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| PTree<T>
   Leaf(label : T)
-  Node(branches : PTree<T>*)
+  Node(branches : PTree<T>|$^*$|)
 ```
-```
-data SizedPTree<T> : ℕᵈ
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| SizedPTree<T> : ℕᵈ
   Leaf(label : T) : SizedPTree<T> 1
-  Node<sizes : ℕ*>(branches : HList<T> sizes) : SizedPTree<T> (sum sizes)
+  Node<sizes : ℕ|$^*$|>(branches : HList<T> sizes) : SizedPTree<T> (sum sizes)
 ```
 A `pr : Parenthesization(n : ℕ)` is just a `SizedPTree<Unit> n` that acts
-on lists `xs : T*` turning them into respective trees `pr(xs) : PTree<T>`.
+on lists `xs : T`$^*$ turning them into respective trees `pr(xs) : PTree<T>`.
 
 Now we can proceed to the definition of an unbiased monoid:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Monoidᴾ
+  compose : Monoidᴾ|$^*$| → Monoidᴾ
 ```
-shape Monoidᴾ
-  compose : LaxMonoidᴾ* → LaxMonoidᴾ
-
-  expand(xs : LaxMonoidᴾ*,
-         pr : Parenthesization xs.length
-  : compose(xs) = (pr(xs) map compose)  
+```kotlin
+  expand(xs : Monoidᴾ|$^*$|, pr : Parenthesization xs.length)
+  : compose(xs) = (pr(xs) ▸map compose)  
 ```
 
 If we can orient equalities so they map structurally smaller terms to structurally
-larger ones, we can reformulate the theory as a shape type with extenders instead
+larger ones, we can reformulate the theory as a lax type with extenders instead
 of identities. Algebraic theories with extenders are known as lax algebraic theories.
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| LaxMonoidᴾ : $*
+  compose : LaxMonoidᴾ|$^*$| → LaxMonoidᴾ
 ```
-shape LaxMonoidᴾ
-  compose : LaxMonoidᴾ* → LaxMonoidᴾ
-
+```kotlin
   compose(xs) [pr : Parenthesization xs.length⟩ (pr(xs) ▸map compose)
-
+```
+```kotlin
   [pr⟩ [pr'⟩ ↦ [expand (pr' ∘) p⟩  
 ```
 
 When mapping into ordinary types, extenders can only be mapped into identities,
 so exchanging identities for extenders does not affect set-like models, but the
-lax formulation provides an explicitly confluent system of rules making the 
+lax formulation provides an explicitly confluent system of rules making the
 theory stratified. Stratifiability of the sort algebra is necessary for
 generalized algebraic theories to have explicit syntactic free models and
 an effective model structure on the category of their models.
 
-# Fibered types and direct categories
+\newpage
+# Fibered types
 
 Many operations on containers have the following property:
 the shape of the resulting container only depends on the shapes of the arguments.
 For example, length of the list computed by `concatenate`, `map`, and `reverse`
 can be computed based on the lengths of the input lists.
 
-To account for that let us introduce a notion of fibered types and functions between
+To account for that, let us introduce a notion of fibered types and functions between
 them, namely the functions with the property described above.
 
 A fibered type is given by a pair of a type `E` and a function `f : E → B` written
@@ -410,15 +413,15 @@ as `E / f`.
 We will denote the type of such terms as `E ↓ B` and occasionally `(e : E) ↓ B(e)`
 in case of dependent functions.
 
-Fibered types above some base type `B : 𝒰` form a type family `↓B` and `E ↓ B := ↓B E`
+Fibered types above some base type `B : U` form a type family `↓B` and `E ↓ B := ↓B E`
 is just a reverse application:
-```
-data ↓B : 𝒰ᵈ
-  (E : 𝒰) / (f : E → B) : E ↓ B 
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| ↓B : Uᵈ
+  (E : U) / (f : E → B) : E ↓ B 
 ```
 
-For example, we can take the type of lists `T*` and the function `length : T* → ℕ`:
-`T* / length : T* ↓ ℕ`. 
+For example, we can take the type of lists `T`{\aSt} and the function
+`length`: `T`{\aSt}` / length : T`{\aSt}` ↓ ℕ`.
 
 A function between fibered types is a pair of functions `(f / b) : (X / p) → (Y / q)`,
 so that the following square commutes by construction:
@@ -430,195 +433,231 @@ so that the following square commutes by construction:
 ```
 
 Consider a few examples of functions on fibered types:
+```kotlin
+|\textbf{\textcolor{dgreen}{def}}| reverse<T> / id  : (T|$^*$| / length)  → (T|$^*$| / length)
+|\textbf{\textcolor{dgreen}{def}}| concat<T> / add  : (T|$^*$| / length)² → (T|$^*$| / length)
+|\textbf{\textcolor{dgreen}{def}}| flatten<T> / sum : (T|$^*$| / length)|$^*$| → (T|$^*$| / length)
 ```
-reverse<T> / id  : (T* / length)  → (T* / length)
-concat<T> / add  : (T* / length)² → (T* / length)
-flatten<T> / sum : (T* / length)* → (T* / length)
-
-map<X, Y>(f : X → Y) / id : (X* / length)  → (Y* / length)
+```kotlin
+|\textbf{\textcolor{dgreen}{def}}| map<X, Y>(f : X → Y) / id : (X|$^*$| / length)  → (Y|$^*$| / length)
 ```
 
 Inductive-recursive definitions are mutually dependent definitions of an inductive type
 and a recursive function on that type.
 Such definitions naturally generate a fibered type.
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| V : * ↓ * 
+  unit / Unit
+  bool / Bool
+  pi(X : V, Y : |X| → V) / ∀(x : |X|) |Y(x)|
+```
+We will use `|_|` as the default name for the fibering function unless it is explicitly named. A similar notion of fibered types in that sense was first introduced in [“Fibred Data Types”](https://doi.org/10.1109/LICS.2013.30) by N. Ghani et al.
 
-**TODO:** Σ-closed universe example
+Type families `T : Xᵈ` can be fibered over type families `Y : Xᵈ`. For this case, we'll introduce the notation `(x : X)ᵈ ↓ Y(x)`. Unless `X : U` is a shape, it is equivalent to
+`∀(x : X) (U ↓ Y(x))`.
 
-We will use `|_|` as the default name of fibering function unless it is explicitly named.
-
-Fibered types allow formulating dependent extender types:
-for a type `X : 𝒰` and a fibered type `Y : Y' / X`, extenders `X ↑ Y` are terms of the type
-`e : ∀<Z : X → 𝒰> (∀(x : X) Z(x)) → (∀(y : Y') Z(|y|))` so that `|e(f(_))| = f(_)` by construction. 
+Fibered types allow introducing dependent extender types:
+for a type `X : U` and a fibered type `Y : Y' / X`, extenders `X ↑ Y` are terms of the type
+`e : ∀<Z : Xᵈ> (∀(x : X) Z(x)) → (∀(y : Y') Z(|y|))` so that `{ |e(f(it))| } = f` by construction.
 
 `Σ`-type former is tightly connected to fibered types.
 On one hand, for every type family `Y : Bᵈ`, we have the fibered type `Σ'Y / fst : ΣY ↓ B`.
-On the other hand, `Σ<J : 𝒰> : Jᵈ → 𝒰` maps type families into types so for every J we have
+On the other hand, `Σ<J : U> : Jᵈ → U` maps type families into types so for every J we have
 a fibered type `Jᵈ / Σ<J>`.
 
-Above we only used the operator ( ᵈ) on types `T : 𝒰` to denote type-families `Tᵈ`, but
-this operator was actually introduced in “Displayed Type Theory and Semi-Simplicial Types”
-for all terms.
-Let us extend its definition to fibered types as follows.
-For `Y : (F / f)ᵈ`, where `f : F → B`, and `x : F` let:
-```
-Y(x) : Bᵈ (f x) Y
+# Matryoshka types: internalizing direct categories
+
+So far we only applied the operator ( ᵈ) to types `T : U`, but
+this operator has been introduced in Displayed Type Theory for all terms, including type families `F : Bᵈ` for some `B : U`
+```kotlin
+Fᵈ : Bᵈ → U
+Fᵈ(E : Bᵈ) = ∀<i> (F i) → E i
 ```
 
-Еhe significance of this definition comes to light when we consider
-that inductive types can be self-fibered:
+Let us now extend the definition of ( ᵈ) to fibered types:
 ```
-shape 𝔻 : * ↓ 𝔻
-  fst / (Void / exfalso)
-  snd / (Unit / { fst })
+(X / |·|)ᵈ : ∀(x : X) (|x|ᵈ Y)ᵈ
 ```
 
-Here we define a type with two generators `fst` and `snd`, and a function `|x : 𝔻| : (* ↓ 𝔻)`,
-i.e. for every generator `c` we have a type `|c|` fibered over `𝔻`.
-For `fst`, this type `|fst|` is empty. For `snd`, `|snd|` is a unit type together with a function
-mapping its unique element to `fst`.
-
-Inductive self-fibered types form strictly associative direct categories. (TODO: Clarify)
-
-A type family `Y : ↓(𝔻 / |·|)` indexed over this type satisfies the following typing rule:
-```
-Y(x : 𝔻) : (* ↓ 𝔻)ᵈ |x| Y
+Now let us introduce matryoshka types fibered over type families indexed by themselves:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| |\bbD| : * ↓ |\bbD|ᵈ
+  Fst / Void
+  Snd / data
+    Dep : |$\vert$|Snd|$\vert$| Fst
 ```
 
-Since `𝔻` only has two elements, we can split cases:
+Here we define a type with two generators `Fst` and `Snd`, and for each a type family
+`|x| : `{\ddD}`ᵈ`. In this case, |Fst| is empty and |Snd| contains a unique element `Dep : |Snd| Fst`.
+
+Let us now consider a type family `Y : (`{\thinspace\bbD}` / |·|)ᵈ`. Let us first apply it to `Fst`:
 ```
-Y(fst) : (* ↓ 𝔻)ᵈ |fst| Y
-Y(snd) : (* ↓ 𝔻)ᵈ |snd| Y
-```
-which in turn reduces to
-```
-Y(fst) : (* ↓ 𝔻)ᵈ (Void / { it }) Y
-Y(snd) : (* ↓ 𝔻)ᵈ (Unit / { fst }) Y
-```
-further reducing to
-```
-Y(fst) : (∀(u / f : (Void / { it })) Y(f(u))) → 𝒰
-Y(snd) : (∀(u / f : (Unit / { fst })) Y(f u)) → 𝒰
+Y(Fst) : (|Fst|ᵈ Y)ᵈ
+Y(Fst) : (|Void|ᵈ Y)ᵈ
+Y(Fst) : (Unit)ᵈ
+Y(Fst) : *
 ```
 
-Product over empty domain is `Unit`, and the product over unit domain is just one element:
+So, `Y(Fst)` is just any type. Now let us apply it to `Snd`:
 ```
-Y(fst) : Unit → 𝒰
-Y(snd) : Y(fst) → 𝒰
+Y(Fst) : (|Snd|ᵈ Y)ᵈ
 ```
-So our type family is merely a dependent pair `Σ(T : 𝒰) (T → 𝒰)`!
+`|Snd|` is itself a type family fibered over \bbD, so |Snd|ᵈ expects an argument of the same type as `|Snd|` and yields a “dependent function type” `∀<xs> (|x| xs) → Y xs`. This expression is not a valid type because `xs` is not a single argument, but a telescope.
 
-With self-fibered index types we can define dependent pairs as dependent function types.
-Signatures of theories with dependent sorts can be expressed as finite direct categories,
-so first-order and higher-order theories with dependent sorts can be expressed as type
-classes parametrized by such families.
-Algebraic theories with dependent sorts can be
-expressed via inductive type families indexed over a finite self-fibered index type S.
-In particular categories are models of an algebraic theory over the shape
+Fortunately, `|Snd|` is nonempty for only one argument, namely `Fst`, so we have
 ```
-data Cell2₊ : * ↑ Cell2₊
-  Ob  / (Void / exfalso)
-  Mor / (Bool / { Ob })
+Y(Snd) : (Y(Fst))ᵈ
 ```
 
-To deal with ∞-categories, one can introduce a shape types `Cell` containing cell types
-of every dimension `n : Nat`.
-
-Dually to our lax natural numbers, we can introduce a self-indexed type `Δ⁺`:
-```
-data Δ⁺ : * ↑ Δ⁺
-  simplex(n : Nat) / ((Σ(m) Fin(m) → Fin(n)) / simplex(m))
-```
-
-Type families over Δ⁺ are semi-simplicial types.
-Type families over thin (i.e. with at most one arrow between any two inhabitants)
-self-indexed types are also known as very dependent types.
-
-# Combining extenders and selectors: Reedy categories
-
-Most notably, we can combine extenders (degeneracy maps) and selectors (face maps)
-yielding strictly associative Reedy categories like the simplicial category Δ:
-```
-shape Δ  : * ↑ Δ
-  simplex(n : Nat) / ((Σ(m) Fin(m) → Fin(n)) / simplex(m))
-  
-  simplex(n)[m : Nat, f : Fin(m) → Fin(n)⟩ simplex(m) / (intertwining identities) 
-  [m, f⟩ [m', f'⟩ ↦ [m', { it ∘ f } f'⟩
+Thus, our type family is merely a dependent pair `Σ(T : *) (T → *)`! We can now define dependent types as type families. Let us try a more complex example:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Δ2⁺ : *⟲    // Shorter notation for T : T ↓ Tᵈ
+  El1 / Void
+  El2 / data
+    Dep : |$\vert$|El2|$\vert$| El1
+  El2 / data
+    Dep : |$\vert$|El3|$\vert$| El2 ??
 ```
 
-Type families on Δ are the infamous simplicial types,
-which are vital for defining the syntax of dependent typed theories.
-
-# Categories as models of a shape-indexed prototype
-
-Let us revisit the category signature shape, adding an extra extender:
+We run into a problem: `|El3|` is a type family over a fibered type,
+so `|El3| El2` expects yet another argument, and it should be of the type
+`|El3| El1`. We have no other way but to create a suitable element:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Δ2⁺ : *⟲
+  El1 / Void
+  El2 / data
+    Dep : |$\vert$|El2|$\vert$| El1
+  El2 / data
+    Dep1 : |$\vert$|El3|$\vert$| El1
+    Dep2 : |$\vert$|El3|$\vert$| El2 Dep1
 ```
-shape Cell2 : * ↑ Cell2
-  Ob  / (Void / exfalso)
-  Mor / (Bool / { Ob })
 
+For the whole thing to typecheck indexes of the types `|x|` should be structurally smaller than `x`. As you now see, such types form strictly associative direct categories.
+
+Vocabularies `V` of theories with dependent sorts can be expressed as finite matryoshka types, theories being typeclasses of families `Carrier : Vᵈ`. Algebraic theories with dependent sorts are typeclasses dual to inductive type families `Prototype : Vᵈ`. Categories themselves have the vocabulary
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Cell2⁺ : *⟲
+  Ob  / Void
+  Mor / data 
+    Source : |$\vert$|Mor|$\vert$| Ob
+    Target : |$\vert$|Mor|$\vert$| Ob
+```
+
+A foundational infinite example is the semi-simplicial shape type
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Δ⁺ : *⟲
+  Zero / Void
+  Next(s : Δ⁺) / data
+    Prev(p : |$\vert$|s|$\vert$|) : |$\vert$|Next(s)|$\vert$| p
+    Last : |$\vert$|Next(s)|$\vert$| s Prev(s)
+```
+
+Type families over Δ⁺ are known as semi-simplicial types and represent infinite sequences of sequentially dependent types
+```kotlin
+(T₁ : *,
+ T₂(x₁ : T₁) : *,
+ T₃(x₁ : T₁, x₂ : T₂ x₁) : *,
+ T₄(x₁ : T₁, x₂ : T₂ x₁, x₃ : T₃ (x₁, x₂)) : *,
+ ...)
+```
+
+# Reedy types: internalizing Reedy categories
+
+Reedy categories are common generalization of direct and inverse categories, and can be represented by lax matryoshka inductive types which we'll call reedy types from now on.
+
+In particular, we can add extenders to Δ⁺ to ensure that functions on `Tₙ` can be also applied to `Tₙ₊₁`. Let us start with an incomplete definition:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Δ  : $*⟲
+  Zero / Void
+  Next(s : Δ⁺) / data
+    Prev(p : |$\vert$|s|$\vert$|) : |$\vert$|Next(s)|$\vert$| p
+    Last : |$\vert$|Next(s)|$\vert$| s Prev(s)
+```
+```kotlin
+  Zero[n : Nat⟩ (n⁺ᶜ Next)(Zero)
+  Next(s)[n : Nat, f : Fin(n⁺ + (s as ℕ)) → Fin(s as ℕ)⟩ (n⁺ᶜNext)(s)
+  [n⟩ [n', f'⟩ ↦ [n', f'⟩
+  [n, f⟩ [n', f'⟩ ↦ [n', { it ∘ f } f'⟩
+```
+
+Extenders define type families on a fibered type, so they have to specify action on selectors. In this way, we'll specify intertwining identities between selectors and extenders (i.e. face and degeneracy maps as they are known for geometric shapes).
+For the complete definition with detailed description, see Appendix I.
+
+Type families on Δ are the infamous simplicial types essential for dependently typed theories.
+
+# Categories as models of a reedy prototype
+
+Let us revisit the category vocabulary, adding an extra extender:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Cell2 : : $*⟲
+  Ob  / Void
+  Mor / data 
+    Source : |$\vert$|Mor|$\vert$| Ob
+    Target : |$\vert$|Mor|$\vert$| Ob
+```
+```kotlin
   Ob [よ⟩ Mor / ff
 ```
 
 Just like we defined a monoid prototype above, we can define a prototype for categories as
 an indexed quotient-inductive type family:
+```kotlin
+|\textbf{\textcolor{dgreen}{data}}| Catᴾ : Cell2ᵈ
+  id{o : Catᴾ Ob} : (Catᴾ Mor)(o, o)
+  (▸){x, y, z} : (Catᴾ Mor)(x, y) → (Catᴾ Mor)(y, z) → (Catᴾ Mor)(x, z)
 ```
-data Catᴾ : Cell2ᵈ
-  id : ∀(o : Catᴾ Ob) (Catᴾ Mor)(o, o)
-  (▸) : ∀(x y z : Catᴾ Ob) (Catᴾ Mor)(x, y)
-                          → (Catᴾ Mor)(y, z)
-                          → (Catᴾ Mor)(x, z)
-
-  unitorL : ∀{x y} f = id ▸ f
-  unitorR : ∀{x y} f = f ▸ id
-  associator : ∀{f g h} (f ▸ g) ▸ h = f ▸ (g ▸ h)
+```kotlin
+  unitorL{x, y} : ∀(f : (Catᴾ Mor)(x, y)) f = id ▸ f
+  unitorR{x, y} : ∀(f : (Catᴾ Mor)(x, y)) f = f ▸ id
+  associator{f g h} : (f ▸ g) ▸ h = f ▸ (g ▸ h)
 ```
 
 The dual typeclass is precisely the usual definition of a category:
+```kotlin
+|\textbf{\textcolor{dgreen}{typeclass}}| Cat<this Ts : Cell2ᵈ>
+  id{o} : Ts.mor(o, o)
+  (▸){x, y, z} : Ts.mor(x, y) → Ts.mor(y, z) → Ts.mor(x, z)
 ```
-typeclass Cat<this Ts : Cell2ᵈ>
-  id : ∀<o> Ts.mor(o, o)
-  (▸) : ∀<x, y, z> Ts.mor(x, y)
-                 → Ts.mor(y, z)
-                 → Ts.mor(x, z}
+```kotlin
   ... subject to unitality and associativity
 ```
 
-Yoneda extender induces equivalence between isomorphism and equivalence for objects in categories:
-```
-∀<X, Y> (a ≃ b) ≃ Σ(f : Ts.mor(X, Y)
-                    g : Ts.mor(Y, X)) (f ▸ g = id) and (f ▸ g = id)            
+Yoneda extender induces equivalence between isomorphism and equivalence for objects:
+```kotlin
+∀{x, y} (a ≃ b) ≃ Σ(f : Ts.mor(x, y)
+                    g : Ts.mor(y, x)) (f ▸ g = id) and (f ▸ g = id)            
 ```
 
 But more importantly, it imposes functoriality on functions between categories:
-```
+```kotlin
 f : ∀<Xs Ys : Cat> Xs.Ob  → Ys.Ob
-g : ∀<Xs Ys : Cat> Xs.Ob² → Ys.Ob
-g : ∀<Xs Ys : Cat> F<Xs.Ob> → Ys.Ob
+g : ∀<Xs Ys : Cat> Xs.Obⁿ|\!| → Ys.Ob    // for any type n
+h : ∀<Xs Ys : Cat> Xs.Ob|$^*$| → Ys.Ob    // for any monadic container
 ```
 
 Applying these functions to the embeddings `o[よ⟩` one obtains their action on morphisms,
 which must commute with `Cat`-structure, i.e. compositions.
 
 This way we can even introduce monoidal (or lax monoidal) structure on categories as
-simple as:
-```
-typeclass MonoidalCat<Ts : Cat> extends Monoid<Ts.Ob> {}
-typeclass LaxMonoidalCat<Ts : Cat> extends LaxMonoid<Ts.Ob> {}
+follows:
+```kotlin
+|\textbf{\textcolor{dgreen}{typeclass}}| MonoidalCat<Ts : Cat> extends Monoid<Ts.Ob> {}
+|\textbf{\textcolor{dgreen}{typeclass}}| LaxMonoidalCat<Ts : Cat> extends LaxMonoid<Ts.Ob> {}
 ```
 
 Exactly as we did for monoids, we can proceed to derive an unbiased definition
 a lax prototype.
 To our understanding, lax categories are precisely the virtual double
 categories, “the natural place in which to enrich categories”. Since
-we now can describe weak ω-categories algebraically, it is worth studying
-if categories weakly enriched in ω-categories are ω-categories themselves
-as expected.
+we now can describe weak `ω`-categories algebraically, it is worth studying
+if categories weakly enriched in `ω`-categories are `ω`-categories themselves.
 
+\newpage
 # Displayed algebraic structures
 
 The other nice thing is that since we have defined categories as models for an inductive type,
 we automatically have the typeclass of displayed categories, and all algebraic typeclasses are instances of it:
-```
+```kotlin
 Group : Catᵈ
 Ring : Catᵈ
 Cat : Catᵈ
@@ -627,65 +666,55 @@ Furthermore, we can iterate, and thus `Catᵈ : Catᵈᵈ`, etc. And since const
 any statement we have proven for all small categories `prf<C : Cat>` also can be applied to displayed categories,
 say like the category `Grp : Catᵈ` of all groups and the category of all categories `Cat : Catᵈ` itself.
 
-# Universes of models are proarrow equiped model categories
+# Universes of models are model categories with proarrows
 
 Displayed models for inductive types have the form
-```
-typeclass ℕᴿᵈ <M : ℕᴿ, this Ts : |M| → *>
+```kotlin
+|\textbf{\textcolor{dgreen}{typeclass}}| ℕᴿᵈ<M : ℕᴿ, this Ts : |M| → *>
   zero : Ts(M.zero)
   next : ∀{n : M} Ts(n) → Ts(M.next n)
 ```
-allowing do define the type of induction motives and the induction operator:
+allowing to define the type of motives `ℕᴹ` for the induction operator `ℕ-ind`:
+```kotlin
+|\textbf{\textcolor{dgreen}{def}}| ℕᴹ<this P : ℕᵈ> = ℕᴿᵈ<ℕ, P>
 ```
-def ℕᴹ<this P : ℕᵈ> = ℕᴿᵈ<ℕ, P>
+```kotlin
+ℕ-ind<P : ℕᴹ> : ∀{n} P(n)
+```
 
-ℕ-ind<P : ℕᴹ>(n : ℕ) : P(n)
-```
-
-For each model `M : ℕᴿ`, the inhabitants `Pm : ℕᴿᵈ<M>` are promorphisms (many-to-many corresponcences,
-sometimes also called weak homomorphisms) on `M` with the target given by
-```
-instance Pm.target : ℕᴿ<M × Pm>
+For each model `M : ℕᴿ`, the inhabitants `Pm : ℕᴿᵈ<M>` are promorphisms (many-to-many correspondences, sometimes also called weak homomorphisms) on `M` with the target given by
+```kotlin
+|\textbf{\textcolor{dgreen}{instance}}| Pm.target : ℕᴿ<M × Pm>
   zero: (M.zero, Pm.zero M.base)
   step: { n : M, x : (Pm n) ↦ (M.step n, Pm.next (M.next n) x) }
 ```
 
-We can single out homomorphisms as the functional (= many-to-one)
-promorphisms `Σ(src : ℕᴿ<T>, pm : ℕᴿᵈ src) (f : ∀(n) (m : (pm n)) × ∀(n' : pm n) n ≃ m`,
-making the type of ℕ-models into a ∞-precategory (Segal type),
-which turns out to be a ∞-category (Complete Segal type) as it is well-known that the equivalences `(≃)<ℕᴿ>`
-of ℕ-models correspond to their isomorphisms.
+We can single out homomorphisms as the univalent (= many-to-one) promorphisms
+```kotlin
+|\textbf{\textcolor{dgreen}{def}}| isUniv<src : ℕᴿ, pm : ℕᴿᵈ src> = ∀{n} isContr(pm n),
+```
+making the type of `ℕ`-models into a ∞-precategory (Segal type),
+which turns out to be a ∞-category (Complete Segal type) due to a well-known fact that the equivalences `(≃)<ℕᴿ>` of `ℕ`-models correspond to their isomorphisms.
 
-Categories of models also carry a weak model structure.
-Models of lax algebraic theories and dependently sorted algebraic theories can also have
-directed higher structure, and in general form weak ω-categories.
+Categories of models also carry a weak model structure that coincides with the one given by extenders between types and fibered types for ordinary universes `U` which can be seen as universes of models for the empty theory. For lax and/or generalized algebraic theories, they may exhibit non-invertible higher morphisms and thus form weak `ω`-categories.
 In particular, we expect to have an infinite typeclass hierarchy
 ```
 ωCat : ωCatᵈ : ωCatᵈᵈ : ···
 ```
 
-Together with [□-modality based approach to polymorphism](polymorphism), we expect
+Together with [□-modality based approach to polymorphism](https://akuklev.github.io/polymorphism), we expect
 to have a satisfying solution to all size issues arising in ordinary and higher
 category theory. In fact, we hope that the presented type theory is capable of
 eventually formalizing the [nLab](http://ncatlab.org) in its entirety.
 
-# (Pre)sheaf universes as categories: Pursuing stacks
+\newpage
+# Future work
 
-As we have seen above, not only inductive shapes have the notion of extenders and selectors (i.e.
-are weak model categories); universes do as well.
-It is not hard to see that it also applies to universes of fibered types, 
-universes of type families (“presheaf universes”), and universes of fibered type families.
-Conjecturally, it also applies to sheaf universes.
-
-As we have seen above, it also applies to universes of models for any given algebraic theory,
-including infinitary algebraic theories with dependent sorts and their generalized form as long
-their sort algebras are stratified. In fact, in all of these cases, the categories `𝒱` are also
-equipped with proarrows (“multivalued morphisms”) `sᵈ t` for each `s t : 𝒱`.
-
-So far we have only considered dependent type formers valued in ordinary types, and 
+So far we have only considered dependent type formers valued in ordinary types, and
 type families (valued in universes as categories), but it should be possible to
-introduce broader dependent type formers in shape universes `$𝒰` using an approach
+introduce broader dependent type formers in lax universes `$U` using an approach
 modelled after “Type Theory for Synthetic ∞-categories” by E. Riehl and M. Shulman.
 
-As universes of lax or dependently sorted algebraic theories carry non-invertible higher
-morphisms, ultimately we shall be pursuing stacks.
+Besides lax inductive types, lax universes are also populated by large types equipped with appropriate structure. As we have seen above, not only Reedy types are equipped with extenders and selectors (= weak model categories). It also applies to universes, universes of algebraic structures, universes of type families (“presheaf universes”), and conjecturally also sheaves which can be presented as fibered model-valued families.
+
+Since universes of lax algebraic theories exhibit higher morphisms, ultimately we shall be pursuing stacks.
