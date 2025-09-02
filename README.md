@@ -46,7 +46,12 @@ so that all proofs and constructions can be generalized, specialized, and transf
 - Starting point of HCCC is the third-generation univalent type theory
   [HOTT currently being developed by M. Shulman et al.](https://ncatlab.org/nlab/show/higher+observational+type+theory)
   with propositional resizing and sufficiently general notion of quotient inductive types to express universal
-  Cauchy completions such as the real numbers ℝ and the Turing-complete partiality monad `Computation<T>`. 
+  Cauchy completions such as the real numbers ℝ and the Turing-complete partiality monad `Computation<T>`.
+- [Reedy Types and Dependent Type Families](reedy.pdf):
+  We add types representing Reedy categories, presheaves on them, and functors between them,
+  resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/)
+  computational type theory with native ω-categories
+  which is still interpretable in every elementary ∞-topos with enough inductive types.
 - [□Parametric Polymorphism for Agnostic Type Theories](polymorphism):
   We add the parametric quantification `∀<X : T> Y` and
   the S4 necessity modality mapping each proper type `T` to the set `□T` of its closed-form inhabitants.
@@ -61,11 +66,6 @@ so that all proofs and constructions can be generalized, specialized, and transf
   [Verse calculus](https://simon.peytonjones.org/verse-calculus/), a recently developed deterministic approach to 
   functional logic programming.
   Incidentally, we also vastly expand of the computational power by allowing all classically provable algorithms.
-- [Reedy Types and Type Families Thereover](reedy.pdf):
-  We add types representing Reedy categories, presheaves on them, and functors between them,
-  resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/)
-  computational type theory with native ω-categories
-  which is still interpretable in every elementary ∞-topos with enough inductive types.
 - [Bounded Inductive Construction Calculus](BICC):
   We are developing a finitistic core theory to use for proving desired meta-theoretical properties,
   namely typechecking decidability, canonicity, normalization, and conservativity of HCCC over

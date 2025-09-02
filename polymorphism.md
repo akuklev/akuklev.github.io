@@ -9,28 +9,28 @@
 Our starting point will be a type theory with a countable hierarchy of universes
 introduced by the following infinite family of rules:
 ```
-––––––––––––     ––––––––––––––     ––––––––––––––––     ···
- Γ ⊢ U : U⁺       Γ ⊢ U⁺ : U⁺⁺       Γ ⊢ U⁺⁺ : U⁺⁺⁺
+––––––––––––––––––     ––––––––––––––––––––     ––––––––––––––––––––––     ···
+ Γ ⊢ Type : Type⁺       Γ ⊢ Type⁺ : Type⁺⁺       Γ ⊢ Type⁺⁺ : Type⁺⁺⁺
 ```
 
-These rules introduce a countably infinite family of well-typed terms `U`, `U⁺`, `U⁺⁺`, etc.,
+These rules introduce a countably infinite family of well-typed terms `Type`, `Type⁺`, `Type⁺⁺`, etc.,
 and have to be considered together as the type used in each rule is first introduced in the next one.
 
 Let us postulate the first universe U to be Σ- and Π-closed and add some basic types to taste:
 ```
- Γ ⊢ X : U     Γ, x : X ⊢ Y(x) : U       Γ ⊢ X : U     Γ, x : X ⊢ Y(x) : U
+ Γ ⊢ X : Type     Γ, x : X ⊢ Y(x) : Type       Γ ⊢ X : Type     Γ, x : X ⊢ Y(x) : Type
 –––––––––––––––––––––––––––––––––––    –––––––––––––––––––––––––––––––––––– 
-      Γ ⊢ (x : Y) × Y(x) : U                  Γ ⊢ ∀(x : Y) Y(x) : U
+      Γ ⊢ (x : Y) × Y(x) : Type                  Γ ⊢ ∀(x : Y) Y(x) : Type
 
-–––––––––––    ––––––––––––    ––––––––––––    ––––––––––––
- Γ ⊢ 𝟘 : U       Γ ⊢ 𝟙 : U       Γ ⊢ 𝔹 : U       Γ ⊢ ℕ : U
+––––––––––––––     –––––––––––––      –––––––––––––      –––––––––––––
+ Γ ⊢ 𝟘 : Type       Γ ⊢ 𝟙 : Type       Γ ⊢ 𝔹 : Type       Γ ⊢ ℕ : Type
 ```
 
 (We will write `X → Y` for `∀(_ : X) Y`, i.e., the non-dependent case of Π-types.)
 
 Our goal is to state variadic cumulative.
-That is, we want to state that every type belonging to some universe `U` also belongs to `U⁺`,
-and every type former `F(K : U⁺) : U` can be also lifted one universe above.
+That is, we want to state that every type belonging to some universe `Type` also belongs to `Type⁺`,
+and every type former `F(K : Type⁺) : Type` can be also lifted one universe above.
 The second rule leads to inconsistency unless we only state it for closed-form type formers, i.e.
 the ones definable in empty context.
 Naïvely,
@@ -60,12 +60,12 @@ that is we will allow marking some variables in contexts as
 opaque using zero subscripts above the colon.
 It will allow introducing parametric quantifiers `∀<x : X> T(x)` (note angle brackets instead of parens):
 ```
- Γ ⊢ X : U     Γ, x : X ⊢ Y(x) : U
-–––––––––––––––––––––––––––––––––––
-   Γ ⊢ ∀<x : Y> Y(x) : U
+ Γ ⊢ X : Type     Γ, x : X ⊢ Y(x) : Type
+–––––––––––––––––––––––––––––––––––––––––
+   Γ ⊢ ∀<x : Y> Y(x) : Type
 
-   Γ ⊢ X : U   Г, x :° X ⊢ y : Y(X)
-––––––––––––––––––––––––––––––––––––––
+   Γ ⊢ X : Type   Г, x :° X ⊢ y : Y(X)
+–––––––––––––––––––––––––––––––––––––––
  Г ⊢ { x :° X ↦ Y(X) }: ∀<x : Y> Y(x) 
 ```
 
@@ -83,11 +83,11 @@ that a closed-form element can only depend on non-closed elements of the context
 
 Now let us define the universe-shifting operator ( ⁺) for all types.
 Its action on the types will be defined on a case-by-case basis for all type formers (i.e. coinductively).
-It shifts the universe levels in types built using universes, e.g. `(U → U)⁺` should be `(U⁺ → U⁺)`,
+It shifts the universe levels in types built using universes, e.g. `(Type → Type)⁺` should be `(Type⁺ → Type⁺)`,
 while doing nothing for types inside the base universe as they cannot involve universes in their definitions:
 ```
- Γ ⊢ T : U
-–––––––––––
+ Γ ⊢ T : Type
+––––––––––––––
   T⁺ ↦ T
 
  ((x : Y) × Y(x))⁺ ↦ (x : Y⁺) × (Y(x))⁺
@@ -95,67 +95,88 @@ while doing nothing for types inside the base universe as they cannot involve un
 ```
 
 Now we can finally write down the cumulativity rules that do not only ensure that closed-form types
-(e.g. `𝟙 : U`, `(ℕ → 𝔹) : U`) also live in all universes above the one they were defined for,
+(e.g. `𝟙 : Type`, `(ℕ → 𝔹) : Type`) also live in all universes above the one they were defined for,
 but also that all closed-form type formers defined for some universe are also applicable to all universes above:
 ```
- Γ, K : U⁺ ⊢ F : □(K → U)      Γ, K : U⁺⁺ ⊢ F : □(K → U⁺)     Γ, K : U⁺⁺⁺ ⊢ F : □(K → U⁺⁺)      
-——————————————————————————    ————————————————————————————    ——————————————————————————————   ···
-     Γ ⊢ F : K⁺ → U⁺               Γ ⊢ F : K⁺ → U⁺⁺               Γ ⊢ F : K⁺ → U⁺⁺⁺
+ Γ, K : Type⁺ ⊢ F : □(K → Type)      Γ, K : Type⁺⁺ ⊢ F : □(K → Type⁺)     Γ, K : Type⁺⁺⁺ ⊢ F : □(K → Type⁺⁺)      
+———————————————————————————————    ——————————————————————————————————    ———————————————————————————————————   ···
+     Γ ⊢ F : K⁺ → Type⁺                   Γ ⊢ F : K⁺ → Type⁺⁺                   Γ ⊢ F : K⁺ → Type⁺⁺⁺
 ```
 
 This rule makes closed-form type formers polymorphic,
-i.e., once we define a type-former such as `List<T : U> : U`, `Endo<T : U> := T → T`
+i.e., once we define a type-former such as `List<T : Type> : Type`, `Endo<T : Type> := T → T`
 for some universe in an empty context, it automatically becomes applicable to all higher universes.
 Now we need the cumulativity rule for the inhabitants of polymorphic types:
 ```
- Γ, K : U⁺ ⊢ F : □(K → U)     Γ ⊢ c : □∀<T : K> F(T)
-—————————————————————————————————————————————————————
-            Γ ⊢ c : ∀<T : K⁺> F(T)
+ Γ, K : Type⁺ ⊢ F : □(K → Type)     Γ ⊢ c : □∀<T : K> F(T)
+———————————————————————————————————————————————————————————
+                Γ ⊢ c : ∀<T : K⁺> F(T)
 ```
 
 This way,
 ```
-def id : ∀<T : U> T → T
+def id : ∀<T : Type> T → T
   x ↦ x
 ```
-is not only inhabitant of `Endo<T : U>`, but also an inhabitant of `Endo<T : U⁺>`, `Endo<T : U⁺⁺>`, etc.
+is not only inhabitant of `Endo<T : Type>`,
+but also an inhabitant of `Endo<T : Type⁺>`, `Endo<T : Type⁺⁺>`, etc.
 
 Polymorphism allows defining mathematical structures ([“typeclasses”](kotlin/kotlin_typeclasses.pdf))
-without size restrictions, e.g. 
+without size restrictions.
+One of the simplest structures is the monoid:
 ```
-structure Monoid<this M : U> : U
-  unit : M
-  compose(x y : M) : M
-  ...axioms
+data Monoid<this M : Type>(unit : M,
+                           compose : M² → M,
+                           ...axioms)
+```
+A typical example is the monoid of endomorphisms on any type:
+```
+object Endo<T> : Monoid<Endo<T>>
+  unit = id<T>
+  compose(f g : Endo<T>) = { x : T ↦ f(g(x)) }
+```
 
-instance Endo<T> : Monoid<Endo<T>>
-  unit: id<T>
-  compose(f g : Endo<T>): { x : T ↦ f(g(x)) }
-
-structure Monad<this F : U → U>
+We can also have type classes of type formers (type-valued functions):
+```
+data Monad<this F : Type → Type>(
   unit<T>(x : T) : F<T>
   compose<X, Y>(x : F<X>, y : X → F<Y>) : F<Y>
   ...axioms
+)
+```
 
-instance List : Monad<List>
-  ...
-
-structure Category<Ob : U, Mor<X Y : Ob> : U>
-  unit(O : Ob) → Mor<O, O>
-  compose<X, Y, Z>(f : Mor<X, Y>, g : Mor<Y, Z>) : Mor<X, Z>
-  ...axioms
-
-structure Categoryᵈ<Ob : U → U, Mor<X Y : Ob> : U
-  ...
-
-structure MonoidHomomorphism<X Y : Group>(this apply : X → Y) : U
-  ...axioms
-
-instance Monoid : Categoryᵈ<Monoid, MonoidHomomorphism>
+The monad of lists is a typical example.
+We can reuse the name `List` for this monad making it a companion object
+to the `List<_>` type-former.
+```
+object List : Monad<List>
   ...
 ```
 
-To work with typeclasses, let us introduce the following shorthand notation:
+Structures can have dependently typed carriers:
+```
+data Category<Ob : Type, Mor : Ob² → Type>(
+  unit(O) : Mor(O, O),
+  compose<X, Y, Z>(f : Mor(X, Y), g : Mor(Y, Z)) : Mor(X, Z)
+  ...axioms
+)
+```
+For every structure on types we can generate the corresponding “displayed” structure on typeclasses
+using an operator ( ᵈ) defined in “Displayed type theory” by A. Kolomatskaia and M. Shulman.
+
+To form an example, let's take the typeclass of monoids and introduce the typeclass of monoid homomorphisms
+```
+data MonoidHomomorphism<X Y : Monoid>(this apply : X → Y, ...axioms)
+```
+
+Together, they form a displayed category:
+```
+object Monoid : Categoryᵈ<Monoid, MonoidHomomorphism>
+  ...
+```
+Once again, we reused the name of the typeclass for the category.
+
+To deal with typeclasses more conveniently, let us introduce the following shorthand notation:
 given a typeclass `F : K → U`, let `∀<X : F> Y(X)` mean
 ```
 ∀<X : K> ∀(X : F<X>) Y(X)
@@ -208,9 +229,8 @@ Let us see how to formulate that as rules.
 
 Every inductive type `I` comes with a typeclass `Iᴿ<T : U>` of I-structures. For example, for natural numbers we have
 ```
-structure ℕᴿ<this T : U> : U
-  base : T
-  next : T → T
+data ℕᴿ<this T : U>(base : T
+                    next : T → T)
 ```
 
 An I-structure instance is precisely what we need to recursively fold an inhabitant of I.
@@ -221,9 +241,9 @@ Thus, typeclasses of I-structures allow formulating the non-dependent eliminatio
 
 Its partial applications are known as Church encodings, e.g.
 ```
-0ᶜ := { T :° U, m : ℕᴿ<T> ↦ m.base }
-1ᶜ := { T :° U, m : ℕᴿ<T> ↦ m.step m.base }
-2ᶜ := { T :° U, m : ℕᴿ<T> ↦ m.step (m.step m.base) }
+def 0ᶜ = { T :° U, m : ℕᴿ<T> ↦ m.base }
+def 1ᶜ = { T :° U, m : ℕᴿ<T> ↦ m.step m.base }
+def 2ᶜ = { T :° U, m : ℕᴿ<T> ↦ m.step (m.step m.base) }
 ...
 ```
 
@@ -231,11 +251,11 @@ Their type `Iᶜ := ∀<T : U> Iᴿ → T` is known as impredicative (Church-)en
 
 Trivially, both the original and the Church-encoded inductive type form an instance of the typeclass Iᴿ:
 ```
-instance ℕ : ℕᴿ<ℕ>
+object ℕ : ℕᴿ<ℕ>
   base: 0
   next: ( ⁺)
 
-instance ℕᶜ : ℕᴿ<ℕᶜ>
+object ℕᶜ : ℕᴿ<ℕᶜ>
   base: 0ᶜ
   next: ( ⁺)ᶜ
 ```
@@ -247,9 +267,8 @@ is essentially the same rule,
 but for the type □ℕᶜ instead of ℕ. To formulate both rules uniformly for all inductive types,
 let us apply the ( ᵈ) operator to the typeclass of I-models:
 ```
-structure ℕᴿᵈ<T : U>(M : ℕᴿ<T>)<this Ts : T → U> : U
-  base : T
-  next : T → T
+data ℕᴿᵈ<T : U>(M : ℕᴿ<T>)<this Ts : T → U>(base : T
+                                            next : T → T)
 ```
 
 Now, the dependent elimination rule `I-elim` reads
@@ -263,8 +282,7 @@ I-par(n : □Iᶜ) : ∀(R : Iᴿᵈ Iᶜ) → (R n)
 
 Now let us see how it works for the unit type 𝟙. Its models are pointed types:
 ```
-structure 𝟙ᴿ<T : U>
-  point : T 
+data 𝟙ᴿ<this T>(point : T) 
 ```
 
 We can use 𝟙-par to derive the classical “theorem for free” for the unit type by introducing the following instance:
