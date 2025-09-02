@@ -43,10 +43,11 @@ come conveniently prepackaged in displayed ω-categories that keep track of stru
 homomorphisms, and equivalences on every level,
 so that all proofs and constructions can be generalized, specialized, and transferred along.
 
-- Starting point of HCCC is the third-generation univalent type theory
-  [HOTT currently being developed by M. Shulman et al.](https://ncatlab.org/nlab/show/higher+observational+type+theory)
-  with propositional resizing and sufficiently general notion of quotient inductive types to express universal
-  Cauchy completions such as the real numbers ℝ and the Turing-complete partiality monad `Computation<T>`.
+- [Higher Observational Type Theory](https://ncatlab.org/nlab/show/higher+observational+type+theory), a
+  third-generation univalent type theory currently being developed by M. Shulman et al. is the
+  starting point of HCCC. It supports propositional resizing and a sufficiently general notion of
+  quotient inductive types to express universal Cauchy completions such as the real numbers ℝ and
+  the Turing-complete partiality monad `Computation<T>`.
 - [Reedy Types and Dependent Type Families](reedy.pdf):
   We add types representing Reedy categories, presheaves on them, and functors between them,
   resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/)
