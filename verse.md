@@ -248,6 +248,21 @@ Logical completeness can be further generalized to state that functional logic p
 extraction operator `extract : □(¬¬T) → §T` provide a sound classical realizability interpretation to non-constructive 
 reasoning within `◇`.
 
+# Equality structure of spectral types
+
+For finitely presented higher inductive types `J` we always have an algorithm `findEq(x, y)`
+that finds equivalences `x ≃ y` between its two elements `x y : J` if they exists,
+but is not guaranteed to halt.
+The result type of `findEq` is `(c : Computation*<x ≃ y>, (c = ⊥) = ¬T)`.
+
+What happens if we apply `findEq` to two spectral variables `x y : §T`?
+We obtain a new spectral type `x ≗ y` with which corresponds to the computation type
+`(c : Computation*<x ≃ y>, (c = ⊥) = (¬T ∨ (x = ⊥) ∨ (y = ⊥))` that heavily reminds
+of reduced suspensions. We conjecture, that higher equality structure of the spectral
+type generate by an ordinary type (a ∞-groupoid in HOTT) is its reduced suspension
+spectrum, while equality structures of spectral types in general are given by
+sequential spectra.
+
 # Perceived entanglement and spectral quantifiers
 
 The peculiar property of Verse calculus deep embedding is our ability to extend contexts with spectral variables by
