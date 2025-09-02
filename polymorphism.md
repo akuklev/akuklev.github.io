@@ -205,7 +205,7 @@ for U-small categories, we actually want it to be applicable not only for catego
 but also for arbitrary displayed categories.
 This can now be achieved using a simple generalization of the cumulativity rule above.
 Ultimately we want to achieve a type theory
-(cf. https://akuklev.github.io/reedy-types) where the Yoneda’s lemma can be stated
+(cf. https://akuklev.github.io/reedy.pdf) where the Yoneda’s lemma can be stated
 (and proven) also for ω-categories and will automatically also apply to the displayed ω-category of all ω-categories,
 the displayed² ω-category of all displayed ω-categories, and so on.
 
