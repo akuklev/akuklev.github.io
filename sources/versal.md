@@ -11,7 +11,7 @@ x :⁺X -- use at least once
 x :°X -- opaque argument, use only in type annotations
 ```
 
-As we have shown in “[□Parametric Polymorphism for Agnostic Type Theories](polymorphism)”, the opaque mode (`:°`) 
+As we have shown in “[□Parametric Polymorphism for Agnostic Type Theories](polymorphism.md)”, the opaque mode (`:°`) 
 allows introducing the □-modality mapping types `T` to their sets of closed-form inhabitants `t : □T`.
 It is also possible to define its dual ◇-modality that maps types to `T` to spectra `◇T` (see below)
 of their formally possible inhabitants.
@@ -96,7 +96,7 @@ structure LazySeq<T>:
   next : Computation<T × LazySeq<T>>
 ```
 
-Let us say that a lazy sequence `s : §T` intersects a computationally verified
+Let us say that a lazy sequence `s : §T` intersects a computationally confirmable
 predicate `p : T → Computation<Unit>` iff it has an element satisfying the predicate,
 and call sequences intersecting same predicates image-equivalent:
 ```kotlin
@@ -112,7 +112,7 @@ Since the above definitions respect image equivalence, we can define the type `�
 of lazy sequences modulo image equivalence. It is the type of surveyable subsets of `T`.
 
 Let us also say that `s : §T` covers an `x : T`
-iff it intersects every computationally verifiable predicate `p : T → Computation<Unit>`
+iff it intersects every computationally confirmable predicate `p : T → Computation<Unit>`
 that holds for `x`:
 ```
 def <T> (§T).covers(x : T) =
@@ -142,10 +142,10 @@ with non-finite domain or other coinductive types. `FinData` includes
 and `n = m` for `n m : ℕ`, `ℤ` or `ℚ`, but does not include `ℝ`, nor
 the predicates `x = y` and `x < y` for `x y : ℝ`.
 
-A predicate is surveyable iff it is verifiable, so `x < y` for real
+A predicate is surveyable iff it is confirmable, so `x < y` for real
 `x y : ℝ` is surveyable, while `x = y` is not.
 
-Notably, we can generate a list of solutions for a verifiable
+Notably, we can generate a list of solutions for a confirmable
 predicate on a surveyable type: 
 ```kotlin
 def <T : Surveyable> findAll(p : T → Computation<Unit>) : §T

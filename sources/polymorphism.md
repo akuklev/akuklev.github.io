@@ -121,7 +121,7 @@ def id : ∀<T : Type> T → T
 is not only inhabitant of `Endo<T : Type>`,
 but also an inhabitant of `Endo<T : Type⁺>`, `Endo<T : Type⁺⁺>`, etc.
 
-Polymorphism allows defining mathematical structures ([“typeclasses”](kotlin/kotlin_typeclasses.pdf))
+Polymorphism allows defining mathematical structures ([“typeclasses”](../kotlin/kotlin_typeclasses.pdf))
 without size restrictions.
 One of the simplest structures is the monoid:
 ```

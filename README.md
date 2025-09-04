@@ -53,7 +53,7 @@ so that all proofs and constructions can be generalized, specialized, and transf
   resulting in a [homoiconic](https://homotopytypetheory.org/2014/03/03/hott-should-eat-itself/)
   computational type theory with native ω-categories
   which is still interpretable in every elementary ∞-topos with enough inductive types.
-- [□Parametric Polymorphism for Agnostic Type Theories](polymorphism):
+- [□Parametric Polymorphism for Agnostic Type Theories](polymorphism.pdf):
   We add the parametric quantification `∀<X : T> Y` and
   the S4 necessity modality mapping each proper type `T` to the set `□T` of its closed-form inhabitants.
   This way, the theory acquires truly polymorphic type (`List<T>`), typeclass (`Monoid<T>`), 

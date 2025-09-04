@@ -17,7 +17,7 @@ x :⁺X -- use at least once
 x :°X -- opaque argument, use only in type annotations
 ```
 
-As we have shown in “[□Parametric Polymorphism for Agnostic Type Theories](polymorphism)”, the opaque mode (`:°`) 
+As we have shown in “[□Parametric Polymorphism for Agnostic Type Theories](sources/polymorphism.md)”, the opaque mode (`:°`) 
 allows introducing the □-modality mapping types `T` to their sets of closed-form inhabitants `t : □T`.
 It is also possible to define its dual ◇-modality that maps types to `T` to spectra `◇T` (see below)
 of their formally possible inhabitants.
