@@ -16,10 +16,12 @@ including, of course, theorems about Kotlin applications and Kotlin itself.
 After 25 years of active research,
 supported by a series of breakthroughs resulting from the Univalent Foundations programme,
 we finally have a blueprint for such a language.
-These developments have also led to a [variety of ideas for Kotlin](kotlin)
-that greatly improve its expressiveness and conciseness, and most importantly 
-enabling enforcing correctness-by-construction and verifiable contract programming — 
-the only mainstreamable formal methods.
+
+[Simultaneously, we devise a related family of extensions for Kotlin](kotlin)
+that greatly improve its expressiveness and conciseness, allow integrating our
+formal reasoning system, and most importantly,  
+enable enforcing correctness-by-construction and verifiable contract programming — 
+the mainstreamable formal methods.
 
 § The Foundation
 ----------------
