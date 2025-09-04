@@ -19,7 +19,7 @@ we finally have a blueprint for such a language.
 
 [Simultaneously, we devise a related family of extensions for Kotlin](kotlin)
 that greatly improve its expressiveness and conciseness, allow integrating our
-formal reasoning system, and most importantly,  
+formal reasoning system, and most importantly, 
 enable enforcing correctness-by-construction and verifiable contract programming — 
 the mainstreamable formal methods.
 
