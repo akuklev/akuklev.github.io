@@ -62,7 +62,7 @@ the excluded branch `nT(t)` can typecheck against any type.
 Proofs by contradiction `prf : ¬T → Void`assume a negative premise `nT : ¬T` to derive a contradiction,
 i.e. an expression of the empty type `Void`.
 To arrive at a contradiction, one can construct a counter-example `t : T` and feed it into `nT(t) : Void`.
-If we specify that a proof uses the negative premise `nT` exactly once, it is admissible to state that we
+If we specify that a proof uses the negative premise `nT` exactly once, it is possible to postulate that we
 can extract the counter-example fed into it from the closed proof term:
 ```
  prf : □( (nT :¹¬T) → Void ) 
@@ -237,7 +237,7 @@ Note similarity between `any` operator here and `ε` operator for the `◇`-moda
 
 Now it remains to be shown (by induction on Verse calculus terms), that our system can interpret Verse
 calculus with essentially the same reduction rules. Since Verse calculus satisfies a condition called
-logical completeness, it is also admissible for our system:
+logical completeness, it should be possible to add the following rule to our system:
 ```
     Γ ⊢ X : Surveyable      Γ, x : X ⊢ y : §Y
 ————————————————————————————————————————————————————
@@ -293,13 +293,13 @@ us to define two spectral quantifiers
        Γ ⊢ (x : §X ↦ y) : ⅋(x : §X) Y
 ```
 
-# Admissibility of modal Church’s thesis
+# Modal Church’s thesis
 
 Let us call a data type `Equatable` if its identity types are surveyable,
 `Discernible` the negation of its identity types are surveyable, or
 `Discrete` if both (i.e. its identity types are decidable).
 Let us denote partial functions by `X ⇀ Y`.
-We conjecture that the following three rules are admissible:
+We conjecture that the following three rules are compatible with our theory without compromising computational properties:
 
 **Closed-form inhabitants of equatable types are formally subcountable:**
 ```kotlin
@@ -323,4 +323,7 @@ def <X> isDense(d : ℕ ⇀ X)
 ```
 
 Formal continuity is equivalent to with formal (synthetic) computability,
-so the latter principle is the modal version of Church’s thesis.
+so the latter principle is the modal version of Church’s thesis:
+```kotlin
+∀(x : □T) ∃(c : ◇Computation<T>) c = (return x)
+```
