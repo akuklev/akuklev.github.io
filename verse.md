@@ -299,7 +299,8 @@ Let us call a data type `Equatable` if its identity types are surveyable,
 `Discernible` the negation of its identity types are surveyable, or
 `Discrete` if both (i.e. its identity types are decidable).
 Let us denote partial functions by `X ⇀ Y`.
-We conjecture that the following three rules are compatible with our theory without compromising computational properties:
+
+Following https://arxiv.org/abs/1804.00427, we conjecture that the following three rules are compatible with our theory without compromising computational properties:
 
 **Closed-form inhabitants of equatable types are formally subcountable:**
 ```kotlin
@@ -322,8 +323,10 @@ def <X> isDense(d : ℕ ⇀ X)
 ∀<X, Y> ∀(f : □(X → Y)) ◇isContinuous(f)
 ```
 
-Formal continuity is equivalent to with formal (synthetic) computability,
-so the latter principle is the modal version of Church’s thesis:
+Formal continuity should be derivable from the formal Church’s thesis (which is dual to computational Markov's principle):
 ```kotlin
-∀(x : □T) ∃(c : ◇Computation<T>) c = (return x)
+      Γ ⊢ x : □T    
+————————————————————————————
+ Γ ⊢ ϙx : ◇□Computation<T>
+   ◇(ϙx = (return x))
 ```
