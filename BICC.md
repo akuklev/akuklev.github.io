@@ -1,27 +1,38 @@
 WIP: Bounded Inductive Construction Calculus
 ============================================
 
-Assume that we have a type theory that features an impredicative universe of propositions `Prop`,
-dependent function types `∀(x : X) Y(x)`,
-inductive types sufficiently general that they can be used for direct syntactical encodings of well-formed proofs
-carried out in a given formal system.
-Let Prf be the inductive type of its own proofs together with a function `Conclusion : Prf → Prop`.
-Hilbert-style consistency proof is the proposition
+Proofs of the properties of formal systems are commonly carried out in weak predicative arithmetic systems such as PRA
+(Primitive Recursive Arithmetic) using Gödel numberings (1931), an assignment of a unique natural number to each symbol
+and well-formed formula of some formal language.
+However the necessity to go through coding makes the proofs considerably more tedious and introduces a reasoning gap.
+
+Recent advances in type theories allow to close that gap. Recently introduced primitive recursive dependent type theory
+Tpr<sup>[[BB24](https://arxiv.org/pdf/2404.01011)]</sup> is a conservative extentsion of the PRA supporting finitary
+inductive type families. Finitary inductive type families are direct representations of abstract formal languages and
+come with structural induction principles, a tidy and natural way to define translations and reason about expressions.
+
+In Tpr it is possible to define inductive types capturing the syntax of arithmetic and a proof calculus for classical
+first order logic. Then we can both prove the consistency of the Peano Arithmetic relative to the ε₀-induction principle 
+(which can be stated in Tpr very naturally, cf. the original paper) and define its Dialectica Interpretation in a very
+readable and fully mechanized way without reasoning gaps.
+
+Note that a type theory like Tpr can naturaly state its own consistency. Let `Prf : FinData` be the inductive type of
+its own proofs together with a function `Conclusion : Prf → Type`. Hilbert-style consistency proof is the proposition
 ```
   ∀(prf : Prf) ¬¬Conclusion(prf)
 ```
-That is, we can prove that the conclusion of every proof is not false.
-Classically it is equivalent to its constructively stronger form, a dependent function
+That is, the conclusion of every proof is not false.
+Classically, it is equivalent to its constructively stronger form, a dependent function
 ```
   eval : ∀(prf : Prf) Conclusion(prf)
 ```
 
 Gödel’s second incompleteness theorem seems to rule out theories that can prove their own Hilbert-style consistency,
-but the recently developed Finitary set theory H˂ʷ [Pakhomov19] uses a loophole of Gödel’s result
+but the recently developed finitary set theory H˂ʷ [Pakhomov19] uses a loophole of Gödel’s result
 and proves its own consistency.
 Yet the proof cannot be verified in its entirety because the syntactical encoding of the very proofs
 (“Gödel numbering”) lies outside the scope of set theoretic language.
-We want to address this shortcoming by developing a type-theoretic counterpart of the finitary type theory.
+We want to address this shortcoming by developing a type-theoretic counterpart of the finitary set theory.
 
 
 # Universes, finitary set theory
