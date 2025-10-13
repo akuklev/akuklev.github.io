@@ -6,7 +6,7 @@ Proofs of the properties of formal systems are commonly carried out in weak pred
 and well-formed formula of some formal language.
 However the necessity to go through coding makes the proofs considerably more tedious and introduces a reasoning gap.
 
-Recent advances in type theories allow to close that gap. Recently introduced primitive recursive dependent type theory
+Recent advances in type theories allow to address these issues. Primitive recursive dependent type theory
 Tpr<sup>[[BB24](https://arxiv.org/pdf/2404.01011)]</sup> is a conservative extentsion of the PRA supporting finitary
 inductive type families. Finitary inductive type families are direct representations of abstract formal languages and
 come with structural induction principles, a tidy and natural way to define translations and reason about expressions.
