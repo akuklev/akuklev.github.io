@@ -71,6 +71,8 @@ def add<bound>(n : ℬ︀ℕ bound, m : ℬ︀ℕ (bound ∸ n)) : ℬ︀ℕ bou
 
 In our theory, total functions are only those that cannot run out of memory.
 
+It also seems that under our restrictions we can make the universe Type impredicative without introducing paradoxes.
+
 # Hereditary multisets associated to inductive types
 
 Given a type `U : Type` and a type-falued function Dec : U → FData we can define a W-type `W(t : U) Dec T` of U-small hereditary multisets.
@@ -123,18 +125,17 @@ This way we can write signatures of growing functions much more concisely:
 add<b, inl(h) : ⌊ℕ + ℕ⌋b>(n : ⌊ℕ⌋h,
                           m : ⌊ℕ⌋h) : ℬ︀ℕ b
 
-mul<b, (q, p) : ⌊ℕ²⌋b>(n : ⌊ℕ⌋q,
-                       m : ⌊ℕ⌋p) : ℬ︀ℕ b
+mul<b, (_, h) : ⌊ℕ²⌋b>(n : ⌊ℕ⌋h,
+                       m : ⌊ℕ⌋h) : ℬ︀ℕ b
 ```
 
 The types `ℕ + ℕ` and `ℕ²` are special cases of ordinals governing recursive complexity of underlying functions.
 With an appropriate inductive type ε₀, we should be able to construct the cut-elimination procedure for proofs in Peano arithmetic:
 ```
-normalize<size, depth : ⌊ε₀⌋size> : ⌊PeanoPrf⌋depth → ⌊CutFreePrf⌋size
+normalize<size, depth : ⌊ε₀⌋size> : ⌊PeanoPrf⌋depth → (CutFreePrf size)
 ```
 
-
-# Universes, finitary set theory
+# Finitary set theory, type-theoretically
 
 In type theories, types containing other types are known as universes.
 A universe is called hereditary if the types it contains are (1) themselves universes (2) hereditary ones.
@@ -163,9 +164,9 @@ and reflecting ∈-relation for hereditary universes.
 Hereditary universes can be filtered by predicates (separation).
 ∈-induction for predicates can be classically derived.
 
-It appears that generalizing `Prop` to a generic impredicative universe `*`
-(that contains polymorphic functions besides propositions) is a conservative extension.
+* * *
 
+**Older stuff; TODO: rewrite**
 
 # Local finiteness and inductive hierarchies
 
@@ -203,7 +204,7 @@ Since every proof `t : Prfⁿ` is finite,
 it can be carried out already inside the finite partial model `Vⁿ` of our theory.
 Checking a proof inside a finite model is a case of a query evaluation on a finite domain,
 so it should be possible to define the level-polymorphic function `evalⁿ : ∀(t : Prfⁿ) → Conclusion(prf)`,
-yielding the strong Hilbert-style consistency `eval : ∀(t : Prfᵗ) → Conclusion(prf)`.
+yielding the strong Hilbert-style consistency `eval : ∀(t : Prf) → Conclusion(prf)`.
 
 # Aspired Applications
 
