@@ -68,6 +68,30 @@ def add<bound>(n : ℬ︀ℕ bound, m : ℬ︀ℕ (bound ∸ n)) : ℬ︀ℕ bou
 
 In our theory, total functions are only those that cannot run out of memory.
 
+# Hereditary multisets associated to inductive types
+
+Given a type `U : Type` and a type-falued function Dec : U → FData we can define a W-type `W(t : U) Dec T` of U-small hereditary multisets.
+For `U = FData` and `Dec = id<FDate>` let us call the resulting type `V := W(T : FData) T`. It's constructor will be denoted `sup<T> (elements : T → V) : V`.
+Other than that we'll be working with hereditary multiset types for finite types `U`, which are ordinary finitary inductive types inside `FData`.
+
+To every inductive type definition `J` we can associate a hereditary multiset as follows:
+```
+𝒮[J] = sup { expr : J ↦ 𝒮[ℬ︀J] expr}
+```
+
+In particular, we have
+```
+𝒮[Void] = ∅
+𝒮[Unit] = {∅}
+𝒮[ℬ︀ℕ 2] = {∅, {∅}}
+𝒮[ℬ︀ℕ 3] = {∅, {∅}, {∅, {∅}}
+𝒮[ℕ] = set of all von Neumann numerals
+```
+
+Note that 𝒮 is an operator on inductive definitions, not a function on types. It produces non-equivalent results on isomorphic types, e.g.
+```
+𝒮[Bool] = {∅, ∅} ≠ 𝒮[ℬ︀ℕ 2]
+```
 
 # Universes, finitary set theory
 
