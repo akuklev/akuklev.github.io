@@ -42,7 +42,10 @@ finitary set theory.
 # Bounded types and bounded recursion
 
 We'll be working in a type theory with subtyping with a universe `FData : Type` of finitary inductive types
-lacking function types. Definition of an inductive type `J` also allows to define a family of its subtypes
+lacking function types, and a universe `Type ⊋ FData` closed under П-types `∀(x : X) Y(x)` and parametric
+quantification `∀<x : X> Y(x)`.
+
+Definition of an inductive type `J` also allows to define a family of its subtypes
 `ℬ︀J : J → FData`, with each `ℬ︀J e` inhabited by subexpressions of `e : J`. For the type `ℕ` of natural numbers,
 `ℬ︀ℕ n` is precisely the type of natural numbers below `n` also known as `Fin n` in literature. Note that ℬ︀ is
 not a function on types, but an operator on type definitions; it produces non-equivalent results on isomorphic types.
@@ -92,6 +95,44 @@ Note that 𝒮 is an operator on inductive definitions, not a function on types.
 ```
 𝒮[Bool] = {∅, ∅} ≠ 𝒮[ℬ︀ℕ 2]
 ```
+
+The type `(ℬ︀V s)` contains precisely the elements of `s`.
+Given a finite inductive type `F`, `(ℬ︀V 𝒮F)` the von Neumann closure of `𝒮F`.
+For any term `c : J` of any inductive type `J` let's write `𝒱e` for
+`(ℬ︀V 𝒮[ℬ︀J c])`.
+
+`𝒱c` can be made into a finite universe closed under strongly bounded sums
+and products and containing inductive types (ℬ︀J c') for all `c' : ℬ︀J c`.
+
+Inductive types `J` are defined by dependent polynomials `P` such that `J = P(J)`.
+Since finite universes are closed under strongly bounded sums and products, i.e.
+strongly bounded dependent polynomials, for every inductive type definition
+`[J] : FData`, and we have a canonical approximation `⌊J⌋c` of `J` contained
+inside `𝒱c`.
+
+We anticipate that just like in case of Pakhomov's finitary set theory, the finite
+universes `𝒱c` will turn out to be partial models of our calculus BICC.
+
+Given `b : ℕ`, `𝒱b` is a finite universe where sets have at most `b` elements,
+so the approximation `⌊ℕ²⌋b` of the type of pairs of natural numbers only contains
+pairs where each component is at most `⌊√b⌋`, while the approximation of the disjoint
+sum `⌊ℕ + ℕ⌋b` only contains terms `inl(n)` and `inr(n)` where `n` is at most ⌊b/2⌋.
+
+This way we can write signatures of growing functions much more concisely:
+```
+add<b, inl(h) : ⌊ℕ + ℕ⌋b>(n : ⌊ℕ⌋h,
+                          m : ⌊ℕ⌋h) : ℬ︀ℕ b
+
+mul<b, (q, p) : ⌊ℕ²⌋b>(n : ⌊ℕ⌋q,
+                       m : ⌊ℕ⌋p) : ℬ︀ℕ b
+```
+
+The types `ℕ + ℕ` and `ℕ²` are special cases of ordinals governing recursive complexity of underlying functions.
+With an appropriate inductive type ε₀, we should be able to construct the cut-elimination procedure for proofs in Peano arithmetic:
+```
+normalize<size, depth : ⌊ε₀⌋size> : ⌊PeanoPrf⌋depth → ⌊CutFreePrf⌋size
+```
+
 
 # Universes, finitary set theory
 
