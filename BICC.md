@@ -85,7 +85,7 @@ In particular, we have
 𝒮[Unit] = {∅}
 𝒮[ℬ︀ℕ 2] = {∅, {∅}}
 𝒮[ℬ︀ℕ 3] = {∅, {∅}, {∅, {∅}}
-𝒮[ℕ] = set of all von Neumann numerals
+𝒮[ℕ] = {finite von Neumann numerals}
 ```
 
 Note that 𝒮 is an operator on inductive definitions, not a function on types. It produces non-equivalent results on isomorphic types, e.g.
