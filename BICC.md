@@ -39,6 +39,36 @@ Its proof cannot be verified in its entirety because the syntactical encoding of
 We want to address this shortcoming by developing a type-theoretic counterpart of Pakhomov's
 finitary set theory.
 
+# Bounded types and bounded recursion
+
+We'll be working in a type theory with subtyping with a universe `FData : Type` of finitary inductive types
+lacking function types. Definition of an inductive type `J` also allows to define a family of its subtypes
+`ℬ︀J : J → FData`, with each `ℬ︀J e` inhabited by subexpressions of `e : J`. For the type `ℕ` of natural numbers,
+`ℬ︀ℕ n` is precisely the type of natural numbers below `n` also known as `Fin n` in literature. Note that ℬ︀ is
+not a function on types, but an operator on type definitions; it produces non-equivalent results on isomorphic types.
+
+In Tᴾᴿ elimination form inductive types is only allowed into the universe `FData` to ensure only primitive recursive
+functions can be defined. We'll be even more restrictive: unless result type is a finite type (like `ℬ︀ℕ n`),
+elimination motive is not allowed to apply any constructors to non-constant terms. It is still possible to
+define constant functions and enough non-increasing functions as usual:
+```
+def ultimateAnswer(n : ℕ) = 42
+def id<T>(t : T) = t
+def K<X, Y>(x : X, y : Y) = x
+def monus(n m : ℕ) `n ∸ m` : ℕ
+  (0, _) ↦ 0
+  (n, 0) ↦ n
+  (n⁺, m⁺) ↦ (n ∸ m)
+```
+
+Yet we cannot construct addition (or successor, for that matter), unless we track construction costs:
+```
+def add<bound>(n : ℬ︀ℕ bound, m : ℬ︀ℕ (bound ∸ n)) : ℬ︀ℕ bound
+```
+
+In our theory, total functions are only those that cannot run out of memory.
+
+
 # Universes, finitary set theory
 
 In type theories, types containing other types are known as universes.
