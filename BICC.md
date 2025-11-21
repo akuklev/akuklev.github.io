@@ -75,7 +75,7 @@ It also seems that under our restrictions we can make the universe Type impredic
 
 # Hereditary multisets associated to inductive types
 
-Given a type `U : Type` and a type-falued function Dec : U → FData we can define a W-type `W(t : U) Dec T` of U-small hereditary multisets.
+Given a type `U : Type` and a type-falued function `Dec : U → FData` we can define a W-type `W(t : U) Dec T` of U-small hereditary multisets.
 For `U = FData` and `Dec = id<FDate>` let us call the resulting type `V := W(T : FData) T`. It's constructor will be denoted `sup<T> (elements : T → V) : V`.
 Other than that we'll be working with hereditary multiset types for finite types `U`, which are ordinary finitary inductive types inside `FData`.
 
