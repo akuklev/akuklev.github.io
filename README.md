@@ -69,8 +69,8 @@ so that all proofs and constructions can be generalized, specialized, and transf
   [Verse calculus](https://simon.peytonjones.org/verse-calculus/), a recently developed deterministic approach to 
   functional logic programming.
   Incidentally, we also vastly expand of the computational power by allowing all classically provable algorithms.
-- [Bounded Inductive Construction Calculus](BICC):
-  We are developing a finitistic core theory to use for proving desired meta-theoretical properties,
+- [Finitary Construction Calculus](finitism.pdf):
+  We are developing a finitistic “trusted core” theory to use for proving desired meta-theoretical properties,
   namely typechecking decidability, canonicity, normalization, and conservativity of HCCC over
   [M. Shulman’s ZMC/𝕊 set theory](https://arxiv.org/abs/0810.1279) and thus their equiconsistency.
 
